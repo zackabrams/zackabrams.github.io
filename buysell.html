@@ -1,0 +1,1554 @@
+    <!DOCTYPE html>
+    <!--[if IE 8 ]><html class="no-js oldie ie8" lang="en"> <![endif]-->
+    <!--[if IE 9 ]><html class="no-js oldie ie9" lang="en"> <![endif]-->
+    <!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113325579-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-113325579-1');
+</script>
+
+     
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {packages:['corechart']});
+  google.charts.setOnLoadCallback(drawExample2);
+
+  function drawExample2() {
+    // Some raw data (not necessarily accurate)
+    var rowData1 = [['Average Reaction', 'Social Encounters', { role: 'style' }],
+                    ['Haha', 35.33, 'color: blue'],
+                    ['Love', 7.50, 'color: red'],
+                    ['Angry', 0.33, 'color: orange'],
+                    ['Sad', 11.75, 'color: gray'],
+                    ['Wow', 1.67, 'color: purple']];
+                    var rowData2 = [['Average Reaction', 'Mental Health', { role: 'style' }],
+                    ['Haha', 29.36, 'color: blue'],
+                    ['Love', 9.14, 'color: red'],
+                    ['Angry', 0.07, 'color: orange'],
+                    ['Sad', 15.14, 'color: gray'],
+                    ['Wow', 1.29, 'color: purple']];
+                    var rowData3 = [['Average Reaction', 'Local Culture', { role: 'style' }],
+                    ['Haha', 34.86, 'color: blue'],
+                    ['Love', 7.83, 'color: red'],
+                    ['Angry', 0.31, 'color: orange'],
+                    ['Sad', 4.97, 'color: gray'],
+                    ['Wow', 3.17, 'color: purple']];
+                    var rowData4 = [['Average Reaction', 'Classes', { role: 'style' }],
+                    ['Haha', 27.90, 'color: blue'],
+                    ['Love', 8.00, 'color: red'],
+                    ['Angry', 0.59, 'color: orange'],
+                    ['Sad', 8.03, 'color: gray'],
+                    ['Wow', 1.48, 'color: purple']];
+                    var rowData5 = [['Average Reaction', 'Careers', { role: 'style' }],
+                    ['Haha', 24.60, 'color: blue'],
+                    ['Love', 4.50, 'color: red'],
+                    ['Angry', 0.90, 'color: orange'],
+                    ['Sad', 12.30, 'color: gray'],
+                    ['Wow', 1.80, 'color: purple']];
+
+    // Create and populate the data tables.
+    var data = [];
+    data[0] = google.visualization.arrayToDataTable(rowData1);
+    data[1] = google.visualization.arrayToDataTable(rowData2);
+      data[2] = google.visualization.arrayToDataTable(rowData3);
+      data[3] = google.visualization.arrayToDataTable(rowData4);
+      data[4] = google.visualization.arrayToDataTable(rowData5);
+
+    var options = {
+      width: '100%',
+      height: 400,
+      chartArea: {width: '95%', left:'5%'},
+      vAxis: {minValue: '30'},
+      seriesType: "bars",
+      animation:{
+        duration: 350,
+        easing: 'inAndOut'
+      },
+       legend: 'none',
+    'titleTextStyle':{
+      fontSize: '20', fontName: 'poppins-bold'}
+    };
+    var current = 0;
+    // Create and draw the visualization.
+    var chart = new google.visualization.ComboChart(document.getElementById('example2-visualization'));
+    var button = document.getElementById('example2-b1');
+    function drawChart() {
+       // Disabling the button while the chart is drawing.
+      button.disabled = true;
+      google.visualization.events.addListener(chart, 'ready',
+          function() {
+            button.disabled = false;
+            button.value = 'Switch Topic';
+          });
+        
+        if (current == 0) {
+            options['title'] = 'Average Reactions: Social Encounters';
+        }
+        else if (current == 1){
+            options['title'] = 'Average Reactions: Mental Health';
+        }
+        else if (current == 2){
+            options['title'] = 'Average Reactions: Local Culture';
+        }
+        else if (current == 3){
+            options['title'] = 'Average Reactions: Classes';
+        }
+        else {
+            options['title'] = 'Average Reactions: Careers';
+        }
+      
+      
+      
+      
+
+      chart.draw(data[current], options);
+    }
+    drawChart();
+
+    button.onclick = function() {
+        if (current < 4) {
+            current = current + 1
+        }
+        else {
+            current = 0
+        }
+      drawChart();
+    }
+  }
+</script>    
+        
+        
+        
+        
+        
+        
+        
+        
+
+       <!--- basic page needs
+       ================================================== -->
+       <meta charset="utf-8">
+        <title>Buy/Sell Analysis</title>
+        <meta name="author" content="Zack Abrams">
+<meta property="og:type"               content="article" />
+<meta property="og:url" content="http://columbia.edu/~zda2105"/>
+<meta property="og:title" content="Buy/Sell Memes Analysis"/>
+<meta property="og:description" content="The definitive statistical analysis of Barnumbia's favorite meme page."/>
+<meta property="og:site_name" content="Buy/Sell Analysis"/>
+<meta property="og:image" content="https://i.imgur.com/RzJbIg1.jpg"/>
+<meta name="description" content="The definitive statistical analysis of Barnumbia's favorite meme page.">
+        <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="Zack Abrams">
+<meta name="twitter:creator" content="Zack Abrams">
+<meta name="twitter:title" content="Buy/Sell Memes Analysis">
+<meta name="twitter:description" content="The definitive statistical analysis of Barnumbia's favorite meme page.">
+<meta name="twitter:image" content="https://i.imgur.com/RzJbIg1.jpg">
+
+
+
+       <!-- mobile specific metas
+       ================================================== -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <!-- CSS
+       ================================================== -->
+       <link rel="stylesheet" href="css/base.css">  
+       <link rel="stylesheet" href="css/main.css">
+       <link rel="stylesheet" href="css/vendor.css">     
+
+       <!-- script
+       ================================================== -->   
+        <script src="js/modernizr.js"></script>
+        <script src="js/pace.min.js"></script>
+
+       <!-- favicons
+        ================================================== -->
+        <link rel="icon" type="image/png" href="favicon.png">
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        
+         <!-- draw charts
+        ================================================== -->
+                    <script type="text/javascript">
+                        // Load google charts
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback(drawChart);
+
+                        
+                        
+                        
+                       
+                        
+                        
+                        // Draw the chart and set the chart values
+                        function drawChart() {
+                            
+                            
+                            
+                            var data = google.visualization.arrayToDataTable([
+                            ['Reactions', 'Percent of Total'],
+                            ['Like', 28747],
+                            ['Heart', 769],
+                            ['Haha', 3110],
+                            ['Wow', 210],
+                            ['Sad', 883],
+                            ['Angry', 42]
+                                            ]);
+                            var data2 = google.visualization.arrayToDataTable([
+                            ['Time of Day', 'Time of Day'],
+                            ['AM', 14],
+                            ['PM', 86],
+                                            ]);
+                            var data3 = google.visualization.arrayToDataTable([
+                            ['Time of Day', 'Time of Day'],
+                            ['Sun Up', 50],
+                            ['Sun Down', 50],
+                                            ]);
+                            var data4 = google.visualization.arrayToDataTable([
+                            ['Time of Day', 'Reaction Count'],
+                            [{v: 0, f:'Midnight'}, null],
+                            [{v: 360, f:'6 AM'}, null],
+                            [{v: 720, f:'Noon'}, null],
+                            [{v: 1080, f:'6 PM'}, null],
+                            [{v: 1440, f:'Midnight'}, null],
+                            [61, 735], [80, 166], [234, 169], [482, 1169], [492, 1367], [546, 71], [566, 7], [593, 560], [612, 5], [648, 557], [654, 42], [686, 359], [695, 224], [709, 388], [720, 224], [730, 40], [731, 47], [732, 276], [751, 516], [755, 424], [767, 123], [773, 875], [773, 317], [779, 8], [790, 293], [805, 156], [812, 304], [813, 847], [816, 212], [817, 325], [818, 18], [830, 271], [833, 221], [841, 478], [846, 173], [851, 1514], [862, 247], [863, 217], [898, 62], [906, 455], [918, 10], [919, 619], [926, 236], [927, 114], [930, 586], [941, 484], [944, 33], [947, 65], [963, 283], [980, 395], [992, 895], [1009, 1117], [1013, 146], [1033, 72], [1041, 9], [1043, 95], [1043, 28], [1048, 39], [1060, 55], [1062, 446], [1070, 60], [1073, 36], [1075, 1297], [1091, 59], [1107, 320], [1110, 266], [1112, 31], [1130, 248], [1136, 1012], [1144, 381], [1145, 550], [1156, 419], [1161, 84],[1183, 120], [1190, 44], [1200, 413], [1205, 658], [1216, 38], [1223, 1699], [1226, 102], [1231, 757], [1286, 394], [1286, 111], [1289, 84], [1292, 141], [1298, 207], [1314, 39],  [1319, 89], [1326, 39],  [1334, 202], [1342, 993], [1342, 168], [1347, 390], [1356, 148], [1363, 58], [1381, 822], [1403, 719], [1424, 202], [1431, 125], [1435, 47]
+                                          ]);
+                            var data5 = google.visualization.arrayToDataTable([
+                            ['Price', 'Reaction Count'],
+                            [847, 0], [84, 1], [320, 4], [719, 100], [1012, 420], [394, 200], [381, 4],[59, 4600000], [446, 2], [1169, 900], [586, 110], [993, 2], [359, 0], [72, 0], [146, 1500000], [156, 0], [111, 1741], [141, 0], [217, 45],[271, 0], [390, 5], [38, 0], [202, 1917], [36, 200], [424, 100], [47, 0], [266, 14], [39, 0], [455, 0], [47, 191], [148, 0], [1367, 11618], [58, 0], [658, 0], [276, 4], [248, 4], [388, 0], [33, 0], [173, 120000], [114, 0], [89, 0], [39, 10000000000000], [202, 14], [169, 0], [484, 150], [419, 0], [325, 16], [735, 3],[44, 345], [84, 3], [413, 2880], [123, 10000], [221, 4500000], [247, 100], [62, 3], [31, 666], [283, 0], [8, 1754], [207, 500], [42, 0], [71, 45000], [293, 420], [1297, 1], [9, 38], [304, 1], [822, 1], [224, 0], [236, 450], [550, 7], [1514, 69], [317, 2], [168, 10000],[557, 0], [102, 5], [60, 96], [65, 0], [18, 179], [478, 2], [224, 0], [1117, 0], [166, 0], [95, 0], [5, 800000], [516, 100000]
+                                          ]);
+                            var data6 = google.visualization.arrayToDataTable([
+                            ['Topic', 'Percent of Total'],
+                            ['Classes', 29],
+                            ['Social Encounters', 12],
+                            ['Mental Health', 14],
+                            ['Careers', 10],
+                            ['Local Culture', 35],
+                                            ]);
+                            var data7 = google.visualization.arrayToDataTable([
+                            ['Barnumbia', 'Percent of Total'],
+                            ['Generic', 51],
+                            ['Specific', 25],
+                            ['Only in Caption', 24]
+                                            ]);
+                            var data8 = google.visualization.arrayToDataTable([
+                            ['When/Price', 'Percent of Total'],
+                            ['"When"', 27],
+                            ['"Price"', 19],
+                            ['Both', 10],
+                            ['Neither', 44]
+                                            ]);
+                            var data9 = google.visualization.arrayToDataTable([
+                             ['Topic Type', 'Average Total Reaction'],
+                            ['Specific', 309.48],
+                            ['Generic', 384.98],
+                            ['Caption', 266.25],    
+                            ]);
+                    
+                            
+      // Optional; add a title and set the width and height of the chart
+      var options = {'title':'Distribution of Reactions', 'width':'50%', 'height':'100%', backgroundColor:'whitesmoke', 'fontName': 'poppins-regular', 'pieStartAngle':'-25', 'titleTextStyle':{
+      fontSize: '18', fontName: 'poppins-bold'}, 'tooltip': {'ignoreBounds': 'true'}, sliceVisibilityThreshold: .0005, is3D: true, chartArea: {width: '100%', left: '15%', top: '30%'}, };
+       var options2 = {'title':'Time Posted (Clock)', 'tooltip': {'ignoreBounds': 'true'}, 'pieStartAngle':'25', 'width':'50%', 'height':'100%', backgroundColor:'whitesmoke', 'fontName': 'poppins-regular', 'titleTextStyle':{
+      fontSize: '18', fontName: 'poppins-bold'}, sliceVisibilityThreshold: .0005, is3D: true, chartArea: {width: '100%', left: '15%', top: '30%'} };  
+      var options3 = {'title':'Time Posted (Sun)', 'width':'50%', 'height':'100%', backgroundColor:'whitesmoke', 'fontName': 'poppins-regular', 'titleTextStyle':{
+      fontSize: '18', fontName: 'poppins-bold'}, 'tooltip': {'ignoreBounds': 'true'}, sliceVisibilityThreshold: .0005, is3D: true, chartArea: {width: '100%', left: '15%', top: '30%'} }; 
+      var options4 = {
+          width:'100%',
+          chartArea: {width: '45%', left:'20%'},
+          title: 'Time Posted vs. Total Reactions',
+          legend: 'right',
+          backgroundColor:'#EBEBEB',
+          animation: {
+          duration: 4000,
+          easing: 'inAndOut',
+          startup: true,
+              },
+          trendlines: {
+    0: {
+      type: 'linear',
+      color: 'green',
+      lineWidth: 3,
+      opacity: 0.3,
+      showR2: true,
+      visibleInLegend: true
+    }
+  },
+          titleTextStyle: { color: 'black',
+  fontSize: 18,
+  bold: true,
+  },
+          hAxis: {
+    ticks: [{v:0, f:'Midnight'}, {v:360, f:'6 AM'}, {v:720, f:'Noon'}, {v:1080, f:'6 PM'}, {v:1440, f:'Midnight'}] 
+},  
+        };
+                     
+                            
+    var options5 = {
+          orientation:'vertical',
+          width:'100%',
+          chartArea: {width: '45%', left:'20%'},
+          title: 'Price (dollars) vs. Total Reactions',
+          legend: 'right',
+          backgroundColor:'#EBEBEB',
+          
+          trendlines: {
+    0: {
+      type: 'linear',
+      color: 'purple',
+      lineWidth: 3,
+      opacity: 0.3,
+      showR2: true,
+      visibleInLegend: true
+    }
+  },
+          titleTextStyle: { color: 'black',
+  fontSize: 18,
+  bold: true,
+  },
+        hAxis: { scaleType:'log', format:'long', textStyle: {fontSize: 13} }
+        };
+                            
+        var options6 = {'title':'Posts by Topic', 'width':'50%', 'height':'100%', backgroundColor:'whitesmoke', 'fontName': 'poppins-regular', 'titleTextStyle':{
+      fontSize: '18', fontName: 'poppins-bold'}, sliceVisibilityThreshold: .0005, is3D: true, chartArea: {width: '100%', left: '15%', top: '30%'},
+    slices: {  4: {offset: 0.2},
+
+          },
+                        };
+                            
+        var options7 = {'title':'Specific to Barnumbia?', 'width':'50%', 'height':'100%', backgroundColor:'whitesmoke', 'fontName': 'poppins-regular', 'titleTextStyle':{
+      fontSize: '18', fontName: 'poppins-bold'}, sliceVisibilityThreshold: .0005, is3D: true, chartArea: {width: '100%', left: '15%', top: '30%'}, slices: { 0: {offset: 0.2},}, 'tooltip': {'ignoreBounds': 'true'}};
+                            
+      var options8 = {'title':'Starting Word', 'width':'50%', 'height':'100%', backgroundColor:'whitesmoke', 'fontName': 'poppins-regular', 'titleTextStyle':{
+      fontSize: '18', fontName: 'poppins-bold'}, sliceVisibilityThreshold: .0005, is3D: true, chartArea: {width: '100%', left: '15%', top: '30%'}, slices: { 0: {offset: 0.2},}, 'tooltip': {'ignoreBounds': 'false'}};   
+      var options9 = {
+      width: '50%',
+      'title':'Average Reactions by Specificity',
+      height: '100%',
+      chartArea: {width: '90%', left:'7%', top:'30%'},
+      vAxis: {minValue: '30'},
+      seriesType: "bars",
+          backgroundColor:'whitesmoke',
+       legend: 'right',
+    'titleTextStyle':{
+      fontSize: '18', fontName: 'poppins-bold'}
+    }; 
+                            
+        
+    
+
+      // Display the chart inside the <div> element with id="piechart"
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+      chart.draw(data, options);
+      var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
+      chart2.draw(data2, options2);    
+      var chart3 = new google.visualization.PieChart(document.getElementById('piechart3'));
+      chart3.draw(data3, options3);  
+      var chart4 = new google.visualization.ScatterChart(document.getElementById('scatterchart'));
+      chart4.draw(data4,options4);
+      var chart5 = new google.visualization.ScatterChart(document.getElementById('scatterchart2'));
+      chart5.draw(data5,options5);
+      var chart6 = new google.visualization.PieChart(document.getElementById('piechart4'));
+      chart6.draw(data6, options6); 
+      var chart7 = new google.visualization.PieChart(document.getElementById('piechart5'));
+      chart7.draw(data7, options7);                    
+      var chart8 = new google.visualization.PieChart(document.getElementById('piechart6'));
+      chart8.draw(data8, options8);   
+      var chart9 = new google.visualization.ColumnChart(document.getElementById('barchart2'));
+      chart9.draw(data9, options9);                                            
+                            
+    
+    }
+
+                        
+                        
+                        
+                        
+                        
+
+    </script>
+
+
+        
+        
+    </head>
+
+    <body id="top">
+
+        <!-- header 
+       ================================================== -->
+       <header>   	
+        <div class="row">
+
+            <!--<div class="top-bar">
+            <a class="menu-toggle" href="#"><span>Menu</span></a>
+
+                <div class="logo">
+                     <a href="index.html">ZABRAMS</a>
+                  </div>
+-->
+
+                <nav id="main-nav-wrap">
+                        <ul class="main-navigation">
+                            <li class="current"><a class="smoothscroll"  href="#intro" title="">Home</a></li>
+                            <li><a class="smoothscroll"  href="#about" title="">About</a></li>
+                            <li><a class="smoothscroll"  href="#resume" title="">Resume</a></li>
+                            <li><a class="smoothscroll"  href="#portfolio" title="">Portfolio</a></li>
+                            <li><a class="smoothscroll"  href="#services" title="">Services</a></li>					
+                            <li><a class="smoothscroll"  href="#contact" title="">Contact</a></li>	
+                            <li><a href="styles.html" title="">Style Demo</a></li>				
+                        </ul>
+                    </nav>    		
+            </div> <!-- /top-bar --> 
+
+        </div> <!-- /row --> 		
+       </header> <!-- /header -->
+
+        <!-- intro section
+       ================================================== -->
+       <section id="intro">   
+
+        <div class="intro-overlay"></div>	
+
+        <div class="intro-content">
+            <div class="row">
+
+                <div class="col-twelve">
+
+                    <h5><font size="+3">The Definitive Statistical Analysis of</font size></h5>
+                    <h1>Buy/Sell Memes</h1>
+
+                    <p class="intro-position">
+                        <hr>
+                        <span>by Zack Abrams</span>
+                        <span>| Deputy Editor, Bwog</span> 
+                    </p>
+
+                    <a class="button stroke smoothscroll" href="#about" title="">Let's go!</a>
+
+                </div>  
+
+            </div>   		 		
+        </div> <!-- /intro-content --> 
+
+        <ul class="intro-social">
+            <p></p>
+            <h6>Follow me!</h6>
+             <li><a href="https://www.facebook.com/zackdabrams" target="_blank"><i class="fa fa-facebook"></i></a></li>
+             <li><a href="https://www.twitter.com/zackdabrams"><i class="fa fa-twitter"></i></a></li>
+             <li><a href="https://www.instagram.com/zabrams_"><i class="fa fa-instagram"></i></a></li>
+          </ul> <!-- /intro-social -->      	
+
+       </section> <!-- /intro -->
+
+
+       <!-- about section
+       ================================================== -->
+       <section id="about">  
+
+        <div class="row section-intro">
+            <div class="col-twelve">
+
+                <h5><font size="+2">Intro</font></h5>
+                <hr>
+                <h1>A quick overview of the project</h1>
+
+                <div class="intro-info">
+
+                    <img src="images/profile-pic.jpg" alt="Profile Picture">
+
+                    <p class="lead">Columbia Buy/Sell Memes is a private Facebook group where members of the Columbia community, along with other students, post relatable memes about being a student at Columbia or Barnard.</p>
+                </div>   			
+
+            </div>   		
+        </div> <!-- /section-intro -->
+
+        <div class="row about-content">
+
+            <div class="col-six tab-full">
+
+                <h3>Engagement Data</h3>
+                <p>On January 25th, I collected data from the last 100 posts in the group that were at least 24 hours old. All of the posts were from December 2017 or January 2018.</p>
+
+                <ul class="info-list">
+                    <li>
+                        <strong>Unique Posters:</strong>
+                        <span>70</span>
+                    </li>
+                    <li>
+                        <strong>Total Reactions:</strong>
+                        <span>33,761</span>
+                    </li>
+                    <div id="piechart"></div>
+
+
+
+                </ul> <!-- /info-list -->
+
+            </div>
+
+            <div class="col-six tab-full">
+
+                <h3>When do people post?</h3>
+                <p>When collecting the data, I noticed that very few students posted memes during the AM hours. However, the results are even during the daytime and the nighttime.</p>
+                <div id="piechart2"></div>
+                <hr>
+                <div id="piechart3"></div>
+
+
+            </div>
+
+        </div>
+<img class="thing" src="#" alt="">
+        <div class="row button-section">
+            <div class="col-twelve">
+                <h5>Check out the group, or fact check me</h5>
+                <a href="https://www.facebook.com/groups/1006815496091821" target="_blank"><input type="button" value="Buy/Sell"></a>
+                <a href="https://docs.google.com/spreadsheets/d/1Y3rALPvgJww6cbpcXVhOzkr0sP7HLKZWUsqQ9pZczro/edit?usp=sharing" target="_blank"><input type="button" value="Data Set"></a>
+            </div>   		
+        </div>
+
+       </section> <!-- /process-->    
+
+
+       <!-- resume Section
+       ================================================== -->
+        <section id="resume" class="grey-section">
+            
+            <div class="row section-intro">
+            <div class="col-twelve">
+
+                <h5><font size="+2">Analysis</font></h5>
+                <hr>
+                <p></p>
+                <h1>When is the best time to post?</h1>
+
+                <p class="lead">Whenever I post a meme, I always wonder if there's an optimal time to post according to Facebook's algorithm or my classmates' activity. I plotted the total reactions vs. the time posted, but I found no statistical correlation.</p>
+                
+                 <div id='scatterchart' align='center', style="width: auto; height: 400px;"></div>
+                <hr>
+                <p></p>
+                <h1>How much should I charge?</h1>
+                
+                <p class="lead">One of the benefits of structuring the page as a marketplace is the ability to change the price of your meme. I plotted the price of memes on a logarithmic scale, but again did not find any statistical correlation.</p>
+                
+                <div id='scatterchart2' align='center', style="width: auto; height: 400px;"></div>
+                </div>
+            </div>
+                </section>
+
+
+        <!-- Portfolio Section
+       ================================================== -->
+        <section id="portfolio">
+
+            <div class="row section-intro">
+            <div class="col-twelve">
+
+                <h5><font size="+2">Topics</font></h5>
+                <hr>
+                <p></p>
+                <h1>Here's what we're talking about  </h1>
+                </div>
+            </div>
+                <div class="cloudwrap">
+                <svg class="cloud1" id='cloud' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 2000" preserveAspectRatio="xMidYMin">
+  <g text-anchor="middle" font-family="poppins-regular">
+    <text transform="matrix(.86603 -.5 .5 .86603 821 531)" font-size="25" fill="#e7cb94">
+      without
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 709 442)" font-size="41" fill="#7b4173">
+      time
+    </text>
+    <text transform="translate(327 339)" font-size="10" fill="#ce6dbd">
+      possible
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 142 378)" font-size="25" fill="#8ca252">
+      even
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 634 34)" font-size="25" fill="#ce6dbd">
+      think
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 869 285)" font-size="25" fill="#637939">
+      use
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 658 447)" font-size="10" fill="#7b4173">
+      important
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 135 404)" font-size="10" fill="#ce6dbd">
+      Place
+    </text>
+    <text transform="translate(314 264)" font-size="53" fill="#e7ba52">
+      one
+    </text>
+    <text transform="rotate(30 -645.57041555 650.9800715)" font-size="34" fill="#ce6dbd">
+      way
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 242 353)" font-size="10" fill="#843c39">
+      canvas
+    </text>
+    <text transform="rotate(-60 658.496732 -610.54979645)" font-size="10" fill="#e7969c">
+      final
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 283 205)" font-size="61" fill="#6b6ecf">
+      number
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 676 360)" font-size="41" fill="#b5cf6b">
+      every
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 722 48)" font-size="25" fill="#d6616b">
+      though
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 654 259)" font-size="87" fill="#6b6ecf">
+      price
+    </text>
+    <text transform="rotate(60 57.88337651 464.25694903)" font-size="69" fill="#9c9ede">
+      Columbia
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 655 334)" font-size="65" fill="#637939">
+      semester
+    </text>
+    <text transform="rotate(60 53.59618943 392.83132319)" font-size="59" fill="#8ca252">
+      new
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 604 419)" font-size="56" fill="#b5cf6b">
+      like
+    </text>
+    <text transform="rotate(60 -69.7621038 517.16849176)" font-size="53" fill="#cedb9c">
+      amount
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 347 308)" font-size="50" fill="#8c6d31">
+      day
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 516 463)" font-size="50" fill="#bd9e39">
+      youre
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 650 439)" font-size="50" fill="#e7ba52">
+      just
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 279 362)" font-size="46" fill="#e7cb94">
+      cost
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 380 386)" font-size="46" fill="#843c39">
+      class
+    </text>
+    <text transform="translate(503 155)" font-size="46" fill="#ad494a">
+      first
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 590 215)" font-size="46" fill="#d6616b">
+      make
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 767 336)" font-size="46" fill="#e7969c">
+      money
+    </text>
+    <text transform="rotate(60 -17.92493523 514.95310145)" font-size="46" fill="#7b4173">
+      still
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 799 233)" font-size="46" fill="#a55194">
+      right
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 456 484)" font-size="46" fill="#ce6dbd">
+      break
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 206 257)" font-size="46" fill="#de9ed6">
+      students
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 200 166)" font-size="46" fill="#393b79">
+      campus
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 572 164)" font-size="41" fill="#5254a3">
+      hum
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 235 380)" font-size="41" fill="#6b6ecf">
+      minutes
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 398 414)" font-size="41" fill="#9c9ede">
+      want
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 667 488)" font-size="41" fill="#637939">
+      know
+    </text>
+    <text transform="translate(663 161)" font-size="41" fill="#8ca252">
+      back
+    </text>
+    <text transform="translate(798 360)" font-size="41" fill="#b5cf6b">
+      get
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 553 92)" font-size="41" fill="#cedb9c">
+      meme
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 427 451)" font-size="34" fill="#8c6d31">
+      books
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 370 354)" font-size="34" fill="#bd9e39">
+      see
+    </text>
+    <text transform="rotate(-60 324.84351952 29.35451968)" font-size="34" fill="#e7ba52">
+      professor
+    </text>
+    <text transform="translate(331 223)" font-size="34" fill="#e7cb94">
+      asks
+    </text>
+    <text transform="rotate(60 -61.08261188 572.20181276)" font-size="34" fill="#843c39">
+      lit
+    </text>
+    <text transform="rotate(-60 408.27172275 -99.1473671)" font-size="34" fill="#ad494a">
+      life
+    </text>
+    <text transform="translate(342 188)" font-size="34" fill="#d6616b">
+      call
+    </text>
+    <text transform="rotate(-60 285.97045256 12.6846467)" font-size="34" fill="#e7969c">
+      last
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 638 113)" font-size="34" fill="#7b4173">
+      dont
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 309 465)" font-size="34" fill="#a55194">
+      trying
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 155 143)" font-size="34" fill="#ce6dbd">
+      City
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 787 429)" font-size="34" fill="#de9ed6">
+      thanks
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 770 159)" font-size="34" fill="#393b79">
+      Week
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 90 236)" font-size="34" fill="#5254a3">
+      end
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 627 82)" font-size="34" fill="#6b6ecf">
+      looking
+    </text>
+    <text transform="rotate(60 240.17056359 843.98761862)" font-size="34" fill="#9c9ede">
+      grades
+    </text>
+    <text transform="rotate(60 83.18722409 520.08449866)" font-size="34" fill="#637939">
+      im
+    </text>
+    <text transform="rotate(60 -311.41462568 454.6140461)" font-size="34" fill="#8ca252">
+      probably
+    </text>
+    <text transform="rotate(60 22.37822174 178.76021703)" font-size="34" fill="#b5cf6b">
+      website
+    </text>
+    <text transform="rotate(30 30.44039956 583.84351952)" font-size="34" fill="#cedb9c">
+      gonna
+    </text>
+    <text transform="translate(789 486)" font-size="34" fill="#8c6d31">
+      graduation
+    </text>
+                    </g></svg>
+                
+                    
+                    
+    <svg class="cloud2" id='cloud2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 2000">
+        <g text-anchor="middle" font-family="poppins-regular">
+    <text transform="rotate(-60 446.33836474 42.9192749)" font-size="34" fill="#bd9e39">
+      night
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 626 304)" font-size="25" fill="#e7ba52">
+      Also
+    </text>
+    <text transform="rotate(60 167.11096315 843.44467868)" font-size="25" fill="#e7cb94">
+      well
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 854 337)" font-size="25" fill="#843c39">
+      Goldman
+    </text>
+    <text transform="translate(546 340)" font-size="25" fill="#ad494a">
+      ask
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 679 398)" font-size="25" fill="#d6616b">
+      7
+    </text>
+    <text transform="rotate(30 168.5673326 1412.83251936)" font-size="25" fill="#e7969c">
+      syllabus
+    </text>
+    <text transform="translate(800 394)" font-size="25" fill="#7b4173">
+      help
+    </text>
+    <text transform="translate(352 547)" font-size="25" fill="#a55194">
+      someone
+    </text>
+    <text transform="rotate(-60 598.4960414 -88.62555182)" font-size="25" fill="#ce6dbd">
+      student
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 499 497)" font-size="25" fill="#de9ed6">
+      friends
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 489 85)" font-size="25" fill="#393b79">
+      Heres
+    </text>
+    <text transform="rotate(60 86.8218893 946.37992347)" font-size="25" fill="#5254a3">
+      everyone
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 444 67)" font-size="25" fill="#6b6ecf">
+      type
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 900 296)" font-size="25" fill="#9c9ede">
+      spent
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 587 493)" font-size="25" fill="#637939">
+      prof
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 476 523)" font-size="25" fill="#8ca252">
+      drop
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 231 45)" font-size="25" fill="#b5cf6b">
+      Credit
+    </text>
+    <text transform="translate(401 212)" font-size="25" fill="#cedb9c">
+      read
+    </text>
+    <text transform="rotate(60 263.73274142 870.79850775)" font-size="25" fill="#8c6d31">
+      already
+    </text>
+    <text transform="translate(681 126)" font-size="25" fill="#bd9e39">
+      dining
+    </text>
+    <text transform="translate(526 47)" font-size="25" fill="#e7ba52">
+      received
+    </text>
+    <text transform="translate(502 365)" font-size="25" fill="#e7cb94">
+      feel
+    </text>
+    <text transform="translate(706 518)" font-size="25" fill="#843c39">
+      Office
+    </text>
+    <text transform="rotate(-30 708.43009 -1442.17672949)" font-size="25" fill="#ad494a">
+      desire
+    </text>
+    <text transform="rotate(-60 584.8620668 -63.01081511)" font-size="25" fill="#d6616b">
+      much
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 365 328)" font-size="25" fill="#e7969c">
+      hit
+    </text>
+    <text transform="rotate(-60 312.6640276 90.4500185)" font-size="25" fill="#7b4173">
+      typing
+    </text>
+    <text transform="translate(498 27)" font-size="25" fill="#a55194">
+      case
+    </text>
+    <text transform="rotate(60 106.67829575 948.77222831)" font-size="25" fill="#ce6dbd">
+      now
+    </text>
+    <text transform="translate(259 93)" font-size="25" fill="#de9ed6">
+      reaccs
+    </text>
+    <text transform="translate(575 541)" font-size="25" fill="#393b79">
+      work
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 762 527)" font-size="25" fill="#5254a3">
+      hours
+    </text>
+    <text transform="translate(665 550)" font-size="25" fill="#6b6ecf">
+      school
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 168 209)" font-size="25" fill="#9c9ede">
+      used
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 800 89)" font-size="25" fill="#637939">
+      future
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 69 139)" font-size="25" fill="#8ca252">
+      weekend
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 122 430)" font-size="25" fill="#b5cf6b">
+      Literally
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 856 113)" font-size="25" fill="#cedb9c">
+      million
+    </text>
+    <text transform="rotate(60 -11.95190528 129.2986928)" font-size="25" fill="#8c6d31">
+      Working
+    </text>
+    <text transform="rotate(-60 530.4768035 89.18722409)" font-size="25" fill="#bd9e39">
+      Barnard
+    </text>
+    <text transform="rotate(-30 937.460143 69.19168826)" font-size="25" fill="#e7ba52">
+      women
+    </text>
+    <text transform="translate(675 573)" font-size="25" fill="#e7cb94">
+      favorite
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 258 463)" font-size="25" fill="#843c39">
+      JJs
+    </text>
+    <text transform="rotate(60 -3.51527928 881.91135768)" font-size="25" fill="#ad494a">
+      fit
+    </text>
+    <text transform="rotate(30 148.9359354 1750.09273639)" font-size="25" fill="#d6616b">
+      wanna
+    </text>
+    <text transform="rotate(60 -240.55564183 657.3454063)" font-size="25" fill="#e7969c">
+      sad
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 842 426)" font-size="25" fill="#7b4173">
+      York
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 325 35)" font-size="25" fill="#a55194">
+      Year
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 343 146)" font-size="25" fill="#ce6dbd">
+      boy
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 601 150)" font-size="25" fill="#de9ed6">
+      go
+    </text>
+    <text transform="rotate(30 -500.09223083 551.9993094)" font-size="25" fill="#393b79">
+      job
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 754 38)" font-size="25" fill="#5254a3">
+      really
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 68 393)" font-size="25" fill="#6b6ecf">
+      table
+    </text>
+    <text transform="translate(525 562)" font-size="25" fill="#9c9ede">
+      winter
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 909 487)" font-size="25" fill="#8ca252">
+      took
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 151 524)" font-size="25" fill="#b5cf6b">
+      textbooks
+    </text>
+    <text transform="rotate(-60 894.493464 -489.3081267)" font-size="25" fill="#cedb9c">
+      Diana
+    </text>
+    <text transform="rotate(60 -99.4627204 671.72551481)" font-size="10" fill="#bd9e39">
+      since
+    </text>
+    <text transform="rotate(30 -320.0807251 193.7653718)" font-size="10" fill="#e7ba52">
+      understanding
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 223 413)" font-size="10" fill="#e7cb94">
+      opening
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 246 152)" font-size="10" fill="#843c39">
+      Slader
+    </text>
+        </g> </svg>
+                
+         <svg class="cloud3" id='cloud3' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 2000" >
+        <g text-anchor="middle" font-family="poppins-regular">        
+    <text transform="translate(422 228)" font-size="10" fill="#ad494a">
+      sleeping
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 476 305)" font-size="10" fill="#d6616b">
+      soundly
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 709 365)" font-size="10" fill="#e7969c">
+      violations
+    </text>
+    <text transform="translate(658 277)" font-size="10" fill="#7b4173">
+      stupid
+    </text>
+    <text transform="rotate(30 -410.82428163 900.0800345)" font-size="10" fill="#a55194">
+      enough
+    </text>
+    <text transform="rotate(60 167.24751514 957.68119366)" font-size="10" fill="#ce6dbd">
+      roommates
+    </text>
+    <text transform="rotate(60 -118.27360953 709.1440991)" font-size="10" fill="#de9ed6">
+      alarm
+    </text>
+    <text transform="translate(735 498)" font-size="10" fill="#393b79">
+      couldnt
+    </text>
+    <text transform="rotate(60 -33.22620542 588.45052407)" font-size="10" fill="#5254a3">
+      fellow
+    </text>
+    <text transform="rotate(60 -18.25317547 218.38457268)" font-size="10" fill="#6b6ecf">
+      higher
+    </text>
+    <text transform="rotate(30 -571.9127389 433.24355653)" font-size="10" fill="#9c9ede">
+      library
+    </text>
+    <text transform="translate(347 525)" font-size="10" fill="#637939">
+      columbians
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 445 344)" font-size="10" fill="#8ca252">
+      R
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 233 298)" font-size="10" fill="#b5cf6b">
+      college
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 349 437)" font-size="10" fill="#cedb9c">
+      u
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 895 136)" font-size="10" fill="#8c6d31">
+      competition
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 88 259)" font-size="10" fill="#bd9e39">
+      university
+    </text>
+    <text transform="translate(525 213)" font-size="10" fill="#e7ba52">
+      fren
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 482 494)" font-size="10" fill="#e7cb94">
+      selective
+    </text>
+    <text transform="rotate(60 -1.17364654 599.96718456)" font-size="10" fill="#843c39">
+      150
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 557 404)" font-size="10" fill="#ad494a">
+      push
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 308 277)" font-size="10" fill="#d6616b">
+      button
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 674 378)" font-size="10" fill="#e7969c">
+      reacts
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 399 297)" font-size="10" fill="#7b4173">
+      nice
+    </text>
+    <text transform="rotate(60 -84.4659884 167.70061659)" font-size="10" fill="#a55194">
+      mental
+    </text>
+    <text transform="translate(729 419)" font-size="10" fill="#ce6dbd">
+      hey
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 459 218)" font-size="10" fill="#de9ed6">
+      man
+    </text>
+    <text transform="translate(251 71)" font-size="10" fill="#393b79">
+      instagram
+    </text>
+    <text transform="translate(574 282)" font-size="10" fill="#5254a3">
+      look
+    </text>
+    <text transform="translate(570 574)" font-size="10" fill="#6b6ecf">
+      breakdown
+    </text>
+    <text transform="rotate(60 -246.1107781 579.72362803)" font-size="10" fill="#9c9ede">
+      Music
+    </text>
+    <text transform="rotate(60 -14.06852877 489.63259338)" font-size="10" fill="#637939">
+      essay
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 589 235)" font-size="10" fill="#8ca252">
+      food
+    </text>
+    <text transform="rotate(30 -5.01854728 1317.34471569)" font-size="10" fill="#b5cf6b">
+      culture
+    </text>
+    <text transform="translate(701 250)" font-size="10" fill="#cedb9c">
+      lingo
+    </text>
+    <text transform="translate(359 199)" font-size="10" fill="#8c6d31">
+      fam
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 283 430)" font-size="10" fill="#bd9e39">
+      favor
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 431 565)" font-size="10" fill="#e7ba52">
+      proposal
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 453 130)" font-size="10" fill="#e7cb94">
+      better
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 731 227)" font-size="10" fill="#843c39">
+      whispers
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 453 379)" font-size="10" fill="#ad494a">
+      post
+    </text>
+    <text transform="translate(352 160)" font-size="10" fill="#d6616b">
+      self
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 220 514)" font-size="10" fill="#e7969c">
+      moment
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 558 247)" font-size="10" fill="#7b4173">
+      lost
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 648 199)" font-size="10" fill="#a55194">
+      pretty
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 623 411)" font-size="10" fill="#ce6dbd">
+      silver
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 85 416)" font-size="10" fill="#de9ed6">
+      bracelet
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 58 214)" font-size="10" fill="#393b79">
+      Friday
+    </text>
+    <text transform="rotate(60 305.1006536 634.44983346)" font-size="10" fill="#5254a3">
+      reflective
+    </text>
+    <text transform="rotate(60 -39.20696754 638.09154022)" font-size="10" fill="#6b6ecf">
+      EC
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 579 179)" font-size="10" fill="#9c9ede">
+      male
+    </text>
+    <text transform="translate(723 308)" font-size="10" fill="#637939">
+      495
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 926 393)" font-size="10" fill="#8ca252">
+      seminarlecture
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 441 547)" font-size="10" fill="#b5cf6b">
+      touch
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 745 305)" font-size="10" fill="#cedb9c">
+      focusing
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 734 141)" font-size="10" fill="#8c6d31">
+      failing
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 427 37)" font-size="10" fill="#bd9e39">
+      repeating
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 45 245)" font-size="10" fill="#e7ba52">
+      advance
+    </text>
+    <text transform="rotate(60 -260.6973486 284.45894684)" font-size="10" fill="#e7cb94">
+      sense
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 37 281)" font-size="10" fill="#843c39">
+      achievement
+    </text>
+    <text transform="rotate(30 98.81346652 525.52301144)" font-size="10" fill="#ad494a">
+      wellbeing
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 455 84)" font-size="10" fill="#d6616b">
+      calculus
+    </text>
+             </g></svg>
+                
+     <svg class="cloud4" id='cloud4' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 2000" >
+        <g text-anchor="middle" font-family="poppins-regular">            
+            
+    <text transform="rotate(60 86.56544582 665.93575035)" font-size="10" fill="#e7969c">
+      female
+    </text>
+    <text transform="translate(682 170)" font-size="10" fill="#7b4173">
+      savage
+    </text>
+    <text transform="rotate(30 -876.95756562 712.9800715)" font-size="10" fill="#a55194">
+      anything
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 263 285)" font-size="10" fill="#ce6dbd">
+      bonus
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 66 156)" font-size="10" fill="#de9ed6">
+      question
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 531 171)" font-size="10" fill="#393b79">
+      804
+    </text>
+    <text transform="translate(671 218)" font-size="10" fill="#5254a3">
+      pass
+    </text>
+    <text transform="rotate(60 -10.67106915 695.51716606)" font-size="10" fill="#6b6ecf">
+      hella
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 91 456)" font-size="10" fill="#9c9ede">
+      introverted
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 762 182)" font-size="10" fill="#637939">
+      social
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 785 42)" font-size="10" fill="#8ca252">
+      interaction
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 799 507)" font-size="10" fill="#b5cf6b">
+      networking
+    </text>
+    <text transform="rotate(-60 672.030053 -529.990196)" font-size="10" fill="#cedb9c">
+      ways
+    </text>
+    <text transform="translate(501 573)" font-size="10" fill="#8c6d31">
+      freshman
+    </text>
+    <text transform="rotate(60 55.48403011 566.10115916)" font-size="10" fill="#bd9e39">
+      years
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 340 565)" font-size="10" fill="#e7ba52">
+      schedule
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 679 260)" font-size="10" fill="#e7cb94">
+      CPS
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 314 496)" font-size="10" fill="#843c39">
+      appointment
+    </text>
+    <text transform="rotate(60 88.04432116 914.49723756)" font-size="10" fill="#ad494a">
+      opinion
+    </text>
+    <text transform="translate(546 119)" font-size="10" fill="#d6616b">
+      topic
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 180 457)" font-size="10" fill="#e7969c">
+      CCSC
+    </text>
+    <text transform="translate(264 439)" font-size="10" fill="#7b4173">
+      emails
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 51 312)" font-size="10" fill="#a55194">
+      spending
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 67 81)" font-size="10" fill="#ce6dbd">
+      Wellcompensated
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 451 188)" font-size="10" fill="#de9ed6">
+      aint
+    </text>
+    <text transform="translate(633 131)" font-size="10" fill="#393b79">
+      yet
+    </text>
+    <text transform="rotate(60 11.9532865 706.70369954)" font-size="10" fill="#5254a3">
+      date
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 924 278)" font-size="10" fill="#6b6ecf">
+      sadboii
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 518 488)" font-size="10" fill="#9c9ede">
+      Gravity
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 621 443)" font-size="10" fill="#637939">
+      face
+    </text>
+    <text transform="rotate(30 79.53847577 744.68772965)" font-size="10" fill="#8ca252">
+      father
+    </text>
+    <text transform="rotate(30 -298.030053 1253.85691202)" font-size="10" fill="#b5cf6b">
+      hall
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 510 75)" font-size="10" fill="#cedb9c">
+      tray
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 76 426)" font-size="10" fill="#8c6d31">
+      gracefully
+    </text>
+    <text transform="translate(815 198)" font-size="10" fill="#bd9e39">
+      crashes
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 590 468)" font-size="10" fill="#e7ba52">
+      floor
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 168 150)" font-size="10" fill="#e7cb94">
+      stares
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 533 18)" font-size="10" fill="#843c39">
+      mad
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 706 456)" font-size="10" fill="#ad494a">
+      pick
+    </text>
+    <text transform="translate(44 368)" font-size="10" fill="#d6616b">
+      connects
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 439 450)" font-size="10" fill="#e7969c">
+      come
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 461 578)" font-size="10" fill="#7b4173">
+      name
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 631 216)" font-size="10" fill="#a55194">
+      Ive
+    </text>
+    <text transform="rotate(-30 273.14548032 3.18911087)" font-size="10" fill="#ce6dbd">
+      purged
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 216 504)" font-size="10" fill="#de9ed6">
+      mind
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 900 99)" font-size="10" fill="#393b79">
+      staring
+    </text>
+    <text transform="translate(919 255)" font-size="10" fill="#5254a3">
+      current
+    </text>
+    <text transform="translate(362 15)" font-size="10" fill="#6b6ecf">
+      workload
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 49 33)" font-size="10" fill="#9c9ede">
+      accumulated
+    </text>
+    <text transform="rotate(-30 866.030053 -865.94794668)" font-size="10" fill="#637939">
+      two
+    </text>
+    <text transform="matrix(.86603 .5 -.5 .86603 605 562)" font-size="10" fill="#8ca252">
+      weeks
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 198 208)" font-size="10" fill="#b5cf6b">
+      classes
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 679 488)" font-size="10" fill="#cedb9c">
+      days
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 674 84)" font-size="10" fill="#8c6d31">
+      gone
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 293 325)" font-size="10" fill="#bd9e39">
+      jk
+    </text>
+    <text transform="translate(538 59)" font-size="10" fill="#e7ba52">
+      stress
+    </text>
+    <text transform="translate(734 241)" font-size="10" fill="#e7cb94">
+      drink
+    </text>
+    <text transform="matrix(.5 -.86603 .86603 .5 607 437)" font-size="10" fill="#843c39">
+      LIzs
+    </text>
+    <text transform="rotate(-30 563.91531629 45.1006536)" font-size="10" fill="#ad494a">
+      fucks
+    </text>
+    <text transform="matrix(.86603 -.5 .5 .86603 587 516)" font-size="10" fill="#d6616b">
+      curve
+    </text>
+    <text transform="matrix(.5 .86603 -.86603 .5 414 566)" font-size="10" fill="#e7969c">
+      wasnt
+    </text>
+  </g>
+</svg>
+            </div>
+            <p></p>
+            <div class="row about-content">
+
+            <div class="col-six tab-full">
+<p></p>
+                <h3>Topic Distribution</h3>
+                <p>Many of the memes take aim at common targets: Econ majors, Canada Goose owners, and campus mental health, to name a few. Here's the general breakdown of categories in December and January.</p>
+
+                    <div id="piechart4"></div>
+                
+                <p></p>
+                <p>Many memes start with familiar phrases like "price is" in the title or the caption. Here's the percent of posts that had a sentence start with "price" or "when."</p>
+
+                    <div id="piechart6"></div>
+
+            </div>
+
+            <div class="col-six tab-full">
+<p></p>
+                <h3>How much about Barnumbia?</h3>
+                <p>Many students simply repost memes from other pages, failing to customize their memes to the Barnumbia community. Others only partially customize their meme by making a reference in the caption.</p>
+                <div id="piechart5"></div>
+                <p></p>
+                <p>The question is, how much does this matter to the users of the page? Surprisingly, there's little correlation. Here's a chart comparing the average reactions for each post type.</p>
+                <div id="barchart2"></div>    
+
+            </div>
+            </div>
+            <div class="row section-intro">
+            <div class="col-twelve">
+<p></p>
+                <h3>How do we react?</h3>
+                <p>I was interested to see in the correlation between certain topics and the proportion of reactions, like if we react 'sad' more on memes about mental health than about careers. See for yourself below. </p>
+                <div id="example2-visualization"></div>
+<button id="example2-b1">Switch Topic</button>
+                
+
+
+            </div>
+
+        </div>
+
+  
+
+                    <!-- modal popups - begin
+                    ============================================================= -->
+                    <div id="modal-01" class="popup-modal slider mfp-hide">	
+
+                            <div class="media">
+                                <img src="images/portfolio/modals/m-liberty.jpg" alt="" />
+                            </div>      	
+
+                           <div class="description-box">
+                              <h4>Liberty</h4>		      
+                              <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+
+                              <div class="categories">Web Development</div>			               
+                           </div>
+
+                               
+
+                       </div> <!-- /modal-01 -->
+
+                       <div id="modal-02" class="popup-modal slider mfp-hide">	
+
+                            <div class="media">
+                                <img src="images/portfolio/modals/m-shutterbug.jpg" alt="" />
+                            </div>      	
+
+                           <div class="description-box">
+                              <h4>Shutterbug</h4>		      
+                              <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+
+                              <div class="categories">Web Design</div>			               
+                           </div>
+
+                         	      
+
+                       </div> <!-- /modal-02 -->
+
+                       <div id="modal-03" class="popup-modal slider mfp-hide">	
+
+                            <div class="media">
+                                <img src="images/portfolio/modals/m-clouds.jpg" alt="" />
+                            </div>      	
+
+                           <div class="description-box">
+                              <h4>Clouds</h4>		      
+                              <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+
+                              <div class="categories">Web Design</div>			               
+                           </div>
+
+                         		      
+
+                       </div> <!-- /modal-03 -->
+
+                       <div id="modal-04" class="popup-modal slider mfp-hide">	
+
+                            <div class="media">
+                                <img src="images/portfolio/modals/m-beetle.jpg" alt="" />
+                            </div>      	
+
+                           <div class="description-box">
+                              <h4>Beetle</h4>		      
+                              <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+
+                              <div class="categories">Branding</div>			               
+                           </div>
+
+                               
+
+                       </div> <!-- /modal-04 -->
+
+                       <div id="modal-05" class="popup-modal slider mfp-hide">	
+
+                            <div class="media">
+                                <img src="images/portfolio/modals/m-lighthouse.jpg" alt="" />
+                            </div>      	
+
+                           <div class="description-box">
+                              <h4>Lighthouse</h4>		      
+                              <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+
+                              <div class="categories">Web Development</div>			               
+                           </div>
+
+                         		      
+
+                       </div> <!-- /modal-05 -->
+
+                       <div id="modal-06" class="popup-modal slider mfp-hide">	
+
+                            <div class="media">
+                                <img src="images/portfolio/modals/m-salad.jpg" alt="" />
+                            </div>      	
+
+                           <div class="description-box">
+                              <h4>Salad</h4>		      
+                              <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+
+                              <div class="categories">Branding</div>			               
+                           </div>
+
+                         	      
+
+                       </div> <!-- /modal-06 -->
+
+
+                       <!-- modal popups - end
+                    ============================================================= -->
+
+                 </div> <!-- /portfolio-wrapper --> 
+
+            </div>  <!-- /twelve -->   
+
+        </div> <!-- /portfolio-content --> 
+
+        </section> <!-- /portfolio --> 
+
+
+        <!-- CTA Section
+       ================================================== -->
+        <section id="cta" class="grey-section">
+
+        <div class="portfolio">
+<div class="row section-intro">
+            <div class="col-twelve"> 
+                <h5><font size="+2">Conclusion</font></h5>
+                <hr>
+                <p></p>
+
+                    <h2 class="h01">What did we learn?</h2>
+
+                  <p>Well, not a whole lot. Facebook's algorithm ensures that there's not one good time to post; if your meme does well, it's likely to stay on the top of the page for long enough so that everyone can see it. Price doesn't have much to do with success, so save your money. It's interesting how many memes are barely related to Columbia; however, if the poster thought it was funny enough to share, others probably did too. A higher proportion of 'Sad' reactions went to posts about mental health and classes, which is to be expected. And we need to come up with better captions. </p>
+                <p></p>
+                <p>Want to talk to me about this project, memes, or literally anything else? Follow me down below, or email <a href="mailto: zack.abrams@columbia.edu">zack.abrams@columbia.edu</a>. Thanks for checking out the site!</p>
+	     	
+
+            </div>
+
+        </div> <!-- /cta-content -->
+            <ullll>
+            <li style="height:30"><a href="https://www.facebook.com/zackdabrams" target="_blank"><i class="fa fa-facebook"></i></a></li>
+             <li><a href="https://www.twitter.com/zackdabrams"><i class="fa fa-twitter"></i></a></li>
+             <li><a href="https://www.instagram.com/zabrams_"><i class="fa fa-instagram"></i></a></li>
+            </ullll>
+       </section> <!-- /cta --> 
+
+
+    
+
+ 
+       <!-- footer
+       ================================================== -->
+
+       
+
+       <div id="preloader"> 
+            <div id="loader"></div>
+       </div> 
+
+       <!-- Java Script
+       ================================================== --> 
+       <script src="js/jquery-2.1.3.min.js"></script>
+       <script src="js/plugins.js"></script>
+       <script src="js/main.js"></script>
+        <script src="https://unpkg.com/scrollreveal/dist/scrollreveal.min.js"></script>
+        <script src="js/jquery.waypoints.min.js"></script>
+                
+        <!-- Start of StatCounter Code for Default Guide -->
+<script type="text/javascript">
+var sc_project=11615274; 
+var sc_invisible=1; 
+var sc_security="a8b3c0ce"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+"https://secure." : "http://www.");
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics
+Made Easy - StatCounter" href="http://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="//c.statcounter.com/11615274/0/a8b3c0ce/1/" alt="Web
+Analytics Made Easy - StatCounter"></a></div></noscript>
+<!-- End of StatCounter Code for Default Guide -->
+            
+    </body>
+
+    </html>
