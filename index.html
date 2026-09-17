@@ -367,10 +367,97 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius
   color:var(--muted);
 }
 
+
+/* ---------- featured article ---------- */
+.featured{
+  border-top:3px solid var(--ink);
+  border-bottom:1px solid var(--rule);
+  background:var(--accent-soft);
+  padding:18px 22px 20px;
+  margin:0 0 34px;
+}
+.featured-eyebrow{
+  margin:0 0 6px;
+  font-size:.7rem;
+  font-weight:900;
+  letter-spacing:.19em;
+  text-transform:uppercase;
+  color:var(--accent);
+}
+.featured-title{
+  font-family:var(--serif);
+  font-size:clamp(1.3rem,2.9vw,1.72rem);
+  line-height:1.24;
+  font-weight:700;
+  margin:0;
+  color:var(--ink);
+  text-wrap:pretty;
+}
+.featured-title a{color:var(--ink);}
+.featured-title a:hover{color:var(--accent);}
+.featured-dek{
+  font-family:var(--serif);
+  font-size:1.02rem;
+  line-height:1.5;
+  margin:9px 0 0;
+  max-width:68ch;
+  color:var(--body);
+}
+.findings{list-style:none;margin:13px 0 0;padding:0;}
+.findings li{
+  position:relative;
+  padding-left:17px;
+  margin-bottom:5px;
+  font-size:.88rem;
+  font-variant-numeric:tabular-nums;
+}
+.findings li::before{
+  content:"";
+  position:absolute;
+  left:2px;top:.62em;
+  width:4px;height:4px;
+  background:var(--accent);
+}
+.featured-meta{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+  margin:14px 0 0;
+  font-size:.79rem;
+  color:var(--muted);
+}
+.featured-meta .dot{color:var(--rule-strong);}
+.featured-meta a{font-weight:700;}
+
+/* award chips are links now */
+a.award{border-bottom:0;}
+a.award:hover{background:var(--accent);color:var(--paper);}
+.honor b a{color:var(--ink);border-bottom:0;}
+.honor b a:hover{color:var(--accent);}
+
+/* ---------- panels gallery ---------- */
+.panels{margin-top:4px;}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 24px;}
+.shot{margin:0;}
+.shot img{
+  display:block;
+  width:100%;
+  aspect-ratio:3/2;
+  object-fit:cover;
+  max-width:100%;
+  border:1px solid var(--rule);
+  background:var(--accent-soft);
+}
+.shot figcaption{margin-top:8px;font-size:.82rem;line-height:1.45;}
+.shot figcaption b{display:block;color:var(--ink);font-weight:700;}
+.shot figcaption span{display:block;color:var(--muted);}
+@media (max-width:700px){.shots{grid-template-columns:1fr;gap:22px;}}
+
 /* ---------- print ---------- */
 @media print{
   :root{--ground:#fff;--paper:#fff;--ink:#000;--body:#222;--muted:#555;--accent:#1d4ed8;--rule:#ccc;}
-  .nav,.foot,.stats{display:none;}
+  .nav,.foot,.stats,.panels{display:none;}
   .sheet{max-width:none;padding:0;border:0;}
   .columns{gap:0 28px;padding-bottom:0;}
   a{color:#000;}
@@ -401,6 +488,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius
 
   <nav class="nav" aria-label="Sections">
     <a href="#work">Selected work</a>
+    <a href="#panels">Panels</a>
     <a href="#experience">Experience</a>
     <a href="#independent">AI video</a>
     <a href="#contact">Contact</a>
@@ -423,6 +511,20 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius
 
   <section class="portfolio">
     <h2 class="label" id="work">Selected work</h2>
+
+    <article class="featured">
+      <p class="featured-eyebrow">Latest feature</p>
+      <h3 class="featured-title"><a href="https://www.theblock.co/news/business/2026-09-01-buying-memecoins-with-credit-cards-on-robinhood-wallet-fomo-sidestep-card-network-crypto-rules-411911">Buying memecoins with credit cards on Robinhood Wallet and Fomo appears to sidestep card-network crypto rules</a></h3>
+      <p class="featured-dek">Test purchases of memecoins made with Visa and Mastercard credit cards were coded as &ldquo;digital goods media&rdquo; &mdash; the category that covers audiobooks and digital movies &mdash; and earned ordinary card rewards.</p>
+      <ul class="findings">
+        <li>Purchases routed through Crossmint&rsquo;s token checkout cleared via Apple Pay and Google Pay with no separate ID check.</li>
+        <li>The Block&rsquo;s test transactions were classified as &ldquo;digital goods media&rdquo; and earned points or cash back.</li>
+        <li>Chase said the transaction should not have earned rewards and opened a case with Visa.</li>
+        <li>The New York State Attorney General&rsquo;s office said it is reviewing the payment structure.</li>
+      </ul>
+      <p class="featured-meta"><span>The Block</span><span class="dot">·</span><span>September 1, 2026</span><span class="dot">·</span><a href="https://www.theblock.co/news/business/2026-09-01-buying-memecoins-with-credit-cards-on-robinhood-wallet-fomo-sidestep-card-network-crypto-rules-411911">Read the full story &rarr;</a></p>
+    </article>
+
     <div class="groups">
 <div class="group">
 <h3 class="group-title">Investigations &amp; features</h3>
@@ -430,13 +532,13 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius
       <ul class="work">
         <li>
           <h4><a href="https://www.coinage.media/s2/he-stole-200-million-he-gave-it-back-now-hes-ready-to-explain-why">He Stole $200 Million. He Gave It Back. Now He's Ready to Explain Why.</a></h4>
-          <div class="meta"><span>Coinage</span><span class="dot">·</span><span>2023</span><span class="dot">·</span><span class="award">SABEW Honorable Mention</span></div>
+          <div class="meta"><span>Coinage</span><span class="dot">·</span><span>2023</span><span class="dot">·</span><a class="award" href="https://sabew.org/2024/11/2023-best-in-business-awards/">SABEW Honorable Mention ↗</a></div>
           <p>Identified and interviewed the 19-year-old behind the Euler exploit, who drained roughly $200 million in 18 minutes and then gave all of it back.</p>
         </li>
         <li>
           <!-- TODO: link — Coinage, Aug 15 2022, by Zack Guzman & Zack Abrams -->
           <h4>Six Days in May: The Unmaking of a Crypto King</h4>
-          <div class="meta"><span>Coinage</span><span class="dot">·</span><span>2022</span><span class="dot">·</span><span class="award">SABEW Best in Business</span></div>
+          <div class="meta"><span>Coinage</span><span class="dot">·</span><span>2022</span><span class="dot">·</span><a class="award" href="https://sabew.org/2023/03/2022-best-in-business-honorees-judging-comments/">SABEW Best in Business ↗</a></div>
           <p>Co-reported feature on Do Kwon and the week the Terra ecosystem lost $45 billion.</p>
         </li>
         <li>
@@ -523,6 +625,28 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius
     </div>
   </section>
 
+  <section class="panels">
+    <h2 class="label" id="panels">Panels &amp; stages</h2>
+    <div class="shots">
+      <figure class="shot">
+        <img src="images/panels/panel-01.jpg" alt="Zack Abrams moderating a panel: AI Security at the Frontier: Securing the Intelligent Infrastructure" width="1200" height="800" loading="lazy">
+        <figcaption><b>AI Security at the Frontier: Securing the Intelligent Infrastructure</b><span>Hacken Trust Summit</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="images/panels/panel-03.jpg" alt="Zack Abrams moderating a panel: DePIN: How Crypto is Coming to the Real World" width="1200" height="800" loading="lazy">
+        <figcaption><b>DePIN: How Crypto is Coming to the Real World</b><span>Emergence, hosted by The Block</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="images/panels/panel-02.jpg" alt="Zack Abrams moderating a panel: Moderating from the Emergence main stage" width="1200" height="800" loading="lazy">
+        <figcaption><b>Moderating from the Emergence main stage</b><span>Emergence</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="images/panels/panel-04.jpg" alt="Zack Abrams moderating a panel: Panel on building on Solana" width="1200" height="800" loading="lazy">
+        <figcaption><b>Panel on building on Solana</b><span>Solayer SVM Summit</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
   <div class="columns">
 
     <div class="main">
@@ -597,16 +721,16 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius
 
       <h2 class="label">Recognition</h2>
       <div class="honor">
-        <b>SABEW Best in Business</b>
+        <b><a href="https://sabew.org/2023/03/2022-best-in-business-honorees-judging-comments/">SABEW Best in Business ↗</a></b>
         <span>Feature reporting, 2022</span>
       </div>
       <div class="honor">
-        <b>SABEW Honorable Mention</b>
+        <b><a href="https://sabew.org/2024/11/2023-best-in-business-awards/">SABEW Honorable Mention ↗</a></b>
         <span>Investigative reporting on the Euler hack</span>
       </div>
 
       <h2 class="label">Speaking</h2>
-      <p>Moderated expert panels at Nasdaq's Hacken Trust Summit, The Block's Convergence in Prague, and the NYC Consumer Club in Union Square.</p>
+      <p>Moderated expert panels at Nasdaq's Hacken Trust Summit, Solayer's SVM Summit in New York, The Block's Convergence in Prague, and the NYC Consumer Club in Union Square.</p>
 
       <h2 class="label">Data &amp; AI</h2>
       <p>Python, R, data analysis, data visualization, open-source AI workflows.</p>
