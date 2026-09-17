@@ -1,1203 +1,644 @@
-<!DOCTYPE html>
-<!-- saved from url=(0023)https://zackabrams.com/ -->
-<html lang="en-US" class="gr__zackabrams_com wf-bjpg-n3-active wf-bjpg-n4-active wf-bjpg-n5-active wf-bjpg-i5-active wf-bjpg-n6-active wf-bjpg-n7-active wf-fwqx-n7-active wf-fwqx-i7-active wf-active"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <script src="./mywebsite_files/nr-1130.min.js"></script><script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={xpid:"VgUFVldbGwEJUlJXBAQDUw=="};window.NREUM||(NREUM={}),__nr_require=function(t,n,e){function r(e){if(!n[e]){var o=n[e]={exports:{}};t[e][0].call(o.exports,function(n){var o=t[e][1][n];return r(o||n)},o,o.exports)}return n[e].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<e.length;o++)r(e[o]);return r}({1:[function(t,n,e){function r(t){try{s.console&&console.log(t)}catch(n){}}var o,i=t("ee"),a=t(18),s={};try{o=localStorage.getItem("__nr_flags").split(","),console&&"function"==typeof console.log&&(s.console=!0,o.indexOf("dev")!==-1&&(s.dev=!0),o.indexOf("nr_dev")!==-1&&(s.nrDev=!0))}catch(c){}s.nrDev&&i.on("internal-error",function(t){r(t.stack)}),s.dev&&i.on("fn-err",function(t,n,e){r(e.stack)}),s.dev&&(r("NR AGENT IN DEVELOPMENT MODE"),r("flags: "+a(s,function(t,n){return t}).join(", ")))},{}],2:[function(t,n,e){function r(t,n,e,r,s){try{p?p-=1:o(s||new UncaughtException(t,n,e),!0)}catch(f){try{i("ierr",[f,c.now(),!0])}catch(d){}}return"function"==typeof u&&u.apply(this,a(arguments))}function UncaughtException(t,n,e){this.message=t||"Uncaught error with no additional information",this.sourceURL=n,this.line=e}function o(t,n){var e=n?null:c.now();i("err",[t,e])}var i=t("handle"),a=t(19),s=t("ee"),c=t("loader"),f=t("gos"),u=window.onerror,d=!1,l="nr@seenError",p=0;c.features.err=!0,t(1),window.onerror=r;try{throw new Error}catch(h){"stack"in h&&(t(8),t(7),"addEventListener"in window&&t(5),c.xhrWrappable&&t(9),d=!0)}s.on("fn-start",function(t,n,e){d&&(p+=1)}),s.on("fn-err",function(t,n,e){d&&!e[l]&&(f(e,l,function(){return!0}),this.thrown=!0,o(e))}),s.on("fn-end",function(){d&&!this.thrown&&p>0&&(p-=1)}),s.on("internal-error",function(t){i("ierr",[t,c.now(),!0])})},{}],3:[function(t,n,e){t("loader").features.ins=!0},{}],4:[function(t,n,e){function r(t){}if(window.performance&&window.performance.timing&&window.performance.getEntriesByType){var o=t("ee"),i=t("handle"),a=t(8),s=t(7),c="learResourceTimings",f="addEventListener",u="resourcetimingbufferfull",d="bstResource",l="resource",p="-start",h="-end",m="fn"+p,w="fn"+h,v="bstTimer",y="pushState",g=t("loader");g.features.stn=!0,t(6);var x=NREUM.o.EV;o.on(m,function(t,n){var e=t[0];e instanceof x&&(this.bstStart=g.now())}),o.on(w,function(t,n){var e=t[0];e instanceof x&&i("bst",[e,n,this.bstStart,g.now()])}),a.on(m,function(t,n,e){this.bstStart=g.now(),this.bstType=e}),a.on(w,function(t,n){i(v,[n,this.bstStart,g.now(),this.bstType])}),s.on(m,function(){this.bstStart=g.now()}),s.on(w,function(t,n){i(v,[n,this.bstStart,g.now(),"requestAnimationFrame"])}),o.on(y+p,function(t){this.time=g.now(),this.startPath=location.pathname+location.hash}),o.on(y+h,function(t){i("bstHist",[location.pathname+location.hash,this.startPath,this.time])}),f in window.performance&&(window.performance["c"+c]?window.performance[f](u,function(t){i(d,[window.performance.getEntriesByType(l)]),window.performance["c"+c]()},!1):window.performance[f]("webkit"+u,function(t){i(d,[window.performance.getEntriesByType(l)]),window.performance["webkitC"+c]()},!1)),document[f]("scroll",r,{passive:!0}),document[f]("keypress",r,!1),document[f]("click",r,!1)}},{}],5:[function(t,n,e){function r(t){for(var n=t;n&&!n.hasOwnProperty(u);)n=Object.getPrototypeOf(n);n&&o(n)}function o(t){s.inPlace(t,[u,d],"-",i)}function i(t,n){return t[1]}var a=t("ee").get("events"),s=t(21)(a,!0),c=t("gos"),f=XMLHttpRequest,u="addEventListener",d="removeEventListener";n.exports=a,"getPrototypeOf"in Object?(r(document),r(window),r(f.prototype)):f.prototype.hasOwnProperty(u)&&(o(window),o(f.prototype)),a.on(u+"-start",function(t,n){var e=t[1],r=c(e,"nr@wrapped",function(){function t(){if("function"==typeof e.handleEvent)return e.handleEvent.apply(e,arguments)}var n={object:t,"function":e}[typeof e];return n?s(n,"fn-",null,n.name||"anonymous"):e});this.wrapped=t[1]=r}),a.on(d+"-start",function(t){t[1]=this.wrapped||t[1]})},{}],6:[function(t,n,e){var r=t("ee").get("history"),o=t(21)(r);n.exports=r;var i=window.history&&window.history.constructor&&window.history.constructor.prototype,a=window.history;i&&i.pushState&&i.replaceState&&(a=i),o.inPlace(a,["pushState","replaceState"],"-")},{}],7:[function(t,n,e){var r=t("ee").get("raf"),o=t(21)(r),i="equestAnimationFrame";n.exports=r,o.inPlace(window,["r"+i,"mozR"+i,"webkitR"+i,"msR"+i],"raf-"),r.on("raf-start",function(t){t[0]=o(t[0],"fn-")})},{}],8:[function(t,n,e){function r(t,n,e){t[0]=a(t[0],"fn-",null,e)}function o(t,n,e){this.method=e,this.timerDuration=isNaN(t[1])?0:+t[1],t[0]=a(t[0],"fn-",this,e)}var i=t("ee").get("timer"),a=t(21)(i),s="setTimeout",c="setInterval",f="clearTimeout",u="-start",d="-";n.exports=i,a.inPlace(window,[s,"setImmediate"],s+d),a.inPlace(window,[c],c+d),a.inPlace(window,[f,"clearImmediate"],f+d),i.on(c+u,r),i.on(s+u,o)},{}],9:[function(t,n,e){function r(t,n){d.inPlace(n,["onreadystatechange"],"fn-",s)}function o(){var t=this,n=u.context(t);t.readyState>3&&!n.resolved&&(n.resolved=!0,u.emit("xhr-resolved",[],t)),d.inPlace(t,y,"fn-",s)}function i(t){g.push(t),h&&(b?b.then(a):w?w(a):(E=-E,R.data=E))}function a(){for(var t=0;t<g.length;t++)r([],g[t]);g.length&&(g=[])}function s(t,n){return n}function c(t,n){for(var e in t)n[e]=t[e];return n}t(5);var f=t("ee"),u=f.get("xhr"),d=t(21)(u),l=NREUM.o,p=l.XHR,h=l.MO,m=l.PR,w=l.SI,v="readystatechange",y=["onload","onerror","onabort","onloadstart","onloadend","onprogress","ontimeout"],g=[];n.exports=u;var x=window.XMLHttpRequest=function(t){var n=new p(t);try{u.emit("new-xhr",[n],n),n.addEventListener(v,o,!1)}catch(e){try{u.emit("internal-error",[e])}catch(r){}}return n};if(c(p,x),x.prototype=p.prototype,d.inPlace(x.prototype,["open","send"],"-xhr-",s),u.on("send-xhr-start",function(t,n){r(t,n),i(n)}),u.on("open-xhr-start",r),h){var b=m&&m.resolve();if(!w&&!m){var E=1,R=document.createTextNode(E);new h(a).observe(R,{characterData:!0})}}else f.on("fn-end",function(t){t[0]&&t[0].type===v||a()})},{}],10:[function(t,n,e){function r(){var t=window.NREUM,n=t.info.accountID||null,e=t.info.agentID||null,r=t.info.trustKey||null,i="btoa"in window&&"function"==typeof window.btoa;if(!n||!e||!i)return null;var a={v:[0,1],d:{ty:"Browser",ac:n,ap:e,id:o.generateCatId(),tr:o.generateCatId(),ti:Date.now()}};return r&&n!==r&&(a.d.tk=r),btoa(JSON.stringify(a))}var o=t(16);n.exports={generateTraceHeader:r}},{}],11:[function(t,n,e){function r(t){var n=this.params,e=this.metrics;if(!this.ended){this.ended=!0;for(var r=0;r<p;r++)t.removeEventListener(l[r],this.listener,!1);n.aborted||(e.duration=s.now()-this.startTime,this.loadCaptureCalled||4!==t.readyState?null==n.status&&(n.status=0):a(this,t),e.cbTime=this.cbTime,d.emit("xhr-done",[t],t),c("xhr",[n,e,this.startTime]))}}function o(t,n){var e=t.responseType;if("json"===e&&null!==n)return n;var r="arraybuffer"===e||"blob"===e||"json"===e?t.response:t.responseText;return w(r)}function i(t,n){var e=f(n),r=t.params;r.host=e.hostname+":"+e.port,r.pathname=e.pathname,t.sameOrigin=e.sameOrigin}function a(t,n){t.params.status=n.status;var e=o(n,t.lastSize);if(e&&(t.metrics.rxSize=e),t.sameOrigin){var r=n.getResponseHeader("X-NewRelic-App-Data");r&&(t.params.cat=r.split(", ").pop())}t.loadCaptureCalled=!0}var s=t("loader");if(s.xhrWrappable){var c=t("handle"),f=t(12),u=t(10).generateTraceHeader,d=t("ee"),l=["load","error","abort","timeout"],p=l.length,h=t("id"),m=t(15),w=t(14),v=window.XMLHttpRequest;s.features.xhr=!0,t(9),d.on("new-xhr",function(t){var n=this;n.totalCbs=0,n.called=0,n.cbTime=0,n.end=r,n.ended=!1,n.xhrGuids={},n.lastSize=null,n.loadCaptureCalled=!1,t.addEventListener("load",function(e){a(n,t)},!1),m&&(m>34||m<10)||window.opera||t.addEventListener("progress",function(t){n.lastSize=t.loaded},!1)}),d.on("open-xhr-start",function(t){this.params={method:t[0]},i(this,t[1]),this.metrics={}}),d.on("open-xhr-end",function(t,n){"loader_config"in NREUM&&"xpid"in NREUM.loader_config&&this.sameOrigin&&n.setRequestHeader("X-NewRelic-ID",NREUM.loader_config.xpid);var e=!1;if("init"in NREUM&&"distributed_tracing"in NREUM.init&&(e=!!NREUM.init.distributed_tracing.enabled),e&&this.sameOrigin){var r=u();r&&n.setRequestHeader("newrelic",r)}}),d.on("send-xhr-start",function(t,n){var e=this.metrics,r=t[0],o=this;if(e&&r){var i=w(r);i&&(e.txSize=i)}this.startTime=s.now(),this.listener=function(t){try{"abort"!==t.type||o.loadCaptureCalled||(o.params.aborted=!0),("load"!==t.type||o.called===o.totalCbs&&(o.onloadCalled||"function"!=typeof n.onload))&&o.end(n)}catch(e){try{d.emit("internal-error",[e])}catch(r){}}};for(var a=0;a<p;a++)n.addEventListener(l[a],this.listener,!1)}),d.on("xhr-cb-time",function(t,n,e){this.cbTime+=t,n?this.onloadCalled=!0:this.called+=1,this.called!==this.totalCbs||!this.onloadCalled&&"function"==typeof e.onload||this.end(e)}),d.on("xhr-load-added",function(t,n){var e=""+h(t)+!!n;this.xhrGuids&&!this.xhrGuids[e]&&(this.xhrGuids[e]=!0,this.totalCbs+=1)}),d.on("xhr-load-removed",function(t,n){var e=""+h(t)+!!n;this.xhrGuids&&this.xhrGuids[e]&&(delete this.xhrGuids[e],this.totalCbs-=1)}),d.on("addEventListener-end",function(t,n){n instanceof v&&"load"===t[0]&&d.emit("xhr-load-added",[t[1],t[2]],n)}),d.on("removeEventListener-end",function(t,n){n instanceof v&&"load"===t[0]&&d.emit("xhr-load-removed",[t[1],t[2]],n)}),d.on("fn-start",function(t,n,e){n instanceof v&&("onload"===e&&(this.onload=!0),("load"===(t[0]&&t[0].type)||this.onload)&&(this.xhrCbStart=s.now()))}),d.on("fn-end",function(t,n){this.xhrCbStart&&d.emit("xhr-cb-time",[s.now()-this.xhrCbStart,this.onload,n],n)})}},{}],12:[function(t,n,e){n.exports=function(t){var n=document.createElement("a"),e=window.location,r={};n.href=t,r.port=n.port;var o=n.href.split("://");!r.port&&o[1]&&(r.port=o[1].split("/")[0].split("@").pop().split(":")[1]),r.port&&"0"!==r.port||(r.port="https"===o[0]?"443":"80"),r.hostname=n.hostname||e.hostname,r.pathname=n.pathname,r.protocol=o[0],"/"!==r.pathname.charAt(0)&&(r.pathname="/"+r.pathname);var i=!n.protocol||":"===n.protocol||n.protocol===e.protocol,a=n.hostname===document.domain&&n.port===e.port;return r.sameOrigin=i&&(!n.hostname||a),r}},{}],13:[function(t,n,e){function r(){}function o(t,n,e){return function(){return i(t,[f.now()].concat(s(arguments)),n?null:this,e),n?void 0:this}}var i=t("handle"),a=t(18),s=t(19),c=t("ee").get("tracer"),f=t("loader"),u=NREUM;"undefined"==typeof window.newrelic&&(newrelic=u);var d=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],l="api-",p=l+"ixn-";a(d,function(t,n){u[n]=o(l+n,!0,"api")}),u.addPageAction=o(l+"addPageAction",!0),u.setCurrentRouteName=o(l+"routeName",!0),n.exports=newrelic,u.interaction=function(){return(new r).get()};var h=r.prototype={createTracer:function(t,n){var e={},r=this,o="function"==typeof n;return i(p+"tracer",[f.now(),t,e],r),function(){if(c.emit((o?"":"no-")+"fn-start",[f.now(),r,o],e),o)try{return n.apply(this,arguments)}catch(t){throw c.emit("fn-err",[arguments,this,t],e),t}finally{c.emit("fn-end",[f.now()],e)}}}};a("actionText,setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(t,n){h[n]=o(p+n)}),newrelic.noticeError=function(t,n){"string"==typeof t&&(t=new Error(t)),i("err",[t,f.now(),!1,n])}},{}],14:[function(t,n,e){n.exports=function(t){if("string"==typeof t&&t.length)return t.length;if("object"==typeof t){if("undefined"!=typeof ArrayBuffer&&t instanceof ArrayBuffer&&t.byteLength)return t.byteLength;if("undefined"!=typeof Blob&&t instanceof Blob&&t.size)return t.size;if(!("undefined"!=typeof FormData&&t instanceof FormData))try{return JSON.stringify(t).length}catch(n){return}}}},{}],15:[function(t,n,e){var r=0,o=navigator.userAgent.match(/Firefox[\/\s](\d+\.\d+)/);o&&(r=+o[1]),n.exports=r},{}],16:[function(t,n,e){function r(){function t(){return n?15&n[e++]:16*Math.random()|0}var n=null,e=0,r=window.crypto||window.msCrypto;r&&r.getRandomValues&&(n=r.getRandomValues(new Uint8Array(31)));for(var o,i="xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx",a="",s=0;s<i.length;s++)o=i[s],"x"===o?a+=t().toString(16):"y"===o?(o=3&t()|8,a+=o.toString(16)):a+=o;return a}function o(){function t(){return n?15&n[e++]:16*Math.random()|0}var n=null,e=0,r=window.crypto||window.msCrypto;r&&r.getRandomValues&&Uint8Array&&(n=r.getRandomValues(new Uint8Array(31)));for(var o=[],i=0;i<16;i++)o.push(t().toString(16));return o.join("")}n.exports={generateUuid:r,generateCatId:o}},{}],17:[function(t,n,e){function r(t,n){if(!o)return!1;if(t!==o)return!1;if(!n)return!0;if(!i)return!1;for(var e=i.split("."),r=n.split("."),a=0;a<r.length;a++)if(r[a]!==e[a])return!1;return!0}var o=null,i=null,a=/Version\/(\S+)\s+Safari/;if(navigator.userAgent){var s=navigator.userAgent,c=s.match(a);c&&s.indexOf("Chrome")===-1&&s.indexOf("Chromium")===-1&&(o="Safari",i=c[1])}n.exports={agent:o,version:i,match:r}},{}],18:[function(t,n,e){function r(t,n){var e=[],r="",i=0;for(r in t)o.call(t,r)&&(e[i]=n(r,t[r]),i+=1);return e}var o=Object.prototype.hasOwnProperty;n.exports=r},{}],19:[function(t,n,e){function r(t,n,e){n||(n=0),"undefined"==typeof e&&(e=t?t.length:0);for(var r=-1,o=e-n||0,i=Array(o<0?0:o);++r<o;)i[r]=t[n+r];return i}n.exports=r},{}],20:[function(t,n,e){n.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],21:[function(t,n,e){function r(t){return!(t&&t instanceof Function&&t.apply&&!t[a])}var o=t("ee"),i=t(19),a="nr@original",s=Object.prototype.hasOwnProperty,c=!1;n.exports=function(t,n){function e(t,n,e,o){function nrWrapper(){var r,a,s,c;try{a=this,r=i(arguments),s="function"==typeof e?e(r,a):e||{}}catch(f){l([f,"",[r,a,o],s])}u(n+"start",[r,a,o],s);try{return c=t.apply(a,r)}catch(d){throw u(n+"err",[r,a,d],s),d}finally{u(n+"end",[r,a,c],s)}}return r(t)?t:(n||(n=""),nrWrapper[a]=t,d(t,nrWrapper),nrWrapper)}function f(t,n,o,i){o||(o="");var a,s,c,f="-"===o.charAt(0);for(c=0;c<n.length;c++)s=n[c],a=t[s],r(a)||(t[s]=e(a,f?s+o:o,i,s))}function u(e,r,o){if(!c||n){var i=c;c=!0;try{t.emit(e,r,o,n)}catch(a){l([a,e,r,o])}c=i}}function d(t,n){if(Object.defineProperty&&Object.keys)try{var e=Object.keys(t);return e.forEach(function(e){Object.defineProperty(n,e,{get:function(){return t[e]},set:function(n){return t[e]=n,n}})}),n}catch(r){l([r])}for(var o in t)s.call(t,o)&&(n[o]=t[o]);return n}function l(n){try{t.emit("internal-error",n)}catch(e){}}return t||(t=o),e.inPlace=f,e.flag=a,e}},{}],ee:[function(t,n,e){function r(){}function o(t){function n(t){return t&&t instanceof r?t:t?c(t,s,i):i()}function e(e,r,o,i){if(!l.aborted||i){t&&t(e,r,o);for(var a=n(o),s=m(e),c=s.length,f=0;f<c;f++)s[f].apply(a,r);var d=u[g[e]];return d&&d.push([x,e,r,a]),a}}function p(t,n){y[t]=m(t).concat(n)}function h(t,n){var e=y[t];if(e)for(var r=0;r<e.length;r++)e[r]===n&&e.splice(r,1)}function m(t){return y[t]||[]}function w(t){return d[t]=d[t]||o(e)}function v(t,n){f(t,function(t,e){n=n||"feature",g[e]=n,n in u||(u[n]=[])})}var y={},g={},x={on:p,addEventListener:p,removeEventListener:h,emit:e,get:w,listeners:m,context:n,buffer:v,abort:a,aborted:!1};return x}function i(){return new r}function a(){(u.api||u.feature)&&(l.aborted=!0,u=l.backlog={})}var s="nr@context",c=t("gos"),f=t(18),u={},d={},l=n.exports=o();l.backlog=u},{}],gos:[function(t,n,e){function r(t,n,e){if(o.call(t,n))return t[n];var r=e();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(t,n,{value:r,writable:!0,enumerable:!1}),r}catch(i){}return t[n]=r,r}var o=Object.prototype.hasOwnProperty;n.exports=r},{}],handle:[function(t,n,e){function r(t,n,e,r){o.buffer([t],r),o.emit(t,n,e)}var o=t("ee").get("handle");n.exports=r,r.ee=o},{}],id:[function(t,n,e){function r(t){var n=typeof t;return!t||"object"!==n&&"function"!==n?-1:t===window?0:a(t,i,function(){return o++})}var o=1,i="nr@id",a=t("gos");n.exports=r},{}],loader:[function(t,n,e){function r(){if(!E++){var t=b.info=NREUM.info,n=p.getElementsByTagName("script")[0];if(setTimeout(u.abort,3e4),!(t&&t.licenseKey&&t.applicationID&&n))return u.abort();f(g,function(n,e){t[n]||(t[n]=e)}),c("mark",["onload",a()+b.offset],null,"api");var e=p.createElement("script");e.src="https://"+t.agent,n.parentNode.insertBefore(e,n)}}function o(){"complete"===p.readyState&&i()}function i(){c("mark",["domContent",a()+b.offset],null,"api")}function a(){return R.exists&&performance.now?Math.round(performance.now()):(s=Math.max((new Date).getTime(),s))-b.offset}var s=(new Date).getTime(),c=t("handle"),f=t(18),u=t("ee"),d=t(17),l=window,p=l.document,h="addEventListener",m="attachEvent",w=l.XMLHttpRequest,v=w&&w.prototype;NREUM.o={ST:setTimeout,SI:l.setImmediate,CT:clearTimeout,XHR:w,REQ:l.Request,EV:l.Event,PR:l.Promise,MO:l.MutationObserver};var y=""+location,g={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1130.min.js"},x=w&&v&&v[h]&&!/CriOS/.test(navigator.userAgent),b=n.exports={offset:s,now:a,origin:y,features:{},xhrWrappable:x,userAgent:d};t(13),p[h]?(p[h]("DOMContentLoaded",i,!1),l[h]("load",r,!1)):(p[m]("onreadystatechange",o),l[m]("onload",r)),c("mark",["firstbyte",s],null,"api");var E=0,R=t(20)},{}]},{},["loader",2,11,4,3]);</script>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="keywords" content="journalism,portfolio,zack,abrams,zack abrams,nice jewish boy">
-      <meta name="description" content="I take words and numbers and whip them into shape. 
-">
-      <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:site" content="@AdobePortfolio">
-      <meta property="og:title" content="Zack Abrams">
-      <meta property="og:description" content="I take words and numbers and whip them into shape. 
-">
-      <meta property="og:image" content="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/2a8a2377-7d89-4e74-97bd-b2758f329b7d_rw_600.gif?h=9ee99011b8f0e381b374fb1f64522f2b">
-        <link rel="icon" href="https://pro2-bar-s3-cdn-cf4.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/f9c1eb56-2df9-4888-9c00-8fc2ce5cc843_carw_1x1x32.png?h=156855aafe0ea9528155b02bf3e4a853">
-      <link rel="stylesheet" href="./mywebsite_files/main.css" type="text/css">
-      <link rel="stylesheet" href="./mywebsite_files/59a757df5004f65e11c42292ad7704ee1568220692.css" type="text/css">
-    <link rel="canonical" href="https://zackabrams.com/home">
-      <title>Zack Abrams</title>
-    <script type="text/javascript" src="./mywebsite_files/89C9RphRGlHppj5l65eUvJcyqHZRDY-D2H2vHnQjBsjfen9ffHYEBsJzwD9oFDIDWhbXjQwUwcF8jcBcZQ9u5esKZ2ItZ2qDjcBqFA9aZ2Z85Q9aFRjtwQq-K6I7OcuoSeNkieZzde8zOcFzdP37O1gkdDJlic88ikolpWgzS1scdhUTdkoRdhXCHKoEjAFnjA4kjAuDOcFzdPUlpWgzS1scdhUTdkoRdhXCSY4zwKuh-AmaOcuoSeNkieZz.js" async="" onload="
-    try {
-      window.Typekit.load();
-    } catch (e) {
-      console.warn(&#39;Typekit not loaded.&#39;);
-    }
-    "></script><style type="text/css">@font-face{font-family:bjpg;src:url(https://use.typekit.net/af/fa90e7/000000000000000000017756/27/l?subset_id=1&fvd=i5&v=3) format("woff2"),url(https://use.typekit.net/af/fa90e7/000000000000000000017756/27/d?subset_id=1&fvd=i5&v=3) format("woff"),url(https://use.typekit.net/af/fa90e7/000000000000000000017756/27/a?subset_id=1&fvd=i5&v=3) format("opentype");font-weight:500;font-style:italic;}@font-face{font-family:bjpg;src:url(https://use.typekit.net/af/1c3d03/000000000000000000017753/27/l?subset_id=1&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/1c3d03/000000000000000000017753/27/d?subset_id=1&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/1c3d03/000000000000000000017753/27/a?subset_id=1&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:bjpg;src:url(https://use.typekit.net/af/54d47a/000000000000000000017750/27/l?subset_id=1&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/54d47a/000000000000000000017750/27/d?subset_id=1&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/54d47a/000000000000000000017750/27/a?subset_id=1&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}@font-face{font-family:bjpg;src:url(https://use.typekit.net/af/fa5773/000000000000000000017755/27/l?subset_id=1&fvd=n5&v=3) format("woff2"),url(https://use.typekit.net/af/fa5773/000000000000000000017755/27/d?subset_id=1&fvd=n5&v=3) format("woff"),url(https://use.typekit.net/af/fa5773/000000000000000000017755/27/a?subset_id=1&fvd=n5&v=3) format("opentype");font-weight:500;font-style:normal;}@font-face{font-family:bjpg;src:url(https://use.typekit.net/af/04a761/000000000000000000017757/27/l?subset_id=1&fvd=n6&v=3) format("woff2"),url(https://use.typekit.net/af/04a761/000000000000000000017757/27/d?subset_id=1&fvd=n6&v=3) format("woff"),url(https://use.typekit.net/af/04a761/000000000000000000017757/27/a?subset_id=1&fvd=n6&v=3) format("opentype");font-weight:600;font-style:normal;}@font-face{font-family:bjpg;src:url(https://use.typekit.net/af/4c8250/00000000000000000001774e/27/l?subset_id=1&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/4c8250/00000000000000000001774e/27/d?subset_id=1&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/4c8250/00000000000000000001774e/27/a?subset_id=1&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:fwqx;src:url(https://use.typekit.net/af/e18b23/00000000000000003b9ad4cb/27/l?subset_id=1&fvd=i7&v=3) format("woff2"),url(https://use.typekit.net/af/e18b23/00000000000000003b9ad4cb/27/d?subset_id=1&fvd=i7&v=3) format("woff"),url(https://use.typekit.net/af/e18b23/00000000000000003b9ad4cb/27/a?subset_id=1&fvd=i7&v=3) format("opentype");font-weight:700;font-style:italic;}@font-face{font-family:fwqx;src:url(https://use.typekit.net/af/c921e1/00000000000000003b9ad4ca/27/l?subset_id=1&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/c921e1/00000000000000003b9ad4ca/27/d?subset_id=1&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/c921e1/00000000000000003b9ad4ca/27/a?subset_id=1&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}</style>
-<style type="text/css"></style><style type="text/css" id="ctre_styles">
-			#ctre_wnd {
-				position: fixed; bottom: 0; right: 10px; width: 360px; padding: 10px 20px;
-				box-sizing: content-box;
-				text-align: left; font-family: Helvetica, Arial, sans-serif;
-				background: #fff; box-shadow: 0px 0px 40px rgba(0,0,0,0.15);
-				z-index: 2147483647;
-				font-size: 12px; color: #666;
-			}
-			#ctre_wnd * {
-				line-height: 1.3; font-size: inherit; color: inherit;
-				font-weight: normal; font-style: normal; font-family: inherit;
-				cursor: default;
-			}
-			#ctre_wnd a, #ctre_wnd input[type=checkbox] { cursor: pointer; }
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zack Abrams</title>
+<meta name="description" content="Journalist and editor in Brooklyn. Weekend Editor at The Block. SABEW Best in Business winner. 850+ stories on crypto markets, hacks, and regulation, plus open-source AI video.">
+<link rel="canonical" href="https://www.zackabrams.com/">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Zack Abrams">
+<meta property="og:description" content="Journalist and editor in Brooklyn. Weekend Editor at The Block. 850+ stories on crypto markets, hacks, and regulation, plus open-source AI video.">
+<meta property="og:url" content="https://www.zackabrams.com/">
+<meta property="og:image" content="https://www.zackabrams.com/images/profile-pic.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@ZackDAbrams">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
+<style>
+:root{
+  --ground:#f6f7f9;
+  --paper:#ffffff;
+  --ink:#15181d;
+  --body:#41474f;
+  --muted:#78808a;
+  --accent:#1d4ed8;
+  --accent-soft:#e8edfb;
+  --rule:#e2e6eb;
+  --rule-strong:#c3cad3;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0e1116;
+    --paper:#141922;
+    --ink:#e9ecf1;
+    --body:#b4bbc5;
+    --muted:#7f8896;
+    --accent:#7da5ff;
+    --accent-soft:#182236;
+    --rule:#242c38;
+    --rule-strong:#394453;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0e1116;
+  --paper:#141922;
+  --ink:#e9ecf1;
+  --body:#b4bbc5;
+  --muted:#7f8896;
+  --accent:#7da5ff;
+  --accent-soft:#182236;
+  --rule:#242c38;
+  --rule-strong:#394453;
+}
 
-			#ctre_wnd .ct_minimize, #ctre_wnd .ct_close {
-				display: block; cursor: pointer;
-				position: absolute; top: 0; right: 0; width: 32px; line-height: 32px;
-				font-size: 14px; text-align: center;
-				transition: color 0.3s, background 0.3s;
-			}
-			#ctre_wnd .ct_minimize { right: 32px; background: #fff; color: #0fb4d4; }
-			#ctre_wnd .ct_minimize:hover { background: #0fb4d4; color: #fff; }
-			#ctre_wnd .ct_minimize i {
-				display: inline-block; cursor: pointer;
-				transform: rotate(45deg); transition: transform 0.5s;
-			}
-			#ctre_wnd .ct_close { color: #f00; background: #fff0f0; }
-			#ctre_wnd .ct_close:hover { color: #fff; background: #f00; }
-			#ctre_wnd .key {
-				display: inline-block;
-				font-family: monospace;
-				background: #f7f7f7; color: #999;
-				padding: 0 2px; margin: 0 2px;
-				border: solid 1px #d5d5d5; border-radius: 3px;
-			}
-			#ctre_wnd .ct_logo { font-size: 15px; font-weight: bold; }
-			#ctre_wnd .ct_logo.small { display: none; }
-			#ctre_wnd .ct_logo svg {
-				fill: #666; vertical-align: -15%;
-				transform: rotate(-240deg); transition: transform 1s;
-			}
-			#ctre_wnd .ct_logo.anim svg { transform: rotate(0deg); }
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--body);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;height:auto;}
 
-			#ctre_wnd .version { color: #bbb; }
-			#ctre_wnd .keys { font-size: 11px; overflow: hidden; margin-top: 4px; color: #bbb; }
-			#ctre_wnd .activationKeys { float: left; }
-			#ctre_wnd .transposeKeys { float: right; }
-			#ctre_current_elm {
-				font-family: monospace; background: #f7f7f7; color: #d5d5d5; padding: 2px; margin: 10px 0;
-				max-height: 84px; overflow: hidden;
-			}
-			#ctre_current_elm .pathNode { color: #999; border-bottom: solid 2px rgba(0,0,0,0); }
-			#ctre_current_elm .pathNode.active { border-bottom: solid 2px #555; }
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;}
+a:hover{border-bottom-color:currentColor;}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
 
-			#ctre_elm_list { display: none; margin-top: 20px; max-height: 90px; overflow: auto; padding-bottom: 4px; }
-			#ctre_elm_list.hasContent { display: block; }
-			#ctre_elm_list table { border: 0; width: 100%; border-spacing: 0; }
-			#ctre_elm_list tr { border: 0; }
-			#ctre_elm_list tr.ct_heading td { color: #bbb; }
-			#ctre_elm_list td { padding: 0; border: 0; background: #fff; }
-			#ctre_elm_list td:nth-child(2) { text-align: center; }
-			#ctre_elm_list td input { display: inline; -webkit-appearance: checkbox; }
-			#ctre_elm_list td input:before, #ctre_elm_list td input:after { content: none; }
-			#ctre_elm_list td { padding: 0; border: 0; background: #fff; }
-			#ctre_elm_list tr:not(.ct_heading) td:nth-child(1) { font-family: monospace; }
-			#ctre_elm_list .ct_edit_selector { font-family: sans-serif; float: right; opacity: 0; color: #0fb4d4; text-decoration: none; }
-			#ctre_elm_list .ct_edit_selector:hover { color: #000; }
-			#ctre_elm_list tr:hover .ct_edit_selector { opacity: 1; }
-			#ctre_elm_list a.ct_delete { color: #f00; padding: 4px; text-decoration: none; font-size: 14px; }
-			#ctre_elm_list a.ct_delete:hover { color: #fff; background: #f00; }
+.sheet{
+  max-width:1060px;
+  margin:0 auto;
+  background:var(--paper);
+  padding-inline:clamp(20px,5vw,64px);
+  padding-block:clamp(32px,5vw,60px) 0;
+  border-inline:1px solid var(--rule);
+}
+@media (max-width:1060px){.sheet{border-inline:0;}}
 
-			#ctre_wnd .ct_more { margin-top: 20px; color: #bbb; font-size: 10px; text-align: center; }
-			#ctre_wnd .ct_more a { color: #0fb4d4; font-size: inherit; text-decoration: none; transition: color 0.5s; }
-			#ctre_wnd .ct_more a:hover { color: #000; }
+/* ---------- masthead ---------- */
+.masthead{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:14px 32px;
+}
+.name{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:clamp(2.6rem,7.5vw,4.15rem);
+  line-height:.98;
+  letter-spacing:-.022em;
+  color:var(--ink);
+  margin:0;
+}
+.role{
+  font-size:.82rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:10px 0 0;
+  font-weight:700;
+}
+.contact{
+  text-align:right;
+  font-size:.875rem;
+  line-height:1.85;
+  color:var(--muted);
+  margin:0;
+}
+.contact a{font-weight:700;}
+.contact .sep{color:var(--rule-strong);padding:0 4px;}
+@media (max-width:620px){
+  .masthead{flex-direction:column;align-items:flex-start;}
+  .contact{text-align:left;}
+}
 
-			#ctre_wnd.minimized { width: 80px; height: 12px; }
-			#ctre_wnd.minimized > * { display: none; }
-			#ctre_wnd.minimized .ct_minimize,
-			#ctre_wnd.minimized .ct_close { display: block; }
-			#ctre_wnd.minimized .ct_minimize i { display: inline-block; transform: rotate(-135deg); }
-			#ctre_wnd.minimized .ct_logo.small { display: block; margin: -4px 0 0 -10px; }
-			</style>
-    
-    <script src="jquery-3.4.1.min.js"></script>
-    </head>
-        <body class="link-transition vsc-initialized" data-gr-c-s-loaded="true" style="zoom: 1;">    <section class="splash centered">
-      <div class="outer-wrap" style="width:80%">
-        <div class="centered-content-wrap js-site-wrap splash-modules">
-      <div class="page-background-video">
-      </div>
-      <div class="page-content js-page-content js-editable-target editable" data-context="pages" data-identity="id:p5d0cde05d25a3fadcb758b15308e3209a1e4aa6c90bc25bc0ebdc" data-menu="Page Content">
-        <div id="project-canvas" class="js-project-modules modules content">
-          <div id="project-modules">
-              
-              
-              
-              
-              
-              <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 100px;
-  padding-bottom: px;
-  width: 100%;
-  max-width: 800px;
-  float: center;
-  clear: both;
-">
-  <div class="rich-text js-text-editable module-text"><div style="line-height:21px;" class="texteditor-inline-lineheight"><span style="color:#012b55;" class="texteditor-inline-color"><span style="font-size:43px;" class="texteditor-inline-fontsize"><span style="font-family:fwqx; font-weight:700;">​​​​​​​“By this art you may contemplate the&nbsp;</span></span></span></div><div style="line-height:21px;" class="texteditor-inline-lineheight"><span style="color:#012b55;" class="texteditor-inline-color"><span style="font-size:43px;" class="texteditor-inline-fontsize"><span style="font-family:fwqx; font-weight:700;">variation of the twenty-six letters”</span></span></span></div></div>
+.rules{margin:22px 0 0;}
+.rules::before,.rules::after{content:"";display:block;background:var(--ink);}
+.rules::before{height:3px;}
+.rules::after{height:1px;margin-top:3px;opacity:.85;}
+
+/* ---------- nav ---------- */
+.nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px 26px;
+  padding:14px 0 0;
+  font-size:.74rem;
+  font-weight:700;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.nav a{color:var(--muted);}
+.nav a:hover{color:var(--accent);}
+.nav .pdf{color:var(--accent);margin-left:auto;}
+@media (max-width:620px){.nav .pdf{margin-left:0;}}
+
+/* ---------- lede ---------- */
+.lede{
+  font-family:var(--serif);
+  font-size:clamp(1.09rem,2.3vw,1.3rem);
+  line-height:1.56;
+  color:var(--ink);
+  max-width:62ch;
+  margin:30px 0 0;
+  text-wrap:pretty;
+}
+
+/* ---------- stats ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--rule);
+  border:1px solid var(--rule);
+  margin:34px 0 0;
+}
+.stat{background:var(--paper);padding:14px 16px;}
+.stat b{
+  display:block;
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.5rem;
+  line-height:1.15;
+  color:var(--ink);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;
+}
+.stat span{
+  display:block;
+  margin-top:3px;
+  font-size:.735rem;
+  line-height:1.4;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:700;
+}
+@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+/* ---------- two-column body ---------- */
+.columns{
+  display:grid;
+  align-items:start;
+  grid-template-columns:minmax(0,1fr) 288px;
+  gap:0 44px;
+  margin-top:10px;
+  padding-bottom:56px;
+}
+.aside{
+  align-self:start;
+  padding-left:44px;
+  border-left:1px solid var(--rule);
+}
+@media (max-width:900px){
+  .columns{grid-template-columns:1fr;gap:0;}
+  .aside{padding-left:0;border-left:0;border-top:1px solid var(--rule);margin-top:40px;padding-top:12px;}
+}
+
+/* ---------- section label ---------- */
+.portfolio{margin-top:8px;}
+.label{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin:44px 0 16px;
+  font-size:.745rem;
+  font-weight:900;
+  letter-spacing:.19em;
+  text-transform:uppercase;
+  color:var(--accent);
+}
+.label::after{content:"";flex:1;height:1px;background:var(--rule);}
+.main > .label:first-child,.aside > .label:first-child{margin-top:0;}
+
+/* ---------- entries (jobs) ---------- */
+.entry{margin-bottom:26px;}
+.entry:last-child{margin-bottom:0;}
+.entry-head{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:2px 18px;
+}
+.entry-title{
+  font-family:var(--serif);
+  font-size:1.26rem;
+  line-height:1.3;
+  color:var(--ink);
+  font-weight:700;
+  margin:0;
+}
+.entry-title .org{font-weight:400;color:var(--muted);}
+.entry-date{
+  font-size:.815rem;
+  color:var(--muted);
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.entry ul{list-style:none;margin:9px 0 0;padding:0;}
+.entry li{position:relative;padding-left:17px;margin-bottom:7px;font-size:.905rem;}
+.entry li::before{
+  content:"";
+  position:absolute;
+  left:2px;top:.63em;
+  width:4px;height:4px;
+  border-radius:50%;
+  background:var(--accent);
+}
+.entry li:last-child{margin-bottom:0;}
+.entry .work li{padding-left:0;margin-bottom:0;}
+.entry .work li::before{content:none;}
+.entry em{font-style:italic;}
+
+/* ---------- work list ---------- */
+.group-title{
+  font-family:var(--sans);
+  font-size:.78rem;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--ink);
+  margin:26px 0 2px;
+}
+.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px;}
+.group{margin-bottom:34px;}
+.group .group-title{margin-top:0;}
+@media (max-width:900px){.groups{grid-template-columns:1fr;gap:0;}}
+.group-note{font-size:.845rem;color:var(--muted);margin:0 0 10px;}
+
+.work{list-style:none;margin:0;padding:0;}
+.work li{
+  padding:13px 0;
+  border-top:1px solid var(--rule);
+}
+.work li:last-child{border-bottom:1px solid var(--rule);}
+.work h4{
+  font-family:var(--serif);
+  font-size:1.045rem;
+  line-height:1.38;
+  font-weight:600;
+  margin:0;
+  color:var(--ink);
+  text-wrap:pretty;
+}
+.work h4 a{color:var(--ink);}
+.work h4 a:hover{color:var(--accent);}
+.work .meta{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+  margin-top:5px;
+  font-size:.79rem;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.work .meta .dot{color:var(--rule-strong);}
+.work p{margin:6px 0 0;font-size:.875rem;color:var(--body);}
+
+.award{
+  display:inline-block;
+  padding:1px 7px;
+  border:1px solid var(--accent);
+  border-radius:2px;
+  color:var(--accent);
+  font-size:.665rem;
+  font-weight:900;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  background:var(--accent-soft);
+}
+.more{
+  display:inline-block;
+  margin-top:13px;
+  font-size:.83rem;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+
+/* ---------- aside ---------- */
+.aside p{font-size:.875rem;margin:0;}
+.tags{list-style:none;margin:0;padding:0;}
+.tags li{font-size:.875rem;padding:3px 0;}
+.honor{margin-bottom:15px;}
+.honor:last-child{margin-bottom:0;}
+.honor b{
+  display:block;
+  font-family:var(--serif);
+  font-size:1.03rem;
+  font-weight:700;
+  color:var(--ink);
+  line-height:1.3;
+}
+.honor span{display:block;font-size:.845rem;color:var(--muted);margin-top:1px;}
+.links{list-style:none;margin:0;padding:0;}
+.links li{
+  padding:7px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:.875rem;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+.links li:first-child{border-top:1px solid var(--rule);}
+.links .who{color:var(--muted);}
+
+/* ---------- footer ---------- */
+.foot{
+  border-top:3px solid var(--ink);
+  padding:20px 0 40px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:8px 24px;
+  font-size:.8rem;
+  color:var(--muted);
+}
+
+/* ---------- print ---------- */
+@media print{
+  :root{--ground:#fff;--paper:#fff;--ink:#000;--body:#222;--muted:#555;--accent:#1d4ed8;--rule:#ccc;}
+  .nav,.foot,.stats{display:none;}
+  .sheet{max-width:none;padding:0;border:0;}
+  .columns{gap:0 28px;padding-bottom:0;}
+  a{color:#000;}
+  .work li{break-inside:avoid;}
+  .entry{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<main class="sheet">
+
+  <header class="masthead">
+    <div>
+      <h1 class="name">Zack Abrams</h1>
+      <p class="role">Journalist &amp; Editor</p>
+    </div>
+    <p class="contact">
+      Brooklyn, NY<br>
+      <a href="mailto:zackdabrams@gmail.com">zackdabrams@gmail.com</a><br>
+      <a href="https://www.linkedin.com/in/zackdabrams">linkedin.com/in/zackdabrams</a>
+      <span class="sep">·</span>
+      <a href="https://x.com/ZackDAbrams">@ZackDAbrams</a>
+    </p>
+  </header>
+
+  <div class="rules" role="presentation"></div>
+
+  <nav class="nav" aria-label="Sections">
+    <a href="#work">Selected work</a>
+    <a href="#experience">Experience</a>
+    <a href="#independent">AI video</a>
+    <a href="#contact">Contact</a>
+    <a class="pdf" href="ZackAbramsResume.pdf">Résumé (PDF) ↓</a>
+  </nav>
+
+  <p class="lede">
+    Journalist and editor with five years of experience turning fast-moving technical
+    and financial developments into clear, high-performing coverage. I've published 850+
+    stories that have reached millions of pageviews, built original short-form AI video
+    accounts to tens of millions of views, and written and edited breaking news, newsletters,
+    web show scripts, and social content.
+  </p>
+
+  <div class="stats">
+    <div class="stat"><b>850+</b><span>Stories published</span></div>
+    <div class="stat"><b>No. 1</b><span>Newsroom pageviews, YTD</span></div>
+    <div class="stat"><b>2</b><span>SABEW honors</span></div>
+    <div class="stat"><b>10M+</b><span>Views on AI video</span></div>
+  </div>
+
+  <section class="portfolio">
+    <h2 class="label" id="work">Selected work</h2>
+    <div class="groups">
+<div class="group">
+<h3 class="group-title">Investigations &amp; features</h3>
+      <p class="group-note">Long-form reporting at Coinage, where I was Head Writer.</p>
+      <ul class="work">
+        <li>
+          <h4><a href="https://www.coinage.media/s2/he-stole-200-million-he-gave-it-back-now-hes-ready-to-explain-why">He Stole $200 Million. He Gave It Back. Now He's Ready to Explain Why.</a></h4>
+          <div class="meta"><span>Coinage</span><span class="dot">·</span><span>2023</span><span class="dot">·</span><span class="award">SABEW Honorable Mention</span></div>
+          <p>Identified and interviewed the 19-year-old behind the Euler exploit, who drained roughly $200 million in 18 minutes and then gave all of it back.</p>
+        </li>
+        <li>
+          <!-- TODO: link — Coinage, Aug 15 2022, by Zack Guzman & Zack Abrams -->
+          <h4>Six Days in May: The Unmaking of a Crypto King</h4>
+          <div class="meta"><span>Coinage</span><span class="dot">·</span><span>2022</span><span class="dot">·</span><span class="award">SABEW Best in Business</span></div>
+          <p>Co-reported feature on Do Kwon and the week the Terra ecosystem lost $45 billion.</p>
+        </li>
+        <li>
+          <h4><a href="https://www.coinage.media/s1/inside-cryptos-largest-collapse-with-terras-do-kwon">Inside Crypto's Largest Collapse, with Terra's Do Kwon</a></h4>
+          <div class="meta"><span>Coinage</span><span class="dot">·</span><span>2022</span></div>
+          <p>A two-day interview with Do Kwon conducted as the fallout was still spreading across crypto markets.</p>
+        </li>
+      </ul>
 </div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 30px;
-  padding-bottom: 0px;
-  width: 50%;
-  max-width: 800px;
-  float: center;
-  clear: both;
-">
-  <div class="rich-text js-text-editable module-text"><div class="main-text"><span style="font-size:23px;" class="texteditor-inline-fontsize"><span style="font-family:bjpg; font-weight:700;">Hey! I’m Zack. As a data scientist and a journalist, I take words and numbers and whip them into shape. I also take photos, design websites, and tweet too much. 
-	  <p></p>
-	  I update my LinkedIn a bit more frequently than this website, which was last updated in: September 2020
-	  <p></p>
-	  Check out my work below and be sure to reach out through Twitter, email, or the <u><a href="#contactformsection">contact form below</a></u>.</span></span></div></div>
+<div class="group">
+<h3 class="group-title">Markets, hacks &amp; regulation</h3>
+      <p class="group-note">Recent breaking coverage at The Block, where I'm Weekend Editor.</p>
+      <ul class="work">
+        <li>
+          <h4><a href="https://www.theblock.co/news/ecosystems/2026-04-05-drift-links-280-million-exploit-to-six-month-social-engineering-op-run-by-suspected-north-korean-actors-396361">Drift links $280 million exploit to six-month social engineering op run by suspected North Korean actors</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2026</span></div>
+        </li>
+        <li>
+          <h4><a href="https://www.theblock.co/news/defi/2026-09-13-symbiosis-says-it-recovered-15-btc-after-bitcoin-bridge-exploit-offers-attacker-20-bounty-414568">Symbiosis says it recovered 15 BTC after Bitcoin bridge exploit, offers attacker 20% bounty</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2026</span></div>
+        </li>
+        <li>
+          <h4><a href="https://www.theblock.co/news/regulation/2026-09-12-crypto-billionaires-ben-delo-and-christopher-harborne-each-donate-36-million-to-farages-reform-uk-414509">Crypto billionaires Ben Delo and Christopher Harborne each donate £36 million to Farage's Reform UK</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2026</span></div>
+        </li>
+        <li>
+          <h4><a href="https://www.theblock.co/news/defi/2026-08-29-layer-1-blockchain-fogo-halts-mainnet-after-attacker-receives-400-million-fogo-tokens-10-of-circulating-supply-413064">Layer 1 blockchain Fogo halts mainnet after attacker receives 400 million FOGO tokens, 10% of circulating supply</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2026</span></div>
+        </li>
+        <li>
+          <h4><a href="https://www.theblock.co/post/359097/hacken-cites-human-error-after-private-key-leak-triggers-5-million-crash-in-hai-value">Hacken cites 'human error' after private key leak triggers $5 million crash in $HAI value</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2025</span></div>
+        </li>
+      </ul>
+      <a class="more" href="https://www.theblock.co/author/zack-abrams">All 850+ stories at The Block →</a>
 </div>
-              
-              
-            
+<div class="group">
+<h3 class="group-title">Data journalism</h3>
+      <p class="group-note">Reporting built on scrapers, spreadsheets and charts.</p>
+      <ul class="work">
+        <li>
+          <h4><a href="https://bwog.com/2018/11/bwog-comments-a-retrospective/">Bwog Comments: A Retrospective</a></h4>
+          <div class="meta"><span>Bwog</span><span class="dot">·</span><span>2018</span></div>
+          <p>Scraped and analyzed all 200,000+ comments ever left on the site.</p>
+        </li>
+        <li>
+          <h4><a href="https://bwog.com/2018/01/the-definitive-statistical-analysis-of-columbia-buysell-memes/">The Definitive Statistical Analysis of Columbia Buy/Sell Memes</a></h4>
+          <div class="meta"><span>Bwog</span><span class="dot">·</span><span>2018</span><span class="dot">·</span><a href="buysell.html">Interactive version</a></div>
+        </li>
+        <li>
+          <h4><a href="https://thestacker.com/article-universal-basic-income-explained">Universal basic income, explained</a></h4>
+          <div class="meta"><span>Stacker</span><span class="dot">·</span><span>2019</span></div>
+        </li>
+        <li>
+          <h4><a href="https://thestacker.com/behind-rise-amd-best-performing-stock-2019-so-far">Behind the rise of AMD, the best-performing stock of 2019 so far</a></h4>
+          <div class="meta"><span>Stacker</span><span class="dot">·</span><span>2019</span></div>
+        </li>
+        <li>
+          <h4><a href="https://arcdigital.media/can-a-simple-design-hack-save-the-comments-section-7e2f674a0f22">Can a Simple Design Hack Save the Comments Section?</a></h4>
+          <div class="meta"><span>Arc Digital</span><span class="dot">·</span><span>2016</span></div>
+          <p>Picked up by Medium's front page and daily digest.</p>
+        </li>
+      </ul>
+</div>
+<div class="group">
+<h3 class="group-title">AI video &amp; open source</h3>
+<p class="group-note">Original short-form video and the tooling behind it, as @allhailthealgo.</p>
+<ul class="work">
+          <li>
+            <h4><a href="https://www.instagram.com/allhailthealgo/">@allhailthealgo on Instagram</a></h4>
+            <div class="meta"><span>Short-form AI video</span></div>
+          </li>
+          <li>
+            <h4><a href="https://www.tiktok.com/@allhailthealgo">@allhailthealgo on TikTok</a></h4>
+            <div class="meta"><span>Short-form AI video</span></div>
+          </li>
+          <li>
+            <h4><a href="https://github.com/zackabrams">Open-source ComfyUI nodes</a></h4>
+            <div class="meta"><span>GitHub</span><span class="dot">·</span><span>KeySyncWrapper, MagicWan, HunyuanLoom</span></div>
+            <p>Custom nodes and workflow tooling for open-source video models.</p>
+          </li>
+        </ul>
+</div>
+    </div>
+  </section>
 
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="js-project-module project-module module social_icons project-module-social_icons align- editable js-editable" data-id="m5d0cde05d471105015a4583c8259d2cbf0930aee408b2f830d69b">
-  <div class="module-content module-content-social_icons js-module-content">
-      <div class="social">
+  <div class="columns">
+
+    <div class="main">
+
+      <!-- ============ EXPERIENCE ============ -->
+      <h2 class="label" id="experience">Experience</h2>
+
+      <div class="entry">
+        <div class="entry-head">
+          <h3 class="entry-title">Weekend Editor, <span class="org">The Block</span></h3>
+          <span class="entry-date">Sep 2023 – Present</span>
+        </div>
         <ul>
-              <li>
-                <a href="http://twitter.com/zackdabrams" target="_blank">
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 30 24" xml:space="preserve" class="icon"><path d="M24.71 5.89C24 6.2 23.2 6.4 22.4 6.53c0.82-0.5 1.45-1.29 1.75-2.23c-0.77 0.46-1.62 0.8-2.53 1 C20.92 4.5 19.9 4 18.7 4c-2.2 0-3.99 1.81-3.99 4.04c0 0.3 0 0.6 0.1 0.92C11.54 8.8 8.6 7.2 6.6 4.7 C6.3 5.3 6.1 6 6.1 6.77c0 1.4 0.7 2.6 1.8 3.36c-0.65-0.02-1.27-0.2-1.81-0.51c0 0 0 0 0 0.1 c0 2 1.4 3.6 3.2 3.96c-0.34 0.09-0.69 0.14-1.05 0.14c-0.26 0-0.51-0.03-0.75-0.07c0.51 1.6 2 2.8 3.7 2.8 c-1.36 1.08-3.08 1.73-4.95 1.73c-0.32 0-0.64-0.02-0.95-0.06C7.05 19.3 9.1 20 11.4 20c7.33 0 11.34-6.15 11.34-11.49 c0-0.18 0-0.35-0.01-0.52C23.5 7.4 24.2 6.7 24.7 5.89z"></path></svg>
-                </a>
-              </li>
-              <li>
-                <a href="http://linkedin.com/in/zackdabrams" target="_blank">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
-                  <path id="path-1_24_" d="M19.6,19v-5.8c0-1.4-0.5-2.4-1.7-2.4c-1,0-1.5,0.7-1.8,1.3C16,12.3,16,12.6,16,13v6h-3.4
-                    c0,0,0.1-9.8,0-10.8H16v1.5c0,0,0,0,0,0h0v0C16.4,9,17.2,7.9,19,7.9c2.3,0,4,1.5,4,4.9V19H19.6z M8.9,6.7L8.9,6.7
-                    C7.7,6.7,7,5.9,7,4.9C7,3.8,7.8,3,8.9,3s1.9,0.8,1.9,1.9C10.9,5.9,10.1,6.7,8.9,6.7z M10.6,19H7.2V8.2h3.4V19z"></path>
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a href="https://medium.com/@zackdabrams" target="_blank">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
-                  <g>
-                    <path class="st0" d="M23.5,7.4C23.5,7.4,23.5,7.4,23.5,7.4L23.5,7.4l-5.2-2.6c0,0-0.1,0-0.1,0c0,0-0.1,0-0.1,0
-                      c-0.2,0-0.4,0.1-0.5,0.3l-3,4.8l3.7,6.1L23.5,7.4C23.5,7.5,23.5,7.4,23.5,7.4z"></path>
-                    <polygon class="st0" points="13,8.8 13,14.3 17.9,16.7   "></polygon>
-                    <path class="st0" d="M18.6,17.1l4,2c0.5,0.3,0.9,0.1,0.9-0.4V9L18.6,17.1z"></path>
-                    <path class="st0" d="M12.1,7.4l-5-2.5C7,4.9,6.9,4.8,6.8,4.8C6.6,4.8,6.4,5,6.4,5.3v10.9c0,0.3,0.2,0.6,0.5,0.8l4.4,2.2
-                      c0.1,0.1,0.2,0.1,0.3,0.1c0.3,0,0.5-0.2,0.5-0.6L12.1,7.4C12.1,7.5,12.1,7.4,12.1,7.4z"></path>
-                  </g>
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a href="mailto:zack.abrams@columbia.edu">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
-                    <g>
-                      <path d="M15,13L7.1,7.1c0-0.5,0.4-1,1-1h13.8c0.5,0,1,0.4,1,1L15,13z M15,14.8l7.9-5.9v8.1c0,0.5-0.4,1-1,1H8.1c-0.5,0-1-0.4-1-1 V8.8L15,14.8z"></path>
-                    </g>
-                  </svg>
-                </a>
-              </li>
+          <li>File 6 to 8 news stories per weekend on market updates, regulatory developments, hacks and exploits, and protocol announcements for an industry-leading trade publication.</li>
+          <li>Published 850+ stories reaching millions of pageviews; as of August 2026, ranked first in the newsroom in year-to-date total pageviews and average pageviews per article.</li>
+          <li>Edit <em>The Funding</em>, a VC-focused newsletter, providing thorough feedback on structure, clarity, and accuracy.</li>
+          <li>Incorporate primary sources, technical postmortems, regulatory filings, and more into clear, concise, and illuminating coverage for crypto investors, traders, and policy audiences.</li>
         </ul>
       </div>
-  </div>
-</div>
 
-              
-              <div class="js-project-module project-module module button project-module-button editable js-editable" data-id="m5d54ed32124469a152db641acf5b0d71ef83987f83697d5f6c509" style=" padding-top: px;
-padding-bottom: 0px;">
-    <div class="button-container" style=""> 
-      
-      <a href="https://docdro.id/gV5WJQ8" target="_blank" class="button-module preserve-whitespace--nowrap">Resume</a>
-    </div>
-</div>
-
-   <section id="section07" class="demo" style="padding-bottom: 0px">
-            
-  <a href="#Recently"><span></span></a>
-</section>           
-        <section id="section06" class="demo" style="padding-bottom: 00px">
-            
-  <a href="#Recently"><span></span></a>
-</section>   
-              
-<div class="rich-text js-text-editable module-text"><div style="line-height:21px; padding-bottom:300px; padding-top:100px" class="texteditor-inline-lineheight"><span style="color:#012b55; opacity:.5;" class="texteditor-inline-color"><span style="font-size:25px;" class="texteditor-inline-fontsize"><span style="font-family:fwqx; font-weight:700;"><a href="#letters">let's go!</a></span></span></span></div><div style="line-height:21px;" class="texteditor-inline-lineheight"><span style="color:#012b55;" class="texteditor-inline-color"><span style="font-size:43px;" class="texteditor-inline-fontsize"><span style="font-family:fwqx; font-weight:700;"></span></span></span></div></div>
-</div>
-              
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
-$(document).ready(function(){
-  // Add smooth scrolling to all links
-  $("a").on('click', function(event) {
-
-    // Make sure this.hash has a value before overriding default behavior
-    if (this.hash !== "") {
-      // Prevent default anchor click behavior
-      event.preventDefault();
-
-      // Store hash
-      var hash = this.hash;
-
-      // Using jQuery's animate() method to add smooth page scroll
-      // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-      $('html, body').animate({
-        scrollTop: $(hash).offset().top
-      }, 400, function(){
-
-        // Add hash (#) to URL when done scrolling (default click behavior)
-      });
-    } // End if
-  });
-});
-</script>           
-              
-           
-              <div class="project-module module text project-module-text align- editable js-editable js-project-module e2e-site-project-module-text">
-  <div class="rich-text js-text-editable module-text"><div class="texteditor-inline-lineheight" style="line-height:53px;"><span style="font-size:88px;" class="texteditor-inline-fontsize"><span style="font-family:fwqx; font-weight:700;">Recently...</span></span></div></div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module e2e-site-project-module-tree" >
-  <div class="tree-wrapper valign-top">
-      <div class="tree-child-wrapper" style="flex: 71">
-        
-        <div class="project-module module image project-module-image editable js-editable js-project-module"  style="  padding-top: 49px;
-  padding-bottom: 20px;
-  width: 62%;
-  float: center;
-  clear: both;
-">
-
-  
- 
-  
-     <div class="js-lightbox" data-src="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/0b0d03ec-3890-4d1c-a664-4a6414f94049.png?h=aa947fedf978cd9377efd0394bf820de">
-           <img
-             class="js-lazy e2e-site-project-module-image"
-             src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-             data-src="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/0b0d03ec-3890-4d1c-a664-4a6414f94049_rw_1200.png?h=15c0c3955ca9435f058de7e8f6ce8222"
-             data-srcset="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/0b0d03ec-3890-4d1c-a664-4a6414f94049_rw_600.png?h=2b03d3746bbdfcb2bb49df78809659bc 600w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/0b0d03ec-3890-4d1c-a664-4a6414f94049_rw_1200.png?h=15c0c3955ca9435f058de7e8f6ce8222 1024w,"
-             data-sizes="(max-width: 1024px) 100vw, 1024px"
-             width="1024"
-             height="0"
-             style="padding-bottom: 59.83%; background: rgba(0, 0, 0, 0.03)"
-             
-           >
-     </div>
-  
-
-</div>
-
-        
-        
-        
-        
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 129">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module e2e-site-project-module-text" style="  padding-top: 20px;
-  padding-bottom: 20px;
-  width: 100%;
-  max-width: 800px;
-  float: center;
-  clear: both;
-">
-  <div class="rich-text js-text-editable module-text"><div style="text-align:left;"><span style="font-size:30px;" class="texteditor-inline-fontsize">At my Summer 2020 virtual AWS internship, I worked as an Advocacy Product Marketing Manager intern on AWS's Analytics products, including RedShift, ElasticSearch, and others. I worked on our customer references assets, making sure assets created by other teams which referenced Analytics products were surfaced on internal wikis and recommending a strategy regarding the future creation, maintenance, and organization of customer reference assets.</span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-
-                          
-            
-              
-<section id="letters">          
-              <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 40px;
-  padding-bottom: 0px;
-">
-  <div class="rich-text js-text-editable module-text"><div><span style="font-size:88px;" class="texteditor-inline-fontsize"><span style="font-family:fwqx; font-weight:700;">Letters</span></span></div></div>
-</div>
-</section>  
-             
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-center">
-      <div class="tree-child-wrapper" style="flex: 33">
-        
-        <div class="project-module module image project-module-image editable js-editable js-project-module" style="  padding-top: 45px;
-  padding-bottom: 20px;
-  width: 100%;
-  float: center;
-  clear: both;
-">
-
-  
-    <a class="js-editable-link" href="http://thestacker.com/zackabrams" rel="external" target="_blank">
-     <div class="js-lightbox" data-src="https://pro2-bar-s3-cdn-cf.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/b57e1d7f-141c-4eea-aa6d-6862e0fadc47.png?h=ec4e292cc7bf7363d6024d6c24e439be">
-           <img class="js-lazy image-loaded" src="./mywebsite_files/b57e1d7f-141c-4eea-aa6d-6862e0fadc47_rw_1920.png" srcset="https://pro2-bar-s3-cdn-cf.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/b57e1d7f-141c-4eea-aa6d-6862e0fadc47_rw_600.png?h=ca781cfae4a7d239d37d98fae4da2ce1 600w,https://pro2-bar-s3-cdn-cf.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/b57e1d7f-141c-4eea-aa6d-6862e0fadc47_rw_1200.png?h=1ddf6fc4d6fe09c8c547a27aa003eb6e 1200w,https://pro2-bar-s3-cdn-cf.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/b57e1d7f-141c-4eea-aa6d-6862e0fadc47_rw_1920.png?h=aecc10de374470402f536481d2e65e0a 1920w," sizes="(max-width: 1920px) 100vw, 1920px">
-     </div>
-    </a>
-  
- 
-  
-
-</div>
-
-        
-        
-        
-        
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 67">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 40px;
-  padding-bottom: 20px;
-">
-  <div class="rich-text js-text-editable module-text"><div style="text-align:left;"><span style="font-size:24px;" class="texteditor-inline-fontsize"><span style="font-family:bjpg; font-weight:300;">I've worked as an intern for Stacker over two summers, one of them as a research intern, and the other one as an editorial intern. As a research intern, I was an integral part of the process of creating stories, using python and Excel to prepare slideshows for the writers. As an editorial intern, I wrote&nbsp;stories, researched my own articles, and edited the work of others. In both internships, I contributed to weekly brainstorming sessions, coming up with new headlines and data sources.&nbsp;</span>You can read my favorites&nbsp;below, or click the image to see all my&nbsp;articles.&nbsp;</span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-top">
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><span class="underline"><a href="https://thestacker.com/article-universal-basic-income-explained" target="_blank">Universal basic income, explained</a></span></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><a href="https://thestacker.com/stories/3396/15-charities-where-you-can-see-your-direct-impact" target="_blank"><span class="underline">15 charities where you can see your direct impact</span></a></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-top">
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><span class="underline"><a href="https://thestacker.com/behind-rise-amd-best-performing-stock-2019-so-far" target="_blank">Behind the rise of AMD—the best-performing stock of 2019 so far</a></span></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><a href="https://thestacker.com/stories/3353/33-ways-driverless-cars-are-track-change-american-life-100" target="_self"><span class="underline">33 ways driverless cars are on track to change American life</span></a></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-top">
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 0px;
-  padding-bottom: 26px;
-  width: 100%;
-  max-width: 800px;
-  float: center;
-  clear: both;
-">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><span class="underline"><a href="https://thestacker.com/stories/3361/americas-most-common-slang-words-explained" target="_blank">America's most common slang words, explained</a></span></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><span class="underline"><a href="https://thestacker.com/stories/3310/song-summer-year-you-graduated-high-school" target="_blank">Song of the summer the year you graduated high school</a></span></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              <div class="project-module module image project-module-image editable js-editable js-project-module" style="  padding-top: px;
-  padding-bottom: px;
-">
-
-  
- 
-    <a class="js-editable-link" target="_blank">
-     <div class="js-lightbox" data-src="https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/eaf83cd2-c325-4031-950f-8e66a8d60e80.png?h=88c04ef89d2a80d30c0ecbafd4c69b2c">
-           <img class="js-lazy image-loaded" src="./mywebsite_files/eaf83cd2-c325-4031-950f-8e66a8d60e80_rw_1920.png" srcset="https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/eaf83cd2-c325-4031-950f-8e66a8d60e80_rw_600.png?h=d0e78e9d8dc8568bd59ffc01deb380f7 600w,https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/eaf83cd2-c325-4031-950f-8e66a8d60e80_rw_1200.png?h=afe7ffbb7d28407188a7abd081ddf676 1200w,https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/eaf83cd2-c325-4031-950f-8e66a8d60e80_rw_1920.png?h=c579cbe06bc0e408595253223cd58f43 1920w," sizes="(max-width: 1920px) 100vw, 1920px">
-     </div>
-                  </a>
-
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-      
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-center">
-      <div class="tree-child-wrapper" style="flex: 33">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 40px;
-  padding-bottom: 20px;
-  width: 91%;
-  max-width: 800px;
-  float: center;
-  clear: both;
-">
-            <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:24px;"><span style="font-family:bjpg; font-weight:300;">I've worn several hats at Bwog, working as a Daily Editor, Deputy Editor, and a Social Media editor before working my way up to the board in my roles as a Managing Editor and my current role as Publisher. Now&nbsp;I run Bwog, Columbia's best news source, which also happens to be financially independent and completely student-run. Along with the Editorial board, I serve on Bwog's board, helping to manage our staff of 60+ writers, editors social media staffers, tech team, and multimedia crew. 
-                <br>
-                <br>
-                As Publisher, I sell ads to keep the site running, work on keeping our Linode and WordPress backbone up-to-date, and this semester I'm working on reviving <a href="https://wikicu.com" target="_blank"><u>WikiCU, a wiki for the Columbia community</a></u>. &nbsp;</span></span></div><div><span class="texteditor-inline-fontsize" style="font-size:24px;"><span style="font-family:bjpg; font-weight:300;">Along with managing the site, I also write frequent posts, sometimes serious and sometimes hilarious, </span><span style="font-family:bjpg; font-weight:400;">which you can read below</span><span style="font-family:bjpg; font-weight:300;">, or again,</span><span style="font-family:bjpg; font-weight:400;"> click the image to read them all.&nbsp;</span></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 17">
-        
-        <div class="project-module module image project-module-image editable js-editable js-project-module" style="  padding-top: 40px;
-  padding-bottom: 20px;
-">
-
-  
-    <a class="js-editable-link" href="http://bwog.com/author/zack" rel="external" target="_blank">
-     <div class="js-lightbox" data-src="https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/306d83a9-5bc9-4478-9ffa-55355536a858.png?h=b2d4670756cc339ade58e876159f3f0e">
-           <img class="js-lazy image-loaded" src="./mywebsite_files/306d83a9-5bc9-4478-9ffa-55355536a858_rw_1920.png" srcset="https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/306d83a9-5bc9-4478-9ffa-55355536a858_rw_600.png?h=b69aef900c9b6244748e23c2dcbb562b 600w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/306d83a9-5bc9-4478-9ffa-55355536a858_rw_1200.png?h=8e0877d4a0d44cf9a67c07dbb6c4eeab 1200w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/306d83a9-5bc9-4478-9ffa-55355536a858_rw_1920.png?h=4a81dd90ae1f2713116aa148f9e3e7ca 1920w," sizes="(max-width: 1920px) 100vw, 1920px">
-     </div>
-    </a>
-  
- 
-  
-
-</div>
-
-        
-        
-        
-        
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-top">
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><a href="https://bwog.com/2019/03/hate-the-media-and-me/" target="_blank"><span class="underline">Hate, The Media, And Me</span></a></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><a href="https://bwog.com/2019/03/columbias-sunrise-movement-hub-is-striking-tomorrow-against-climate-change-will-apathy-win/" target="_blank"><span class="underline">Columbia's Sunrise Movement Hub Is Striking Tomorrow Against Climate Change. Will Apathy Win?</span></a></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-top">
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 0px;
-  padding-bottom: 20px;
-">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><a href="https://bwog.com/2019/01/bwog-is-forming-an-exploratory-committee-to-seek-the-2020-democratic-nomination/" target="_blank"><span class="underline">Bwog Is Forming An Exploratory Committee To Seek The 2020 Democratic Nomination​​​​​​​</span></a></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 1">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><span class="underline"><a href="https://bwog.com/2019/03/peoplehop-the-columbia-first-year-running-a-presidential-campaign-with-the-goal-of-losing/" target="_blank">PeopleHop: The Columbia First-Year Running A Presidential Campaign – With The Goal Of Losing</a></span></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              <div class="project-module module image project-module-image editable js-editable js-project-module" style="  padding-top: 0px;
-  padding-bottom: 60px;
-">
-
-  
- 
-    <a class="js-editable-link" target="_blank">
-     <div class="js-lightbox" data-src="https://pro2-bar-s3-cdn-cf5.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/6e3f0db9-41f0-4c35-86dc-fe0c6a713ef1.png?h=48f5b03f257d199e3dbd81e2829a05ce">
-           <img class="js-lazy image-loaded" src="./mywebsite_files/6e3f0db9-41f0-4c35-86dc-fe0c6a713ef1_rw_1920.png" srcset="https://pro2-bar-s3-cdn-cf5.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/6e3f0db9-41f0-4c35-86dc-fe0c6a713ef1_rw_600.png?h=b2b391c532d5b2d02c46aaa17e8af635 600w,https://pro2-bar-s3-cdn-cf5.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/6e3f0db9-41f0-4c35-86dc-fe0c6a713ef1_rw_1200.png?h=72e15dd1da787c79d11870a2708248b1 1200w,https://pro2-bar-s3-cdn-cf5.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/6e3f0db9-41f0-4c35-86dc-fe0c6a713ef1_rw_1920.png?h=412cb4a6d858127c8b7582e43650bda5 1920w," sizes="(max-width: 1920px) 100vw, 1920px">
-     </div>
-                  </a>
-
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-center">
-      <div class="tree-child-wrapper" style="flex: 33">
-        
-        <div class="project-module module image project-module-image editable js-editable js-project-module" style="  padding-top: px;
-  padding-bottom: px;
-">
-
-  
- 
-  <a class="js-editable-link" target="_blank">
-     <div class="js-lightbox" data-src="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/90fe9061-b225-496e-aee0-453d632f0c31.png?h=4e8235322f265f28868ddc6f08ccc27a">
-           <img class="js-lazy image-loaded" src="./mywebsite_files/90fe9061-b225-496e-aee0-453d632f0c31_rw_600.png" srcset="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/90fe9061-b225-496e-aee0-453d632f0c31_rw_600.png?h=3fe663f83e0b8b244543d09bb66d762f 393w," sizes="(max-width: 393px) 100vw, 393px">
-     </div>
-            </a>
-
-</div>
-
-        
-        
-        
-        
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 67">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:22px;"><span style="font-family:bjpg; font-weight:300;">In 2016, I wrote a piece called&nbsp;</span><span style="font-family:bjpg; font-weight:400;"><span class="underline"><a href="https://arcdigital.media/can-a-simple-design-hack-save-the-comments-section-7e2f674a0f22" target="_blank">Can A Simple Design Hack Save The Comments Section?</a></span></span><span style="font-family:bjpg; font-weight:300;">&nbsp;that was published on Medium by the intellectually diverse opinion site Arc Digital.&nbsp;</span></span></div><div><span class="texteditor-inline-fontsize" style="font-size:22px;"><span style="font-family:bjpg; font-weight:300;">&nbsp;The response to the piece was amazing; thousands of people read it, Medium selected it for its front page and added it to its daily email digest, and I got wonderful feedback in the responses. Since then, I've been working on several long-form projects which I'm hoping a tasteful publication will pick up in the future.&nbsp;</span></span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 150px;
-  padding-bottom: 20px;
-">
-  <div class="rich-text js-text-editable module-text"><div><span style="font-size:88px;" class="texteditor-inline-fontsize"><span style="font-family:fwqx; font-weight:700;">Numbers</span></span></div></div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-center">
-      <div class="tree-child-wrapper" style="flex: 149">
-        
-        <div class="project-module module image project-module-image editable js-editable js-project-module" style="  padding-top: px;
-  padding-bottom: px;
-  width: 100%;
-  float: center;
-  clear: both;
-">
-
-  
-    <a class="js-editable-link" href="https://bwog.com/2018/11/bwog-comments-a-retrospective/" rel="external" target="_blank">
-     <div class="js-lightbox" data-src="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/9f4d9d2c-b633-4cce-b046-2da514d74124.png?h=1aa25fc8549c4e791b07871f989d2d92">
-           <img class="js-lazy image-loaded" src="./mywebsite_files/9f4d9d2c-b633-4cce-b046-2da514d74124_rw_1920.png" srcset="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/9f4d9d2c-b633-4cce-b046-2da514d74124_rw_600.png?h=70df83c121c3b673169c650af06c6189 600w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/9f4d9d2c-b633-4cce-b046-2da514d74124_rw_1200.png?h=a150c6cb19bc34a6bcda241cbc26c9f8 1200w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/9f4d9d2c-b633-4cce-b046-2da514d74124_rw_1920.png?h=df32046f77b7dea4c659e31fb26583e6 1556w," sizes="(max-width: 1556px) 100vw, 1556px">
-     </div>
-    </a>
-  
- 
-  
-
-</div>
-
-        
-        
-        
-        
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 51">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: px;
-  padding-bottom: px;
-  width: 76%;
-  max-width: 800px;
-  float: center;
-  clear: both;
-">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:25px;"><span class="underline"><a href="https://bwog.com/2018/11/bwog-comments-a-retrospective/" target="_blank">Bwog Comments: A Retrospective</a></span></span></div><div><span class="texteditor-inline-fontsize" style="font-size:25px;">I scraped every comment ever left on Bwog's site. There are over 200,000 of them! Check out the full spreadsheet and my takeaways from our rich history of trolls.</span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module tree project-module-tree editable js-editable js-project-module">
-  <div class="tree-wrapper valign-center">
-      <div class="tree-child-wrapper" style="flex: 49">
-        
-        
-        
-        
-        
-        <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 50px;
-  padding-bottom: 20px;
-">
-  <div class="rich-text js-text-editable module-text"><div><span style="font-size:25px;" class="texteditor-inline-fontsize"><span class="underline"><a href="https://bwog.com/2018/01/the-definitive-statistical-analysis-of-columbia-buysell-memes/" target="_blank">The Definitive Statistical Analysis Of Columbia Buy/Sell Memes</a></span></span></div><div><span style="font-size:25px;" class="texteditor-inline-fontsize">Buy/Sell is Columbia's home-grown meme group. I took data from 100 posts to find out what people like, when they post, and other fun facts.&nbsp;</span></div></div>
-</div>
-
-        
-        
-        
-      </div>
-      <div class="tree-child-wrapper" style="flex: 151">
-        
-        <div class="project-module module image project-module-image editable js-editable js-project-module" style="  padding-top: 50px;
-  padding-bottom: 20px;
-">
-
-  
-    <a class="js-editable-link" href="https://zackabrams.com/buysell" rel="external" target="_blank">
-     <div class="js-lightbox" data-src="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/2e94e87f-59d0-4a89-a33b-2ebe2f4a164c.png?h=8f613eeb50fcf6366f6fdd3c673b7962">
-           <img class="js-lazy image-loaded" src="./mywebsite_files/2e94e87f-59d0-4a89-a33b-2ebe2f4a164c_rw_1920.png" srcset="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/2e94e87f-59d0-4a89-a33b-2ebe2f4a164c_rw_600.png?h=83fc6fdf5d0aeb098375f3957ddec233 600w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/2e94e87f-59d0-4a89-a33b-2ebe2f4a164c_rw_1200.png?h=12bb0e97d6e7330d1944872db32350d6 1200w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/2e94e87f-59d0-4a89-a33b-2ebe2f4a164c_rw_1920.png?h=313fb7f3b765a12c0160e670b436778d 1800w," sizes="(max-width: 1800px) 100vw, 1800px">
-     </div>
-    </a>
-  
- 
-  
-
-</div>
-
-        
-        
-        
-        
-        
-        
-        
-      </div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 150px;
-  padding-bottom: 20px;
-">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:88px;"><span style="font-family:fwqx;font-weight:700;">Photographs</span></span></div></div>
-</div>
-
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="project-module module media_collection project-module-media_collection" style="padding-bottom: 120px">
-  <div class="grid--main js-grid-main grid--ready">
-    <div class="grid__item-container js-grid-item-container lightbox-link hoverable" data-flex-grow="173.33333333333" style="width: 180.267px; flex-grow: 180.267;" data-width="3840" data-height="5760">
-      <script type="text/html" class="js-lightbox-slide-content">
-        <div class="grid__image-wrapper">
-          <img src="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_3840.png?h=2589f9b71c0871b7e4a0becd22d44999" srcset="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_600.png?h=18266c745e2007e10eb1564239a7f5ed 600w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_1200.png?h=22872e53e7b64417e45fac483566f402 1200w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_1920.png?h=997a9e4678f93ec7bd7c0fa2cfd94d92 1920w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_3840.png?h=2589f9b71c0871b7e4a0becd22d44999 3840w," sizes="(max-width: 3840px) 100vw, 3840px">
-        <div>
-      </script>
-      <img class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy image-loaded" src="./mywebsite_files/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_3840.png" sizes="242px" srcset="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_600.png?h=18266c745e2007e10eb1564239a7f5ed 600w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_1200.png?h=22872e53e7b64417e45fac483566f402 1200w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_1920.png?h=997a9e4678f93ec7bd7c0fa2cfd94d92 1920w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/a7edda11-9591-4d22-8ede-b8d46d8c3a04_rw_3840.png?h=2589f9b71c0871b7e4a0becd22d44999 3840w," data-sizes="242px">
-      <span class="grid__item-filler" style="padding-bottom:150%;"></span>
-    </div>
-    <div class="grid__item-container js-grid-item-container lightbox-link hoverable" data-flex-grow="173.33333333333" style="width: 180.267px; flex-grow: 180.267;" data-width="3840" data-height="5760">
-      <script type="text/html" class="js-lightbox-slide-content">
-        <div class="grid__image-wrapper">
-          <img src="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_3840.png?h=20e799033fb22fc7b77d0fc048bef37f" srcset="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_600.png?h=e4ec2585be2fc6cb5950476bde2035af 600w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_1200.png?h=b1bcda72ea9cc941b134514bbae92c86 1200w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_1920.png?h=fbbd9c6747bc200a20794e2b136c22bf 1920w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_3840.png?h=20e799033fb22fc7b77d0fc048bef37f 3840w," sizes="(max-width: 3840px) 100vw, 3840px">
-        <div>
-      </script>
-      <img class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy image-loaded" src="./mywebsite_files/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_3840.png" sizes="242px" srcset="https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_600.png?h=e4ec2585be2fc6cb5950476bde2035af 600w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_1200.png?h=b1bcda72ea9cc941b134514bbae92c86 1200w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_1920.png?h=fbbd9c6747bc200a20794e2b136c22bf 1920w,https://pro2-bar-s3-cdn-cf6.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/72b0c2e5-f380-4906-b23e-cdfdf98533dc_rw_3840.png?h=20e799033fb22fc7b77d0fc048bef37f 3840w," data-sizes="242px">
-      <span class="grid__item-filler" style="padding-bottom:150%;"></span>
-    </div>
-    <div class="grid__item-container js-grid-item-container lightbox-link hoverable" data-flex-grow="391.13976276431" style="width: 406.785px; flex-grow: 406.785;" data-width="1920" data-height="1276">
-      <script type="text/html" class="js-lightbox-slide-content">
-        <div class="grid__image-wrapper">
-          <img src="https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/36d20ffc-f9ed-452e-a1cd-721445eb9535_rw_1920.jpg?h=c8f8eef3337b35ba66140b9831778ad0" srcset="https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/36d20ffc-f9ed-452e-a1cd-721445eb9535_rw_600.jpg?h=cf3e0c08901088c6763a669f91c71ae4 600w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/36d20ffc-f9ed-452e-a1cd-721445eb9535_rw_1200.jpg?h=d77f5c7849ab0c4d7fee74f6a15a6fca 1200w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/36d20ffc-f9ed-452e-a1cd-721445eb9535_rw_1920.jpg?h=c8f8eef3337b35ba66140b9831778ad0 1920w," sizes="(max-width: 1920px) 100vw, 1920px">
-        <div>
-      </script>
-      <img class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy image-loaded" src="./mywebsite_files/36d20ffc-f9ed-452e-a1cd-721445eb9535_rw_1920.jpg" sizes="547px" srcset="https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/36d20ffc-f9ed-452e-a1cd-721445eb9535_rw_600.jpg?h=cf3e0c08901088c6763a669f91c71ae4 600w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/36d20ffc-f9ed-452e-a1cd-721445eb9535_rw_1200.jpg?h=d77f5c7849ab0c4d7fee74f6a15a6fca 1200w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/36d20ffc-f9ed-452e-a1cd-721445eb9535_rw_1920.jpg?h=c8f8eef3337b35ba66140b9831778ad0 1920w," data-sizes="547px">
-      <span class="grid__item-filler" style="padding-bottom:66.472403153925%;"></span>
-    </div>
-    <div class="grid__item-container js-grid-item-container lightbox-link hoverable" data-flex-grow="389.9670468948" style="width: 405.566px; flex-grow: 405.566;" data-width="3840" data-height="2560">
-      <script type="text/html" class="js-lightbox-slide-content">
-        <div class="grid__image-wrapper">
-          <img src="https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_3840.jpg?h=9ae0a7d7d972ec69ce285f37301c9d5b" srcset="https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_600.jpg?h=77e7d0357007ab1fafb554e2c4154928 600w,https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_1200.jpg?h=b7c75a5e2edafa66beaa3beaace0f4e6 1200w,https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_1920.jpg?h=ce9753d01dca3c2dd118b3b9ec9ed2fc 1920w,https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_3840.jpg?h=9ae0a7d7d972ec69ce285f37301c9d5b 3840w," sizes="(max-width: 3840px) 100vw, 3840px">
-        <div>
-      </script>
-      <img class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy image-loaded" src="./mywebsite_files/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_3840.jpg" sizes="545px" srcset="https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_600.jpg?h=77e7d0357007ab1fafb554e2c4154928 600w,https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_1200.jpg?h=b7c75a5e2edafa66beaa3beaace0f4e6 1200w,https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_1920.jpg?h=ce9753d01dca3c2dd118b3b9ec9ed2fc 1920w,https://pro2-bar-s3-cdn-cf3.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/e4b403ef-1cda-4ea5-bc53-ae6eb00ced39_rw_3840.jpg?h=9ae0a7d7d972ec69ce285f37301c9d5b 3840w," data-sizes="545px">
-      <span class="grid__item-filler" style="padding-bottom:66.672300152104%;"></span>
-    </div>
-    <div class="grid__item-container js-grid-item-container lightbox-link hoverable" data-flex-grow="390" style="width: 405.6px; flex-grow: 405.6;" data-width="3840" data-height="2560">
-      <script type="text/html" class="js-lightbox-slide-content">
-        <div class="grid__image-wrapper">
-          <img src="https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_3840.jpg?h=18203c0e3c87cf96cbb3f264eeb6604f" srcset="https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_600.jpg?h=f6a6d10ad884090a486d194ab4394209 600w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_1200.jpg?h=5c473c94beb3b81d4187ecd53ea37a98 1200w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_1920.jpg?h=6c45828c4fe46065572667e9f26f2621 1920w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_3840.jpg?h=18203c0e3c87cf96cbb3f264eeb6604f 3840w," sizes="(max-width: 3840px) 100vw, 3840px">
-        <div>
-      </script>
-      <img class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy image-loaded" src="./mywebsite_files/31511f43-67ca-4414-a04a-8023683f7f0d_rw_3840.jpg" sizes="528px" srcset="https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_600.jpg?h=f6a6d10ad884090a486d194ab4394209 600w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_1200.jpg?h=5c473c94beb3b81d4187ecd53ea37a98 1200w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_1920.jpg?h=6c45828c4fe46065572667e9f26f2621 1920w,https://pro2-bar-s3-cdn-cf2.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/31511f43-67ca-4414-a04a-8023683f7f0d_rw_3840.jpg?h=18203c0e3c87cf96cbb3f264eeb6604f 3840w," data-sizes="528px">
-      <span class="grid__item-filler" style="padding-bottom:66.666666666667%;"></span>
-    </div>
-    <div class="grid__item-container js-grid-item-container lightbox-link hoverable" data-flex-grow="390" style="width: 405.6px; flex-grow: 405.6;" data-width="3840" data-height="2560">
-      <script type="text/html" class="js-lightbox-slide-content">
-        <div class="grid__image-wrapper">
-          <img src="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_3840.jpg?h=cb1025c56a3dc3978deeada09dcdf071" srcset="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_600.jpg?h=a81ab69e896835258e3a1ccd511f7abc 600w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_1200.jpg?h=861089e67a5d5a1c023af086b36ce63c 1200w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_1920.jpg?h=eaa4dba54688e786ea7a823ab0eeebb6 1920w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_3840.jpg?h=cb1025c56a3dc3978deeada09dcdf071 3840w," sizes="(max-width: 3840px) 100vw, 3840px">
-        <div>
-      </script>
-      <img class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy image-loaded" src="./mywebsite_files/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_3840.jpg" sizes="528px" srcset="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_600.jpg?h=a81ab69e896835258e3a1ccd511f7abc 600w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_1200.jpg?h=861089e67a5d5a1c023af086b36ce63c 1200w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_1920.jpg?h=eaa4dba54688e786ea7a823ab0eeebb6 1920w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/ce0c2e3c-fca0-4420-8975-c97222264eb0_rw_3840.jpg?h=cb1025c56a3dc3978deeada09dcdf071 3840w," data-sizes="528px">
-      <span class="grid__item-filler" style="padding-bottom:66.666666666667%;"></span>
-    </div>
-    <div class="grid__item-container js-grid-item-container lightbox-link hoverable" data-flex-grow="390" style="width: 405.6px; flex-grow: 405.6;" data-width="1080" data-height="720">
-      <script type="text/html" class="js-lightbox-slide-content">
-        <div class="grid__image-wrapper">
-          <img src="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/900884b9-efcd-4858-82a0-f3e9d6a11a7c_rw_1200.jpg?h=0c25317af4d8a3768949fad9f76901da" srcset="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/900884b9-efcd-4858-82a0-f3e9d6a11a7c_rw_600.jpg?h=6eebc57f617a425fbd7e92b6faf0b4e4 600w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/900884b9-efcd-4858-82a0-f3e9d6a11a7c_rw_1200.jpg?h=0c25317af4d8a3768949fad9f76901da 1080w," sizes="(max-width: 1080px) 100vw, 1080px">
-        <div>
-      </script>
-      <img class="grid__item-image js-grid__item-image grid__item-image-lazy js-lazy image-loaded" src="./mywebsite_files/900884b9-efcd-4858-82a0-f3e9d6a11a7c_rw_1200.jpg" sizes="528px" srcset="https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/900884b9-efcd-4858-82a0-f3e9d6a11a7c_rw_600.jpg?h=6eebc57f617a425fbd7e92b6faf0b4e4 600w,https://pro2-bar-s3-cdn-cf1.myportfolio.com/d5cd3611-fb6c-4e2b-9c55-ace9fbbe9d0b/900884b9-efcd-4858-82a0-f3e9d6a11a7c_rw_1200.jpg?h=0c25317af4d8a3768949fad9f76901da 1080w," data-sizes="528px">
-      <span class="grid__item-filler" style="padding-bottom:66.666666666667%;"></span>
-    </div>
-    <div class="js-grid-spacer" style="display: none;"></div>
-  </div>
-</div>
-
-              
-              
-              
-              
-              
-              
-  <section id="contactformsection">        
-              <div class="project-module module text project-module-text align- editable js-editable js-project-module" style="  padding-top: 60px;
-  padding-bottom: 20px;
-">
-  <div class="rich-text js-text-editable module-text"><div><span class="texteditor-inline-fontsize" style="font-size:30px;"><span style="font-family:bjpg; font-weight:500;">Why shout into the void when you can shout at me instead?</span></span></div></div>
-</div>
-</section>
-              
-              
-              
-              
-              
-  <div class="cookie-banner js-cookie-banner">
-  <p>Insert copy here, which should vary depending on your region. <a class="consent-link" href="https://zackabrams.com/#">Accept</a></p>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="-6458 -2604 16 16" class="close-btn">
-    <g id="Group_1479" data-name="Group 1479" transform="translate(-8281.367 -3556.368)">
-      <rect id="Rectangle_6401" data-name="Rectangle 6401" class="stroke" width="1.968" height="20.66" transform="translate(1823.367 953.759) rotate(-45)"></rect>
-      <rect id="Rectangle_6402" data-name="Rectangle 6402" class="stroke" width="1.968" height="20.66" transform="translate(1824.758 968.368) rotate(-135)"></rect>
-    </g>
-  </svg>
-</div>
-<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"e7fb1b89a0","applicationID":"296353545","transactionName":"ZwZaYkJVDERXUxULCV5Me0NDQA1aGWsmJzJtQ0JXU18DVURRDBFIUwxV","queueTime":0,"applicationTime":8,"atts":"S0FNFApPHxsUUUNYHU0e","errorBeacon":"bam.nr-data.net","agent":""}</script>
-<script type="text/javascript">
-  // fix for Safari's back/forward cache
-  window.onpageshow = function(e) {
-    if (e.persisted) { window.location.reload(); }
-  };
-</script>
-  <script type="text/javascript">var __config__ = {"page_id":"p5d0cde05d25a3fadcb758b15308e3209a1e4aa6c90bc25bc0ebdc","theme":{"name":"jackie"},"pageTransition":true,"linkTransition":true,"disableDownload":false,"localizedValidationMessages":{"required":"This field is required","Email":"This field must be a valid email address"},"lightbox":{"enabled":true,"color":{"opacity":0.94,"hex":"#fff"}},"cookie_banner":{"enabled":false}};</script>
-  <script type="text/javascript" src="./mywebsite_files/translations"></script>
-  <script type="text/javascript" src="./mywebsite_files/main.js"></script><div class="js-lightbox-wrap offscreen" id="lightbox-wrap">
-    
-  <div class="js-blocking" id="lightbox-blocking">
-    <span class="lightbox-spinner"></span>
-  </div>
-
-    <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
-      <div class="js-img-wrap" id="lightbox-img-wrap">
-        
-  <div class="lightbox-extra control prev js-control js-prev">
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
-      <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
-      <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
-    </svg>
-  </div>
-
-        
-  <div class="lightbox-extra control next js-control js-next">
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
-      <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
-      <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
-    </svg>
-  </div>
-
-        
-  <div class="lightbox-extra control close js-control js-close">
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-      <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
-      <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
-    </svg>
-  </div>
-
-        <div class="lightbox-contents js-contents"></div>
-      </div>
-    </div>
-  </div>            
-              
-              
-              
-              
-              <div class="project-module module form project-module-form js-project-module-form editable js-editable js-project-module" data-id="m5d54ee923ffd2cf53661839f707ba0e76c1a2067fdd6455c2c69c">
-            </div>
-            
-<div style="margin:auto" class="project-module module form project-module-form js-project-module-form editable js-editable js-project-module" data-id="m5d54ee923ffd2cf53661839f707ba0e76c1a2067fdd6455c2c69c">
-    
-<form action="https://formspree.io/zack.abrams@columbia.edu" method="POST" class="contact-form">
-<div class="form-input">
-            <label for="Name">Name *</label>
-            <input type="text" name="Name" data-validate="required,Generic" placeholder="Your Name..." required="">
-      </div>
-     
-      <div class="form-input">
-            <label for="email">Email Address *</label>
-            <input type="text" name="email" data-validate="required,Email,required" placeholder="Your Email Address..." required="">
-      </div>
-     
-      <div class="form-input">
-            <label for="Message">Message *</label>
-            <textarea name="Message" data-validate="required,Generic" placeholder="Your Message..." required=""></textarea>
-      </div>
-     
-      <div class="form-input">
-            <label for="Favorite Movie">Favorite Movie?</label>
-            <input type="text" name="Favorite Movie" data-validate="Generic" placeholder="I hope it&#39;s Phantom Thread...">
-      </div>
-  <input type="submit" value="Click to Submit!">
-  <input type="hidden" name="_next" value="https://zackabrams.com"/>
-</form>
-            </div>
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              <div class="js-project-module project-module module social_icons project-module-social_icons align- editable js-editable" data-id="m5d54ef3e14fdd0361112b34808482d83491996720c50cc83e4fe8">
-  <div class="module-content module-content-social_icons js-module-content">
-      <div class="social">
+      <div class="entry">
+        <div class="entry-head">
+          <h3 class="entry-title">Head Writer, <span class="org">Coinage (Trustless Media)</span></h3>
+          <span class="entry-date">Jul 2022 – Sep 2023</span>
+        </div>
         <ul>
-              <li>
-                <a href="http://twitter.com/zackdabrams" target="_blank">
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 30 24" xml:space="preserve" class="icon"><path d="M24.71 5.89C24 6.2 23.2 6.4 22.4 6.53c0.82-0.5 1.45-1.29 1.75-2.23c-0.77 0.46-1.62 0.8-2.53 1 C20.92 4.5 19.9 4 18.7 4c-2.2 0-3.99 1.81-3.99 4.04c0 0.3 0 0.6 0.1 0.92C11.54 8.8 8.6 7.2 6.6 4.7 C6.3 5.3 6.1 6 6.1 6.77c0 1.4 0.7 2.6 1.8 3.36c-0.65-0.02-1.27-0.2-1.81-0.51c0 0 0 0 0 0.1 c0 2 1.4 3.6 3.2 3.96c-0.34 0.09-0.69 0.14-1.05 0.14c-0.26 0-0.51-0.03-0.75-0.07c0.51 1.6 2 2.8 3.7 2.8 c-1.36 1.08-3.08 1.73-4.95 1.73c-0.32 0-0.64-0.02-0.95-0.06C7.05 19.3 9.1 20 11.4 20c7.33 0 11.34-6.15 11.34-11.49 c0-0.18 0-0.35-0.01-0.52C23.5 7.4 24.2 6.7 24.7 5.89z"></path></svg>
-                </a>
-              </li>
-              <li>
-                <a href="http://linkedin.com/in/zackdabrams" target="_blank">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
-                  <path id="path-1_24_" d="M19.6,19v-5.8c0-1.4-0.5-2.4-1.7-2.4c-1,0-1.5,0.7-1.8,1.3C16,12.3,16,12.6,16,13v6h-3.4
-                    c0,0,0.1-9.8,0-10.8H16v1.5c0,0,0,0,0,0h0v0C16.4,9,17.2,7.9,19,7.9c2.3,0,4,1.5,4,4.9V19H19.6z M8.9,6.7L8.9,6.7
-                    C7.7,6.7,7,5.9,7,4.9C7,3.8,7.8,3,8.9,3s1.9,0.8,1.9,1.9C10.9,5.9,10.1,6.7,8.9,6.7z M10.6,19H7.2V8.2h3.4V19z"></path>
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a href="http://medium.com/@zackdabrams" target="_blank">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
-                  <g>
-                    <path class="st0" d="M23.5,7.4C23.5,7.4,23.5,7.4,23.5,7.4L23.5,7.4l-5.2-2.6c0,0-0.1,0-0.1,0c0,0-0.1,0-0.1,0
-                      c-0.2,0-0.4,0.1-0.5,0.3l-3,4.8l3.7,6.1L23.5,7.4C23.5,7.5,23.5,7.4,23.5,7.4z"></path>
-                    <polygon class="st0" points="13,8.8 13,14.3 17.9,16.7   "></polygon>
-                    <path class="st0" d="M18.6,17.1l4,2c0.5,0.3,0.9,0.1,0.9-0.4V9L18.6,17.1z"></path>
-                    <path class="st0" d="M12.1,7.4l-5-2.5C7,4.9,6.9,4.8,6.8,4.8C6.6,4.8,6.4,5,6.4,5.3v10.9c0,0.3,0.2,0.6,0.5,0.8l4.4,2.2
-                      c0.1,0.1,0.2,0.1,0.3,0.1c0.3,0,0.5-0.2,0.5-0.6L12.1,7.4C12.1,7.5,12.1,7.4,12.1,7.4z"></path>
-                  </g>
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a href="mailto:zack.abrams@columbia.edu">
-                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 30 24" style="enable-background:new 0 0 30 24;" xml:space="preserve" class="icon">
-                    <g>
-                      <path d="M15,13L7.1,7.1c0-0.5,0.4-1,1-1h13.8c0.5,0,1,0.4,1,1L15,13z M15,14.8l7.9-5.9v8.1c0,0.5-0.4,1-1,1H8.1c-0.5,0-1-0.4-1-1 V8.8L15,14.8z"></path>
-                    </g>
-                  </svg>
-                </a>
-              </li>
+          <li>Wrote scripts and a newsletter for a weekly web show, distilling technical news and shaping timely narratives for a broad audience.</li>
+          <li>Identified and interviewed the 19-year-old hacker who stole and returned $200 million, earning a SABEW honorable mention for investigative work on a sensitive, fast-moving story.</li>
+          <li>Co-reported a feature on Do Kwon and the Terra collapse that won a SABEW Best in Business award (2022).</li>
         </ul>
       </div>
-  </div>
-</div>
 
-              
-          </div>
+      <div class="entry">
+        <div class="entry-head">
+          <h3 class="entry-title">Earlier Roles</h3>
+          <span class="entry-date">2017 – 2022</span>
         </div>
+        <ul>
+          <li>Data Editor, The Business of Business (2022); Data Reporter, Stacker (2021–22, intern 2018–19); Publisher &amp; Managing Editor, Bwog at Columbia (2017–21).</li>
+          <li>Reported on technology and business with end-to-end ownership from ideation through analysis and data visualization; helped lead an independent student publication to 70,000+ monthly pageviews and independent profitability.</li>
+        </ul>
       </div>
+
+      <!-- ============ INDEPENDENT WORK ============ -->
+      <h2 class="label" id="independent">Independent work</h2>
+
+      <div class="entry">
+        <div class="entry-head">
+          <h3 class="entry-title">AI Video Practice, <span class="org">@allhailthealgo</span></h3>
+          <span class="entry-date">2023 – Present</span>
         </div>
+        <ul>
+          <li>Built a short-form video presence to tens of millions of views leveraging developments in open-source AI tooling.</li>
+          <li>Design production workflows with open-source AI tools and consult for various firms on AI pipelines; presented on creative AI work at Akash Accelerate and the ComfyUI NYC meetup.</li>
+        </ul>
       </div>
-    </section>
 
+    </div><!-- /main -->
 
-</body></html>
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="aside">
+
+      <h2 class="label">Content work</h2>
+      <ul class="tags">
+        <li>News coverage and editing</li>
+        <li>Newsletters and scripts</li>
+        <li>Short-form video and social content</li>
+        <li>Audience growth and analytics</li>
+        <li>Technical and research translation</li>
+        <li>Panel moderation and public speaking</li>
+      </ul>
+
+      <h2 class="label">Recognition</h2>
+      <div class="honor">
+        <b>SABEW Best in Business</b>
+        <span>Feature reporting, 2022</span>
+      </div>
+      <div class="honor">
+        <b>SABEW Honorable Mention</b>
+        <span>Investigative reporting on the Euler hack</span>
+      </div>
+
+      <h2 class="label">Speaking</h2>
+      <p>Moderated expert panels at Nasdaq's Hacken Trust Summit, The Block's Convergence in Prague, and the NYC Consumer Club in Union Square.</p>
+
+      <h2 class="label">Data &amp; AI</h2>
+      <p>Python, R, data analysis, data visualization, open-source AI workflows.</p>
+
+      <h2 class="label">Education</h2>
+      <div class="honor">
+        <b>Columbia University</b>
+        <span>B.A. in Data Science, 2021</span>
+      </div>
+
+      <h2 class="label" id="contact">Elsewhere</h2>
+      <ul class="links">
+        <li><a href="https://www.theblock.co/author/zack-abrams">The Block</a> <span class="who">Author page</span></li>
+        <li><a href="https://www.linkedin.com/in/zackdabrams">LinkedIn</a> <span class="who">zackdabrams</span></li>
+        <li><a href="https://x.com/ZackDAbrams">X</a> <span class="who">@ZackDAbrams</span></li>
+        <li><a href="https://www.instagram.com/allhailthealgo/">Instagram</a> <span class="who">@allhailthealgo</span></li>
+        <li><a href="https://www.tiktok.com/@allhailthealgo">TikTok</a> <span class="who">@allhailthealgo</span></li>
+        <li><a href="https://github.com/zackabrams">GitHub</a> <span class="who">zackabrams</span></li>
+        <li><a href="mailto:zackdabrams@gmail.com">Email</a> <span class="who">zackdabrams@gmail.com</span></li>
+      </ul>
+
+    </aside>
+
+  </div><!-- /columns -->
+
+  <footer class="foot">
+    <span>Zack Abrams · Brooklyn, NY</span>
+    <span><a href="mailto:zackdabrams@gmail.com">zackdabrams@gmail.com</a></span>
+  </footer>
+
+</main>
+
+</body>
+</html>
