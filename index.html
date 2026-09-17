@@ -186,6 +186,19 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius
   margin:34px 0 0;
 }
 .stat{background:var(--paper);padding:14px 16px;}
+a.stat{
+  display:block;
+  color:inherit;
+  border-bottom:0;
+  transition:background-color .22s ease;
+}
+a.stat b,a.stat span{transition:color .2s ease,opacity .2s ease;}
+a.stat span::after{content:" \2193";opacity:.4;}
+a.stat:hover{background:var(--accent-soft);}
+a.stat:hover b,a.stat:hover span{color:var(--accent);}
+a.stat:hover span::after{opacity:1;}
+a.stat:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+.group[id]{scroll-margin-top:22px;}
 .stat b{
   display:block;
   font-family:var(--serif);
@@ -573,9 +586,9 @@ a.award{transition:background-color .2s ease,color .2s ease;}
   </p>
 
   <div class="stats">
-    <div class="stat"><b>850+</b><span>Stories published</span></div>
-    <div class="stat"><b>2</b><span>SABEW honors</span></div>
-    <div class="stat"><b>10M+</b><span>Social media video views</span></div>
+    <a class="stat" href="#stories"><b>850+</b><span>Stories published</span></a>
+    <a class="stat" href="#awards"><b>2</b><span>SABEW honors</span></a>
+    <a class="stat" href="#video"><b>10M+</b><span>Social media video views</span></a>
   </div>
 
   <section class="panels">
@@ -614,7 +627,7 @@ a.award{transition:background-color .2s ease,color .2s ease;}
 
     <div class="groups">
 <div class="gcol">
-<div class="group">
+<div class="group" id="awards">
 <h3 class="group-title">Investigations &amp; features</h3>
       <p class="group-note">Long-form reporting at Coinage, where I was Head Writer.</p>
       <ul class="work">
@@ -660,7 +673,7 @@ a.award{transition:background-color .2s ease,color .2s ease;}
 </div>
 </div>
 <div class="gcol">
-<div class="group">
+<div class="group" id="stories">
 <h3 class="group-title">Markets, hacks &amp; regulation</h3>
       <p class="group-note">Recent breaking coverage at The Block, where I'm Weekend Editor.</p>
       <ul class="work">
@@ -687,7 +700,7 @@ a.award{transition:background-color .2s ease,color .2s ease;}
       </ul>
       <a class="more" href="https://www.theblock.co/author/zack-abrams">All 850+ stories at The Block →</a>
 </div>
-<div class="group">
+<div class="group" id="video">
 <h3 class="group-title">AI video &amp; open source</h3>
 <p class="group-note">Original short-form video and the tooling behind it, as @allhailthealgo.</p>
 <ul class="work">
