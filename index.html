@@ -278,19 +278,21 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius
 /* ---------- work list ---------- */
 .group-title{
   font-family:var(--sans);
-  font-size:.78rem;
+  font-size:.8rem;
   font-weight:900;
-  letter-spacing:.1em;
+  letter-spacing:.13em;
   text-transform:uppercase;
   color:var(--ink);
-  margin:26px 0 2px;
+  margin:0 0 3px;
+  padding-top:12px;
+  border-top:2px solid var(--ink);
 }
 .groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px;align-items:start;}
 .gcol{min-width:0;}
-.group{margin-bottom:34px;}
-.group .group-title{margin-top:0;}
+.group{margin-bottom:38px;}
+
 @media (max-width:900px){.groups{grid-template-columns:1fr;gap:0;}}
-.group-note{font-size:.845rem;color:var(--muted);margin:0 0 10px;}
+.group-note{font-size:.845rem;color:var(--muted);margin:0 0 12px;}
 
 .work{list-style:none;margin:0;padding:0;}
 .work li{
