@@ -438,6 +438,7 @@ a.award:hover{background:var(--accent);color:var(--paper);}
 
 /* ---------- panels gallery ---------- */
 .panels{margin-top:4px;}
+.panels[hidden]{display:none;}
 .shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 24px;}
 .shot{margin:0;}
 .shot img{
@@ -488,7 +489,7 @@ a.award:hover{background:var(--accent);color:var(--paper);}
 
   <nav class="nav" aria-label="Sections">
     <a href="#work">Selected work</a>
-    <a href="#panels">Panels</a>
+    <a href="#panels" class="navpanels">Panels</a>
     <a href="#experience">Experience</a>
     <a href="#independent">AI video</a>
     <a href="#contact">Contact</a>
@@ -756,6 +757,18 @@ a.award:hover{background:var(--accent);color:var(--paper);}
   </footer>
 
 </main>
+
+<script>
+(function(){
+  var sec=document.querySelector('.panels');
+  if(!sec) return;
+  Array.prototype.forEach.call(sec.querySelectorAll('img'), function(im){
+    im.addEventListener('error', function(){ sec.hidden = true; });
+    if (im.complete && im.naturalWidth === 0) sec.hidden = true;
+  });
+  if (sec.hidden) { var n=document.querySelector('.navpanels'); if(n) n.hidden=true; }
+})();
+</script>
 
 </body>
 </html>
