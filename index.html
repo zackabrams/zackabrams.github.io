@@ -504,7 +504,55 @@ a{transition:color .2s ease,border-color .2s ease;}
 }
 .nav a:hover::after{transform:scaleX(1);}
 
-.shotimg{display:block;overflow:hidden;line-height:0;}
+.shotimg{
+  display:block;overflow:hidden;line-height:0;
+  padding:0;border:0;background:none;width:100%;
+  cursor:zoom-in;
+}
+.shotimg:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+/* ---------- lightbox ---------- */
+.lightbox{
+  position:fixed;inset:0;z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;
+  padding:calc(env(safe-area-inset-top,0px) + 56px) 20px calc(env(safe-area-inset-bottom,0px) + 28px);
+  background:rgba(8,10,14,.93);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+}
+.lightbox[hidden]{display:none;}
+.lb-fig{margin:0;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:100%;}
+.lb-fig img{
+  display:block;
+  max-width:min(94vw,1400px);
+  max-height:76vh;
+  width:auto;height:auto;
+  object-fit:contain;
+  border:1px solid rgba(255,255,255,.14);
+}
+.lb-cap{
+  text-align:center;max-width:62ch;
+  font-size:.86rem;line-height:1.45;color:#c9cfda;
+}
+.lb-cap b{display:block;color:#fff;font-weight:700;}
+.lb-btn{
+  position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:16px;
+  width:40px;height:40px;line-height:1;
+  font-size:1.5rem;
+  color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  cursor:pointer;
+}
+.lb-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:44px;height:64px;
+  font-size:1.5rem;color:#fff;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+  cursor:pointer;
+}
+.lb-prev{left:12px;} .lb-next{right:12px;}
+.lb-btn:hover,.lb-nav:hover{background:rgba(255,255,255,.22);}
+.lb-btn:focus-visible,.lb-nav:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+@media (max-width:620px){.lb-nav{width:38px;height:54px;}}
 .shot img{transition:transform .55s cubic-bezier(.22,.61,.36,1),filter .55s ease;}
 .shot:hover img{transform:scale(1.045);filter:saturate(1.06);}
 
@@ -595,15 +643,15 @@ a.award{transition:background-color .2s ease,color .2s ease;}
     <h2 class="label" id="panels">Panels &amp; stages</h2>
     <div class="shots">
       <figure class="shot">
-        <span class="shotimg"><img src="images/panels/panel-01.jpg" alt="Zack Abrams with fellow panelists at the Hacken Trust Summit" width="1400" height="933"></span>
+        <button class="shotimg" type="button"><img src="images/panels/panel-01.jpg" alt="Zack Abrams with fellow panelists at the Hacken Trust Summit" width="1400" height="933"></button>
         <figcaption><b>Hacken Trust Summit</b><span>AI Security at the Frontier</span></figcaption>
       </figure>
       <figure class="shot">
-        <span class="shotimg"><img src="images/panels/panel-03.jpg" alt="Zack Abrams moderating the DePIN panel at Emergence in Prague" width="1280" height="853"></span>
+        <button class="shotimg" type="button"><img src="images/panels/panel-03.jpg" alt="Zack Abrams moderating the DePIN panel at Emergence in Prague" width="1280" height="853"></button>
         <figcaption><b>Emergence, Prague</b><span>DePIN: How Crypto is Coming to the Real World</span></figcaption>
       </figure>
       <figure class="shot">
-        <span class="shotimg"><img src="images/panels/panel-04.jpg" alt="Zack Abrams moderating a founder panel at the Solayer SVM Summit in New York" width="1400" height="933"></span>
+        <button class="shotimg" type="button"><img src="images/panels/panel-04.jpg" alt="Zack Abrams moderating a founder panel at the Solayer SVM Summit in New York" width="1400" height="933"></button>
         <figcaption><b>Solayer SVM Summit</b><span>Founder panel, New York</span></figcaption>
       </figure>
     </div>
@@ -867,6 +915,69 @@ a.award{transition:background-color .2s ease,color .2s ease;}
     });
   }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
   Array.prototype.forEach.call(items, function(el){ io.observe(el); });
+})();
+
+(function(){
+  var thumbs = [].slice.call(document.querySelectorAll('.panels .shotimg'));
+  if (!thumbs.length) return;
+
+  var box = document.createElement('div');
+  box.className = 'lightbox';
+  box.hidden = true;
+  box.setAttribute('role','dialog');
+  box.setAttribute('aria-modal','true');
+  box.setAttribute('aria-label','Enlarged photo');
+  box.innerHTML =
+    '<button class="lb-btn" type="button" aria-label="Close">\u00d7</button>' +
+    '<button class="lb-nav lb-prev" type="button" aria-label="Previous photo">\u2039</button>' +
+    '<button class="lb-nav lb-next" type="button" aria-label="Next photo">\u203a</button>' +
+    '<figure class="lb-fig"><img alt=""><figcaption class="lb-cap"></figcaption></figure>';
+  document.body.appendChild(box);
+
+  var img = box.querySelector('img'),
+      cap = box.querySelector('.lb-cap'),
+      closeBtn = box.querySelector('.lb-btn'),
+      prevBtn = box.querySelector('.lb-prev'),
+      nextBtn = box.querySelector('.lb-next'),
+      last = null, at = 0;
+
+  function show(i){
+    at = (i + thumbs.length) % thumbs.length;
+    var t = thumbs[at], src = t.querySelector('img');
+    img.src = src.currentSrc || src.src;
+    img.alt = src.alt || '';
+    var fc = t.closest('figure').querySelector('figcaption');
+    cap.innerHTML = fc ? fc.innerHTML : '';
+  }
+  function open(i){
+    last = document.activeElement;
+    show(i);
+    box.hidden = false;
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+  function close(){
+    box.hidden = true;
+    document.body.style.overflow = '';
+    img.removeAttribute('src');
+    if (last && last.focus) last.focus();
+  }
+
+  thumbs.forEach(function(t,i){ t.addEventListener('click', function(){ open(i); }); });
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', function(){ show(at-1); });
+  nextBtn.addEventListener('click', function(){ show(at+1); });
+  box.addEventListener('click', function(e){ if (e.target === box) close(); });
+  document.addEventListener('keydown', function(e){
+    if (box.hidden) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') show(at-1);
+    else if (e.key === 'ArrowRight') show(at+1);
+    else if (e.key === 'Tab'){
+      var f = [closeBtn, prevBtn, nextBtn];
+      if (f.indexOf(document.activeElement) === -1){ e.preventDefault(); closeBtn.focus(); }
+    }
+  });
 })();
 </script>
 
