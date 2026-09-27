@@ -45,7 +45,7 @@ const wordFor = id => puzzle().cards.find(c => c.id === id).word;
 const feedbackText = status => status === 'swap' ? 'Swap this tile' : 'Leave this tile';
 const hintsLabel = n => `${n} hint${n === 1 ? '' : 's'}`;
 const categoryDescriptions = {
-  'Names': 'Find familiar people, places, groups, or titles.',
+  'Names': 'Proper nouns: people, places, story titles, and such.',
   'Compound words': 'Join two meaningful pieces into one word.',
   'Hidden words': 'Extra tricky! Join the new pieces to reveal one hidden word.'
 };
@@ -240,7 +240,7 @@ function finishDrag(e) {
 }
 function cancelDrag() { const d = cleanDrag(); if (d?.active) suppressHandleClickUntil = performance.now() + 600; }
 function goTo(index) {
-  if (!Number.isInteger(index) || index < 0 || index >= puzzles.length) throw new Error('Choose a puzzle from 1 to 6.');
+  if (!Number.isInteger(index) || index < 0 || index >= puzzles.length) throw new Error(`Choose a puzzle from 1 to ${puzzles.length}.`);
   cancelDrag(); document.querySelectorAll('dialog[open]').forEach(d => d.close()); current = index; const url=new URL(location.href);url.searchParams.set('p',keys[current]);history.replaceState(null,'',url); selected = []; positions = {}; reorderMode = false; $('share-status').textContent=''; announce(''); render();
 }
 function openHint() {
@@ -284,7 +284,7 @@ if (context?.registerTool) {
   const lifecycle = new AbortController();
   const tools = [
     { name: 'read_spoondle_board', description: 'Read available words by column, revealed tile feedback, progress, and selection. Does not reveal answers.', inputSchema: { type: 'object', properties: {}, additionalProperties: false }, annotations: { readOnlyHint: true }, execute: () => record().startedAt===null ? {puzzle:current+1,category:puzzle().category,started:false,message:'Start the puzzle to reveal its words.'} : ({ puzzle: current + 1, category:puzzle().category, columns: state().columns.map((_, column) => availableColumn(puzzle(), state(), column).map(id => ({ id, word: wordFor(id) }))), feedback: state().feedback, found: state().solved.length, misses: state().misses, selected }) },
-    { name: 'start_spoondle_puzzle', description: 'Switch to one of six puzzles and start its timer. Saved progress is preserved.', inputSchema: { type: 'object', properties: { puzzleNumber: { type: 'integer', minimum: 1, maximum: 6 } }, required: ['puzzleNumber'], additionalProperties: false }, execute: input => { goTo(input?.puzzleNumber - 1); startPuzzle(); return { puzzle: current + 1 }; } },
+    { name: 'start_spoondle_puzzle', description: 'Switch to one of nine puzzles and start its timer. Saved progress is preserved.', inputSchema: { type: 'object', properties: { puzzleNumber: { type: 'integer', minimum: 1, maximum: puzzles.length } }, required: ['puzzleNumber'], additionalProperties: false }, execute: input => { goTo(input?.puzzleNumber - 1); startPuzzle(); return { puzzle: current + 1 }; } },
     { name: 'reorder_spoondle_word', description: 'Move an available word to a zero-based position within its existing column.', inputSchema: { type: 'object', properties: { cardId: { type: 'string' }, position: { type: 'integer', minimum: 0, maximum: 3 } }, required: ['cardId', 'position'], additionalProperties: false }, execute: input => { if (!input || typeof input.cardId !== 'string') throw new Error('Choose a word.'); return move(input.cardId, input.position); } },
     { name: 'submit_spoondle_swap', description: 'Submit a reciprocal letter exchange using one word from each column. Incorrect new guesses add one miss and reveal tile feedback.', inputSchema: { type: 'object', properties: { cardIds: { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 2 }, letterIndices: { type: 'array', items: { type: 'integer', minimum: 0 }, minItems: 2, maxItems: 2 } }, required: ['cardIds', 'letterIndices'], additionalProperties: false }, execute: input => {
       requireStarted();

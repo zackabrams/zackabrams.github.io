@@ -1,40 +1,58 @@
-// Curated from the answer spreadsheet. Each board has one answer category.
+// Nine curated test boards. Each starts with eight distinct 4–6-letter words.
 const boards = [
   { category: 'Names', entries: [
-    ['BOB ROSS', 'ROB', 'BOSS', 'BOB', 'ROSS', 'The painter known for happy little trees.'],
-    ['TIM BURTON', 'RIM', 'BUTTON', 'TIM', 'BURTON', 'The filmmaker behind Edward Scissorhands.'],
-    ['GREEN DAY', 'GREED', 'NAY', 'GREEN', 'DAY', 'The band behind American Idiot.'],
-    ['SALLY RIDE', 'RALLY', 'SIDE', 'SALLY', 'RIDE', 'The first American woman in space.']
+    ['HARRY POTTER', 'PARRY', 'HOTTER', 'HARRY', 'POTTER', 'The young wizard from the book and film series.'],
+    ['SALLY RIDE', 'RALLY', 'SIDE', 'SALLY', 'RIDE', 'The first American woman in space.'],
+    ['KING LEAR', 'RING', 'LEAK', 'KING', 'LEAR', 'The aging monarch in Shakespeare’s tragedy.'],
+    ['SNOW WHITE', 'STOW', 'WHINE', 'SNOW', 'WHITE', 'The fairy-tale princess with seven dwarfs.']
   ]},
   { category: 'Names', entries: [
-    ['NOTTING HILL', 'NOTHING', 'TILL', 'NOTTING', 'HILL', 'A London neighborhood and a romantic comedy.'],
+    ['PALM BEACH', 'BALM', 'PEACH', 'PALM', 'BEACH', 'A town on the Florida coast.'],
+    ['CAPE FEAR', 'CAFE', 'PEAR', 'CAPE', 'FEAR', 'A North Carolina headland and a thriller title.'],
+    ['LAKE MEAD', 'MAKE', 'LEAD', 'LAKE', 'MEAD', 'A reservoir on the Colorado River.'],
+    ['SHARK TALE', 'STARK', 'HALE', 'SHARK', 'TALE', 'An animated film set under the sea.']
+  ]},
+  { category: 'Names', entries: [
+    ['HOPE SOLO', 'HOSE', 'POLO', 'HOPE', 'SOLO', 'The U.S. soccer goalkeeper.'],
+    ['BOBBY HILL', 'HOBBY', 'BILL', 'BOBBY', 'HILL', 'Hank’s son in King of the Hill.'],
     ['NORMAN LEAR', 'NORMAL', 'NEAR', 'NORMAN', 'LEAR', 'The television producer behind All in the Family.'],
-    ['BOB MARLEY', 'MOB', 'BARLEY', 'BOB', 'MARLEY', 'The reggae musician behind Three Little Birds.'],
-    ['HOPE SOLO', 'HOSE', 'POLO', 'HOPE', 'SOLO', 'An American soccer goalkeeper.']
+    ['KING KONG', 'KINK', 'GONG', 'KING', 'KONG', 'The giant ape of film fame.']
   ]},
   { category: 'Compound words', entries: [
-    ['BLACKTOP', 'BLOCK', 'TAP', 'BLACK', 'TOP', 'Asphalt used to pave roads.'],
-    ['ALLSPICE', 'ILL', 'SPACE', 'ALL', 'SPICE', 'A spice with a name that suggests a whole collection.'],
-    ['BACKSLASH', 'BASK', 'CLASH', 'BACK', 'SLASH', 'The punctuation mark that leans left.'],
-    ['ANTEATER', 'ART', 'EATEN', 'ANT', 'EATER', 'An animal with a long snout and a taste for insects.']
+    ['BOOKWORM', 'BOOM', 'WORK', 'BOOK', 'WORM', 'A person who loves reading.'],
+    ['GOLDFISH', 'GOLF', 'DISH', 'GOLD', 'FISH', 'A small orange aquarium fish.'],
+    ['HONEYMOON', 'HOMEY', 'NOON', 'HONEY', 'MOON', 'The period or trip just after a wedding.'],
+    ['JACKHAMMER', 'HACK', 'JAMMER', 'JACK', 'HAMMER', 'A powered tool that pounds through pavement.']
   ]},
   { category: 'Compound words', entries: [
-    ['GOLDFISH', 'GOLF', 'DISH', 'GOLD', 'FISH', 'An orange pet often kept in a bowl.'],
-    ['WORKSHOP', 'PORK', 'SHOW', 'WORK', 'SHOP', 'A place for making things, or a practical class.'],
-    ['CELLBLOCK', 'BELL', 'CLOCK', 'CELL', 'BLOCK', 'A section of a prison.'],
-    ['FOOTREST', 'ROOT', 'FEST', 'FOOT', 'REST', 'A support for your feet.']
+    ['FOOTBALL', 'BOOT', 'FALL', 'FOOT', 'BALL', 'A team sport with touchdowns.'],
+    ['FIREWORK', 'WIRE', 'FORK', 'FIRE', 'WORK', 'A device that bursts into colored light in the sky.'],
+    ['CHOPSTICK', 'CHIP', 'STOCK', 'CHOP', 'STICK', 'One of a pair of eating utensils.'],
+    ['HEADLINE', 'HEAL', 'DINE', 'HEAD', 'LINE', 'The title at the top of a news story.']
+  ]},
+  { category: 'Compound words', entries: [
+    ['BATHROOM', 'BOTH', 'ROAM', 'BATH', 'ROOM', 'A room with a toilet or bath.'],
+    ['MILESTONE', 'MINE', 'STOLE', 'MILE', 'STONE', 'An important point in a journey or project.'],
+    ['MOONLIGHT', 'LOON', 'MIGHT', 'MOON', 'LIGHT', 'Light from the moon.'],
+    ['GRAPEVINE', 'GRAVE', 'PINE', 'GRAPE', 'VINE', 'A vine that bears grapes; also a source of rumors.']
   ]},
   { category: 'Hidden words', entries: [
-    ['FORTUNE', 'FUR', 'TONE', 'FOR', 'TUNE', 'Luck or a large amount of money.'],
-    ['BARGAIN', 'BAG', 'RAIN', 'BAR', 'GAIN', 'A particularly good deal.'],
-    ['AWESOME', 'OWE', 'SAME', 'AWE', 'SOME', 'Inspiring admiration; excellent.'],
-    ['SATIRE', 'SIT', 'ARE', 'SAT', 'IRE', 'Humor used to expose foolishness.']
+    ['DETERMINE', 'METER', 'DINE', 'DETER', 'MINE', 'To settle or figure out.'],
+    ['COVERAGE', 'ROVE', 'CAGE', 'COVE', 'RAGE', 'The extent of what is included.'],
+    ['FLAGRANT', 'FLAT', 'RANG', 'FLAG', 'RANT', 'Conspicuously bad or offensive.'],
+    ['KNOWLEDGE', 'KNEW', 'LODGE', 'KNOW', 'LEDGE', 'What someone knows.']
   ]},
   { category: 'Hidden words', entries: [
-    ['PROFIT', 'FRO', 'PIT', 'PRO', 'FIT', 'The money left after expenses.'],
-    ['BUDGET', 'BED', 'GUT', 'BUD', 'GET', 'A plan for spending money.'],
-    ['TIRESOME', 'TIME', 'SORE', 'TIRE', 'SOME', 'Annoying or wearisome.'],
-    ['POETRY', 'TOE', 'PRY', 'POE', 'TRY', 'Writing arranged in verse.']
+    ['INFERTILE', 'INTER', 'FILE', 'INFER', 'TILE', 'Unable to produce offspring.'],
+    ['MODERATE', 'RODE', 'MATE', 'MODE', 'RATE', 'Neither extreme nor excessive.'],
+    ['OVERSEEN', 'OVEN', 'SEER', 'OVER', 'SEEN', 'Supervised or watched over.'],
+    ['MISSPOKE', 'MOSS', 'PIKE', 'MISS', 'POKE', 'Said something incorrectly.']
+  ]},
+  { category: 'Hidden words', entries: [
+    ['UTTERMOST', 'OTTER', 'MUST', 'UTTER', 'MOST', 'The furthest possible extent.'],
+    ['FLIPPANT', 'FLAP', 'PINT', 'FLIP', 'PANT', 'Not showing proper seriousness.'],
+    ['SHOPPING', 'SHIP', 'PONG', 'SHOP', 'PING', 'Buying or looking for things to buy.'],
+    ['DIVERGENT', 'GIVER', 'DENT', 'DIVER', 'GENT', 'Moving in different directions.']
   ]}
 ];
 
