@@ -27,7 +27,8 @@ export function restoreRecord(puzzle, saved) {
         feedback[id][index]=tileStatus(puzzle,id,Number(index));
       }
     }
-    return { state:{...base,solved,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback}, startedAt:saved.startedAt, finishedAt:s.solved.length===puzzle.answers.length?saved.finishedAt:null };
+    const log = Array.isArray(s.log) && s.log.every(x=>['hit','miss','hint'].includes(x)) ? [...s.log] : [];
+    return { state:{...base,solved,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback,log}, startedAt:saved.startedAt, finishedAt:s.solved.length===puzzle.answers.length?saved.finishedAt:null };
   } catch { return fresh; }
 }
 export function readProgress(storage) {
@@ -52,8 +53,11 @@ export function streak(days, now=Date.now()) {
   while(known.has(localDay(date.getTime()))) {count++;date.setDate(date.getDate()-1);}
   return count;
 }
+// Every guess in order on one line: ✅ found an answer, ❌ missed, 💡 used a hint.
+const shareMark = { hit:'✅', miss:'❌', hint:'💡' };
+export const shareGrid = log => log.map(x=>shareMark[x]).join('');
 export function shareText(puzzle, record, url) {
   if(record.finishedAt===null)throw new Error('Finish the puzzle before sharing your result.');
-  const s=record.state;
-  return `Spoondle · Test puzzle ${puzzle.id}\n${s.solved.length}/${puzzle.answers.length} solved in ${formatTime(elapsedMs(record))}\n${s.misses} miss${s.misses===1?'':'es'} · ${s.hints} hint${s.hints===1?'':'s'}\nCan you beat my time?\n${url}`;
+  const s=record.state, grid=shareGrid(s.log);
+  return `Spoondle · Test puzzle ${puzzle.id} (${puzzle.difficulty})\n${grid?grid+'\n':''}Solved in ${formatTime(elapsedMs(record))} · ${s.misses} miss${s.misses===1?'':'es'} · ${s.hints} hint${s.hints===1?'':'s'}\nCan you beat my time?\n${url}`;
 }

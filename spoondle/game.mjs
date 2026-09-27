@@ -2,17 +2,18 @@ import { labelFor, answerDigest, tileOffset, openText } from './seal.mjs';
 const cardFor = (puzzle, id) => puzzle.cards.find(c => c.id === id);
 export function swapIndex(puzzle, id) {
   const card = cardFor(puzzle, id), length = card.word.length;
-  return (card.mark - tileOffset(puzzle.id, id, length) + length) % length;
+  return (card.mark - tileOffset(puzzle.key, id, length) + length) % length;
 }
 export const tileStatus = (puzzle, id, index) => index === swapIndex(puzzle, id) ? 'swap' : 'stay';
 export function createState(puzzle) {
   const columnById = Object.fromEntries(puzzle.cards.map(c => [c.id, c.column]));
   return {
-    solved: [], misses: 0, hints: 0, guesses: [], feedback: {}, columnById,
+    solved: [], misses: 0, hints: 0, guesses: [], feedback: {}, log: [], columnById,
     columns: [0, 1].map(column => puzzle.cards.filter(c => c.column === column).map(c => c.id))
   };
 }
 // Each solved entry is the pair of card ids in the order its answer reads.
+// The log records each counted attempt in order for the shared result: 'hit', 'miss', or 'hint'.
 export function usedIds(puzzle, state) {
   return new Set(state.solved.flat());
 }
@@ -58,7 +59,7 @@ export function swapWords(puzzle, ids, positions) {
 function matchAnswer(puzzle, ids, words) {
   for (const order of [[0, 1], [1, 0]]) {
     const ordered = order.map(i => ids[i]), label = labelFor(puzzle.category, order.map(i => words[i]));
-    const answer = puzzle.answers.find(a => a.digest === answerDigest(puzzle.id, ordered, label));
+    const answer = puzzle.answers.find(a => a.digest === answerDigest(puzzle.key, ordered, label));
     if (answer) return { ids: ordered, label, clue: openText(label, answer.clue) };
   }
   return null;
@@ -75,7 +76,7 @@ export function checkSwap(puzzle, state, ids, positions) {
   if (words.every((w, i) => w === cardFor(puzzle, ids[i]).word)) return { correct: false, unchanged: true, words };
   const answer = matchAnswer(puzzle, ids, words);
   if (answer) {
-    state.solved.push(answer.ids);
+    state.solved.push(answer.ids); state.log.push('hit');
     return { correct: true, index: state.solved.length - 1, words, label: answer.label, clue: answer.clue };
   }
   const key = ids.map((id, i) => id + ':' + positions[i]).sort().join('|');
@@ -88,6 +89,7 @@ export function checkSwap(puzzle, state, ids, positions) {
     state.feedback[id][positions[i]] = status;
     return { id, index: positions[i], status };
   });
+  if (!repeated) state.log.push('miss');
   return { correct: false, repeated, words, feedback };
 }
 export function revealHint(puzzle, state, random = Math.random) {
@@ -103,6 +105,6 @@ export function revealHint(puzzle, state, random = Math.random) {
   chosen.status = tileStatus(puzzle, chosen.id, chosen.index);
   state.feedback[chosen.id] ??= {};
   state.feedback[chosen.id][chosen.index] = chosen.status;
-  state.hints++;
+  state.hints++; state.log.push('hint');
   return chosen;
 }

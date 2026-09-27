@@ -11,8 +11,8 @@ export function hash(text) {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
 export const labelFor = (category, words) => words.join(category === 'Names' ? ' ' : '');
-export const answerDigest = (puzzleId, ids, label) => hash(`${puzzleId}|${ids.join('|')}|${label}`).toString(36);
-export const tileOffset = (puzzleId, id, length) => hash(`${puzzleId}~${id}`) % length;
+export const answerDigest = (boardKey, ids, label) => hash(`${boardKey}|${ids.join('|')}|${label}`).toString(36);
+export const tileOffset = (boardKey, id, length) => hash(`${boardKey}~${id}`) % length;
 function keystream(label, length) {
   const bytes = [];
   for (let block = 0; bytes.length < length; block++) {

@@ -21,6 +21,7 @@ function updateTimer() { $('timer').textContent=formatTime(elapsedMs(record()));
 function startPuzzle() {
   if(record().startedAt!==null)return;
   record().startedAt=Date.now();persist();render();
+  if (!reducedMotion()) document.querySelectorAll('.word-row').forEach((row, i) => row.animate([{ opacity: 0, transform: 'translateY(12px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 340, delay: (i % 4) * 60 + (i >= 4 ? 30 : 0), easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }));
   document.querySelector('[data-card]')?.focus();announce('Puzzle started. The timer runs until you finish.');
 }
 function resultText() {
@@ -68,7 +69,7 @@ function tile(char, id, index, interactive = false) {
     t.id = `letter-${id}-${index}`;
     t.setAttribute('aria-label', `${char}, letter ${index + 1} of ${wordFor(id)}${status ? '. ' + feedbackText(status) : ''}`);
     t.setAttribute('aria-pressed', String(positions[id] === index));
-    t.addEventListener('click', () => { positions[id] = index; $('trade-feedback').hidden = true; $('trade-message').classList.remove('error'); $('trade-message').textContent = categoryPrompt(); renderTrade(); $(t.id).focus(); });
+    t.addEventListener('click', () => { positions[id] = index; $('trade-feedback').hidden = true; $('trade-message').classList.remove('error'); $('trade-message').textContent = categoryPrompt(); renderTrade(); $(t.id)?.focus(); });
   }
   return t;
 }
@@ -114,12 +115,13 @@ function makeRow(id) {
 }
 function render(options = {}) {
   const p = puzzle(), s = state(), started = record().startedAt !== null;
-  $('puzzle-label').textContent = `Puzzle ${current + 1} / ${puzzles.length}`;
+  $('puzzle-label').textContent = `Puzzle ${current + 1} / ${puzzles.length}${record().finishedAt !== null ? ' ✓' : ''}`;
   $('category-name').textContent = p.category;
   $('category-description').textContent = categoryDescriptions[p.category];
+  $('difficulty').textContent = p.difficulty; $('difficulty').dataset.level = p.difficulty.toLowerCase();
   $('previous').disabled = current === 0; $('next').disabled = current === puzzles.length - 1;
   $('progress-label').textContent = `${s.solved.length} of ${p.answers.length} found`;
-  $('progress-dots').replaceChildren(...p.answers.map((_, i) => el('span', 'progress-square' + (i < s.solved.length ? ' filled' : ''), i < s.solved.length ? '✓' : '')));
+  $('progress-dots').replaceChildren(...p.answers.map((_, i) => el('span', 'progress-square' + (i < s.solved.length ? ' filled' : '') + (options.reveal === i ? ' just-filled' : ''), i < s.solved.length ? '✓' : '')));
   $('mistakes').textContent = `${s.misses} miss${s.misses === 1 ? '' : 'es'}`;
   $('board').replaceChildren(...[0, 1].map(column => {
     const panel = el('section', 'word-column'); panel.setAttribute('aria-label', column === 0 ? 'Left column' : 'Right column'); panel.dataset.column = String(column);
@@ -143,13 +145,27 @@ function render(options = {}) {
   updateTimer();if(!options.sync)persist();
   $('win').hidden = !won;
   $('win-summary').textContent = `Finished in ${formatTime(elapsedMs(record()))} · ${s.misses} miss${s.misses === 1 ? '' : 'es'} · ${hintsLabel(s.hints)}`;
-  $('next-after-win').hidden = current === puzzles.length - 1;
+  const upcoming = nextUnfinished();
+  $('next-after-win').hidden = upcoming < 0;
+  $('next-after-win').firstChild.textContent = upcoming === current + 1 ? 'Try the next puzzle ' : `Try puzzle ${upcoming + 1} `;
+  $('all-done').hidden = upcoming >= 0;
+  $('all-done').textContent = `That's all ${puzzles.length} test puzzles. Thanks for playing! Tell Zack what you thought.`;
   $('discoveries').hidden = !s.solved.length;
   $('solved-list').replaceChildren(...s.solved.map((ids, i) => {
     const row = el('div', 'solved-row' + (options.reveal === i ? ' newly-solved' : '')); row.append(el('span', 'solved-check', '✓'));
     const text = el('div'); text.append(el('div', 'solved-answer', solvedAnswer(p, ids).label), el('div', 'solved-source', ids.map(wordFor).join(' + '))); row.append(text); return row;
   }));
   animateReorder(options.before);
+}
+function nextUnfinished() {
+  for (let step = 1; step < puzzles.length; step++) { const i = (current + step) % puzzles.length; if (records[i].finishedAt === null) return i; }
+  return -1;
+}
+function lockTrade(locked) { $('trade-dialog').classList.toggle('is-solved', locked); $('letter-rows').inert = locked; $('reverse').inert = locked; }
+function openTrade() {
+  lockTrade(false); $('trade-feedback').hidden = true;
+  $('trade-message').textContent = categoryPrompt(); $('trade-message').classList.remove('error', 'success');
+  renderTrade(); if (!$('trade-dialog').open) $('trade-dialog').showModal();
 }
 function selectCard(id) {
   requireStarted();
@@ -159,7 +175,7 @@ function selectCard(id) {
   render();
   if (selected.length === 2) {
     selected.sort((a, b) => state().columnById[a] - state().columnById[b]); positions = {};
-    $('trade-feedback').hidden = true; $('trade-message').textContent = categoryPrompt(); $('trade-message').classList.remove('error'); renderTrade(); $('trade-dialog').showModal();
+    openTrade();
   }
 }
 function renderTrade() {
@@ -183,13 +199,22 @@ function submit() {
   const result = checkSwap(puzzle(), state(), selected, selected.map(id => positions[id]));
   if (result.correct) {
     finishRecord(puzzle(),record(),saved.completionDays);
-    $('trade-dialog').close(); selected = []; positions = {}; render({ before, reveal: result.index });
-    announce(`${result.label}. ${result.clue}`);
-    if (state().solved.length === puzzle().answers.length) $('win').scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'nearest' });
+    lockTrade(true); $('submit').disabled = true; $('trade-feedback').hidden = true;
+    $('trade-message').classList.remove('error'); $('trade-message').classList.add('success'); $('trade-message').textContent = 'Correct!';
+    $('preview').replaceChildren(...[...result.label].map((char, i) => { const t = el('span', char === ' ' ? 'solved-gap' : 'solved-letter', char); t.style.setProperty('--i', i); return t; }));
+    const board = current;
+    setTimeout(() => {
+      if (current !== board) return;
+      if ($('trade-dialog').open) $('trade-dialog').close();
+      selected = []; positions = {}; render({ before, reveal: result.index });
+      announce(`${result.label}. ${result.clue}`);
+      if (state().solved.length === puzzle().answers.length) { $('win').scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'nearest' }); celebrate(); }
+    }, reducedMotion() ? 300 : 850);
   } else {
     renderTrade();
     $('trade-message').textContent = result.unchanged ? 'Those letters are identical. Choose different letters; no miss counted.' : result.repeated ? 'You already tried this exchange. No extra miss counted.' : 'Not quite. Your original tiles now carry a clue.';
     $('trade-message').classList.add('error');
+    if (!reducedMotion() && !result.repeated && !result.unchanged) $('preview').animate([0, -7, 6, -4, 2, 0].map(x => ({ transform: `translateX(${x}px)` })), { duration: 380, easing: 'ease-out' });
     $('trade-feedback').hidden = !result.feedback;
     if (result.feedback) {
       $('trade-feedback').replaceChildren(...result.feedback.map(f => {
@@ -200,6 +225,22 @@ function submit() {
     render();
   }
   return result;
+}
+function celebrate() {
+  if (reducedMotion()) return;
+  const canvas = el('canvas', 'confetti'), ctx = canvas.getContext('2d'), w = innerWidth, h = innerHeight, dpr = devicePixelRatio || 1;
+  canvas.setAttribute('aria-hidden', 'true'); canvas.width = w * dpr; canvas.height = h * dpr; ctx.scale(dpr, dpr); document.body.append(canvas);
+  const css = getComputedStyle(document.documentElement), colors = ['--primary', '--swap', '--selected-line', '--stay-line'].map(v => css.getPropertyValue(v).trim());
+  const bits = Array.from({ length: 150 }, (_, i) => ({ x: w * (.35 + Math.random() * .3), y: h * .4, vx: (Math.random() - .5) * 13, vy: -5 - Math.random() * 11, size: 6 + Math.random() * 6, angle: Math.random() * 6, spin: (Math.random() - .5) * .3, color: colors[i % colors.length] }));
+  const start = performance.now(), length = 1900;
+  requestAnimationFrame(function frame(now) {
+    const t = now - start; ctx.clearRect(0, 0, w, h); ctx.globalAlpha = Math.max(0, 1 - Math.max(0, t - 900) / (length - 900));
+    for (const b of bits) {
+      b.vy += .35; b.vx *= .985; b.x += b.vx; b.y += b.vy; b.angle += b.spin;
+      ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.angle); ctx.fillStyle = b.color; ctx.fillRect(-b.size / 2, -b.size / 3, b.size, b.size * .66); ctx.restore();
+    }
+    if (t < length) requestAnimationFrame(frame); else canvas.remove();
+  });
 }
 function move(id, index, before = captureRows()) {
   requireStarted();
@@ -264,11 +305,11 @@ $('help').addEventListener('click', () => $('help-dialog').showModal()); $('feed
 $('hint').addEventListener('click', openHint); $('submit').addEventListener('click', submit);
 $('reverse').addEventListener('click', () => { selected.reverse(); renderTrade(); });
 $('clear').addEventListener('click', () => { selected = []; render(); });
-$('previous').addEventListener('click', () => goTo(current - 1)); $('next').addEventListener('click', () => goTo(current + 1)); $('next-after-win').addEventListener('click', () => goTo(current + 1));
+$('previous').addEventListener('click', () => goTo(current - 1)); $('next').addEventListener('click', () => goTo(current + 1)); $('next-after-win').addEventListener('click', () => goTo(nextUnfinished()));
 $('reorder-toggle').addEventListener('click', () => { requireStarted(); reorderMode = !reorderMode; render(); announce(reorderMode ? 'Up and down buttons are shown beneath each word.' : 'Reorder controls hidden.'); });
 $('shuffle').addEventListener('click', e => { requireStarted(); const before = captureRows(); shuffleColumns(puzzle(), state()); render({ before }); announce('Both columns shuffled. Every word stayed on its own side.'); if (e.detail > 0) $('shuffle').blur(); });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close).close()));
-$('trade-dialog').addEventListener('close', () => { if (!selected.length) return; selected = []; positions = {}; render(); });
+$('trade-dialog').addEventListener('close', () => { lockTrade(false); if (!selected.length) return; selected = []; positions = {}; render(); });
 updateThemeButton(); render();
 let helpSeen = true; try { helpSeen = localStorage.getItem('spoondle-help-seen') !== null; } catch {}
 if (!helpSeen) $('help-dialog').showModal();
@@ -293,7 +334,7 @@ if (context?.registerTool) {
       const ids = input?.cardIds, indices = input?.letterIndices; swapWords(puzzle(), ids, indices);
       if (ids.some(id => usedIds(puzzle(), state()).has(id))) throw new Error('Choose unsolved cards.');
       if (state().columnById[ids[0]] === state().columnById[ids[1]]) throw new Error('Choose one word from each column.');
-      selected = [...ids]; positions = Object.fromEntries(ids.map((id, i) => [id, indices[i]])); renderTrade(); if (!$('trade-dialog').open) $('trade-dialog').showModal(); return submit();
+      selected = [...ids]; positions = Object.fromEntries(ids.map((id, i) => [id, indices[i]])); openTrade(); return submit();
     } }
   ];
   for (const tool of tools) { try { Promise.resolve(context.registerTool({ ...tool, annotations: { readOnlyHint: false, untrustedContentHint: false, ...tool.annotations } }, { signal: lifecycle.signal })).catch(() => {}); } catch {} }
