@@ -1,15 +1,14 @@
 import { puzzles } from './puzzles.mjs';
-import { createState, swapWords, checkSwap, hintCount, usedIds, availableColumn, moveWord, shuffleColumns, revealHint } from './game.mjs';
-const $ = id => document.getElementById(id);
+import { swapWords, checkSwap, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint } from './game.mjs';
 import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, streak, shareText } from './progress.mjs';
+const $ = id => document.getElementById(id);
 let saved = { records:{},completionDays:[],current:null }, storageAvailable = true;
 try { saved = readProgress(localStorage); } catch { storageAvailable = false; }
 const keys = puzzles.map(puzzleKey);
-const oldKeys = keys.map(key => 'ct-' + key.slice(3));
-let records = puzzles.map((p,i) => restoreRecord(p,saved.records[keys[i]] ?? saved.records[oldKeys[i]]));
+let records = puzzles.map((p,i) => restoreRecord(p,saved.records[keys[i]]));
 let states = records.map(r=>r.state);
 const requestedKey = new URL(location.href).searchParams.get('p');
-const initialIndex = Math.max(keys.indexOf(requestedKey || saved.current),oldKeys.indexOf(requestedKey || saved.current));
+const initialIndex = keys.indexOf(requestedKey || saved.current);
 let current = Math.max(0,initialIndex), selected = [], positions = {}, reorderMode = false, drag = null, suppressHandleClickUntil = 0;
 const puzzle = () => puzzles[current], state = () => states[current], record = () => records[current];
 function persist() {
@@ -119,8 +118,8 @@ function render(options = {}) {
   $('category-name').textContent = p.category;
   $('category-description').textContent = categoryDescriptions[p.category];
   $('previous').disabled = current === 0; $('next').disabled = current === puzzles.length - 1;
-  $('progress-label').textContent = `${s.solved.length} of 4 found`;
-  $('progress-dots').replaceChildren(...[0, 1, 2, 3].map(i => el('span', 'progress-square' + (i < s.solved.length ? ' filled' : ''), i < s.solved.length ? '✓' : '')));
+  $('progress-label').textContent = `${s.solved.length} of ${p.answers.length} found`;
+  $('progress-dots').replaceChildren(...p.answers.map((_, i) => el('span', 'progress-square' + (i < s.solved.length ? ' filled' : ''), i < s.solved.length ? '✓' : '')));
   $('mistakes').textContent = `${s.misses} miss${s.misses === 1 ? '' : 'es'}`;
   $('board').replaceChildren(...[0, 1].map(column => {
     const panel = el('section', 'word-column'); panel.setAttribute('aria-label', column === 0 ? 'Left column' : 'Right column'); panel.dataset.column = String(column);
@@ -136,19 +135,19 @@ function render(options = {}) {
   const used = usedIds(p, s);
   $('hint').disabled = !p.cards.some(c => !used.has(c.id) && [...c.word].some((_, i) => !s.feedback[c.id]?.[i]));
   $('hint').title = $('hint').disabled ? 'Every remaining tile color has been revealed' : 'Reveal one random, unrevealed tile';
-  const won = s.solved.length === 4;
+  const won = s.solved.length === p.answers.length;
   $('board-stage').hidden=won;
   $('board').classList.toggle('is-locked',!started);$('board').inert=!started;
   $('board').setAttribute('aria-hidden',String(!started));$('start-gate').hidden=started;
   for (const id of ['selection-bar', 'board-tools', 'feedback-key', 'reorder-toggle-wrap']) $(id).hidden = won || !started;
   updateTimer();if(!options.sync)persist();
   $('win').hidden = !won;
-  $('win-summary').textContent = `Finished in ${formatTime(elapsedMs(record()))} · ${s.misses} miss${s.misses === 1 ? '' : 'es'} · ${hintsLabel(hintCount(s))}`;
+  $('win-summary').textContent = `Finished in ${formatTime(elapsedMs(record()))} · ${s.misses} miss${s.misses === 1 ? '' : 'es'} · ${hintsLabel(s.hints)}`;
   $('next-after-win').hidden = current === puzzles.length - 1;
   $('discoveries').hidden = !s.solved.length;
-  $('solved-list').replaceChildren(...s.solved.map(i => {
-    const a = p.answers[i], row = el('div', 'solved-row' + (options.reveal === i ? ' newly-solved' : '')); row.append(el('span', 'solved-check', '✓'));
-    const text = el('div'); text.append(el('div', 'solved-answer', a.label), el('div', 'solved-source', a.ids.map(wordFor).join(' + '))); row.append(text); return row;
+  $('solved-list').replaceChildren(...s.solved.map((ids, i) => {
+    const row = el('div', 'solved-row' + (options.reveal === i ? ' newly-solved' : '')); row.append(el('span', 'solved-check', '✓'));
+    const text = el('div'); text.append(el('div', 'solved-answer', solvedAnswer(p, ids).label), el('div', 'solved-source', ids.map(wordFor).join(' + '))); row.append(text); return row;
   }));
   animateReorder(options.before);
 }
@@ -183,10 +182,10 @@ function submit() {
   const before = captureRows();
   const result = checkSwap(puzzle(), state(), selected, selected.map(id => positions[id]));
   if (result.correct) {
-    finishRecord(record(),saved.completionDays);
+    finishRecord(puzzle(),record(),saved.completionDays);
     $('trade-dialog').close(); selected = []; positions = {}; render({ before, reveal: result.index });
-    announce(`${result.label}. ${puzzle().answers[result.index].hint}`);
-    if (state().solved.length === 4) $('win').scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'nearest' });
+    announce(`${result.label}. ${result.clue}`);
+    if (state().solved.length === puzzle().answers.length) $('win').scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'nearest' });
   } else {
     renderTrade();
     $('trade-message').textContent = result.unchanged ? 'Those letters are identical. Choose different letters; no miss counted.' : result.repeated ? 'You already tried this exchange. No extra miss counted.' : 'Not quite. Your original tiles now carry a clue.';
@@ -260,7 +259,7 @@ function updateThemeButton() {
 $('start').addEventListener('click', startPuzzle);
 $('share-result').addEventListener('click',shareResult);$('copy-result').addEventListener('click',copyResult);
 $('theme').addEventListener('click', () => { const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = theme; try { localStorage.setItem('spoondle-theme', theme); } catch {} updateThemeButton(); });
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { let preference; try { preference = localStorage.getItem('spoondle-theme') ?? localStorage.getItem('cross-talk-theme'); } catch {} if (!preference) { document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'; updateThemeButton(); } });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { let preference; try { preference = localStorage.getItem('spoondle-theme'); } catch {} if (!preference) { document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'; updateThemeButton(); } });
 $('help').addEventListener('click', () => $('help-dialog').showModal()); $('feedback-help').addEventListener('click', () => $('help-dialog').showModal());
 $('hint').addEventListener('click', openHint); $('submit').addEventListener('click', submit);
 $('reverse').addEventListener('click', () => { selected.reverse(); renderTrade(); });
@@ -271,20 +270,23 @@ $('shuffle').addEventListener('click', e => { requireStarted(); const before = c
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close).close()));
 $('trade-dialog').addEventListener('close', () => { if (!selected.length) return; selected = []; positions = {}; render(); });
 updateThemeButton(); render();
+let helpSeen = true; try { helpSeen = localStorage.getItem('spoondle-help-seen') !== null; } catch {}
+if (!helpSeen) $('help-dialog').showModal();
+$('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen', '1'); } catch {} });
 if(requestedKey && initialIndex<0)announce('That shared puzzle is not in this test edition. Choose one of the available puzzles.');
 setInterval(updateTimer,250);
 window.addEventListener('pagehide',persist);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)persist();else updateTimer();});
 window.addEventListener('storage',event=>{
   if(event.key!==STORAGE_KEY||!event.newValue)return;
-  try{saved=readProgress(localStorage);records=puzzles.map((p,i)=>restoreRecord(p,saved.records[keys[i]] ?? saved.records[oldKeys[i]]));states=records.map(r=>r.state);selected=[];positions={};document.querySelectorAll('dialog[open]').forEach(d=>d.close());render({sync:true});}catch{}
+  try{saved=readProgress(localStorage);records=puzzles.map((p,i)=>restoreRecord(p,saved.records[keys[i]]));states=records.map(r=>r.state);selected=[];positions={};document.querySelectorAll('dialog[open]').forEach(d=>d.close());render({sync:true});}catch{}
 });
 const context = document.modelContext;
 if (context?.registerTool) {
   const lifecycle = new AbortController();
   const tools = [
     { name: 'read_spoondle_board', description: 'Read available words by column, revealed tile feedback, progress, and selection. Does not reveal answers.', inputSchema: { type: 'object', properties: {}, additionalProperties: false }, annotations: { readOnlyHint: true }, execute: () => record().startedAt===null ? {puzzle:current+1,category:puzzle().category,started:false,message:'Start the puzzle to reveal its words.'} : ({ puzzle: current + 1, category:puzzle().category, columns: state().columns.map((_, column) => availableColumn(puzzle(), state(), column).map(id => ({ id, word: wordFor(id) }))), feedback: state().feedback, found: state().solved.length, misses: state().misses, selected }) },
-    { name: 'start_spoondle_puzzle', description: 'Switch to one of nine puzzles and start its timer. Saved progress is preserved.', inputSchema: { type: 'object', properties: { puzzleNumber: { type: 'integer', minimum: 1, maximum: puzzles.length } }, required: ['puzzleNumber'], additionalProperties: false }, execute: input => { goTo(input?.puzzleNumber - 1); startPuzzle(); return { puzzle: current + 1 }; } },
+    { name: 'start_spoondle_puzzle', description: `Switch to one of ${puzzles.length} puzzles and start its timer. Saved progress is preserved.`, inputSchema: { type: 'object', properties: { puzzleNumber: { type: 'integer', minimum: 1, maximum: puzzles.length } }, required: ['puzzleNumber'], additionalProperties: false }, execute: input => { goTo(input?.puzzleNumber - 1); startPuzzle(); return { puzzle: current + 1 }; } },
     { name: 'reorder_spoondle_word', description: 'Move an available word to a zero-based position within its existing column.', inputSchema: { type: 'object', properties: { cardId: { type: 'string' }, position: { type: 'integer', minimum: 0, maximum: 3 } }, required: ['cardId', 'position'], additionalProperties: false }, execute: input => { if (!input || typeof input.cardId !== 'string') throw new Error('Choose a word.'); return move(input.cardId, input.position); } },
     { name: 'submit_spoondle_swap', description: 'Submit a reciprocal letter exchange using one word from each column. Incorrect new guesses add one miss and reveal tile feedback.', inputSchema: { type: 'object', properties: { cardIds: { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 2 }, letterIndices: { type: 'array', items: { type: 'integer', minimum: 0 }, minItems: 2, maxItems: 2 } }, required: ['cardIds', 'letterIndices'], additionalProperties: false }, execute: input => {
       requireStarted();

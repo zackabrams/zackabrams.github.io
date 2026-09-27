@@ -1,17 +1,20 @@
+import { labelFor, answerDigest, tileOffset, openText } from './seal.mjs';
+const cardFor = (puzzle, id) => puzzle.cards.find(c => c.id === id);
+export function swapIndex(puzzle, id) {
+  const card = cardFor(puzzle, id), length = card.word.length;
+  return (card.mark - tileOffset(puzzle.id, id, length) + length) % length;
+}
+export const tileStatus = (puzzle, id, index) => index === swapIndex(puzzle, id) ? 'swap' : 'stay';
 export function createState(puzzle) {
-  const columnById = {};
-  puzzle.answers.forEach((answer, index) => {
-    const flip = (index + puzzle.id) % 2;
-    columnById[answer.ids[flip]] = 0;
-    columnById[answer.ids[1 - flip]] = 1;
-  });
+  const columnById = Object.fromEntries(puzzle.cards.map(c => [c.id, c.column]));
   return {
     solved: [], misses: 0, hints: 0, guesses: [], feedback: {}, columnById,
-    columns: [0, 1].map(column => puzzle.cards.filter(c => columnById[c.id] === column).map(c => c.id))
+    columns: [0, 1].map(column => puzzle.cards.filter(c => c.column === column).map(c => c.id))
   };
 }
+// Each solved entry is the pair of card ids in the order its answer reads.
 export function usedIds(puzzle, state) {
-  return new Set(state.solved.flatMap(i => puzzle.answers[i].ids));
+  return new Set(state.solved.flat());
 }
 export function availableColumn(puzzle, state, column) {
   const used = usedIds(puzzle, state);
@@ -43,7 +46,7 @@ export function shuffleColumns(puzzle, state, random = Math.random) {
 }
 export function swapWords(puzzle, ids, positions) {
   if (!Array.isArray(ids) || ids.length !== 2 || ids[0] === ids[1]) throw new Error('Choose two different words.');
-  const cards = ids.map(id => puzzle.cards.find(c => c.id === id));
+  const cards = ids.map(id => cardFor(puzzle, id));
   if (cards.some(c => !c)) throw new Error('Unknown word card.');
   if (!Array.isArray(positions) || positions.length !== 2 || positions.some((p, i) => !Number.isInteger(p) || p < 0 || p >= cards[i].word.length)) throw new Error('Choose one letter in each word.');
   const words = cards.map(c => c.word.split(''));
@@ -51,26 +54,36 @@ export function swapWords(puzzle, ids, positions) {
   [words[0][a], words[1][b]] = [words[1][b], words[0][a]];
   return words.map(w => w.join(''));
 }
+// Tries both reading orders of the traded words against the answer fingerprints.
+function matchAnswer(puzzle, ids, words) {
+  for (const order of [[0, 1], [1, 0]]) {
+    const ordered = order.map(i => ids[i]), label = labelFor(puzzle.category, order.map(i => words[i]));
+    const answer = puzzle.answers.find(a => a.digest === answerDigest(puzzle.id, ordered, label));
+    if (answer) return { ids: ordered, label, clue: openText(label, answer.clue) };
+  }
+  return null;
+}
+// The answer a solved pair makes, or null when the two cards are not partners.
+export function solvedAnswer(puzzle, ids) {
+  return matchAnswer(puzzle, ids, swapWords(puzzle, ids, ids.map(id => swapIndex(puzzle, id))));
+}
 export function checkSwap(puzzle, state, ids, positions) {
   const words = swapWords(puzzle, ids, positions);
   if (state.columnById[ids[0]] === state.columnById[ids[1]]) throw new Error('Choose one word from each column.');
   const used = usedIds(puzzle, state);
   if (ids.some(id => used.has(id))) throw new Error('That word has already been solved.');
-  if (words.every((w, i) => w === puzzle.cards.find(c => c.id === ids[i]).word)) return { correct: false, unchanged: true, words };
-  const index = puzzle.answers.findIndex(a => ids.every((id, i) => a.ids.includes(id) && a.words[a.ids.indexOf(id)] === words[i]));
-  if (index >= 0) {
-    state.solved.push(index);
-    return { correct: true, index, words, label: puzzle.answers[index].label };
+  if (words.every((w, i) => w === cardFor(puzzle, ids[i]).word)) return { correct: false, unchanged: true, words };
+  const answer = matchAnswer(puzzle, ids, words);
+  if (answer) {
+    state.solved.push(answer.ids);
+    return { correct: true, index: state.solved.length - 1, words, label: answer.label, clue: answer.clue };
   }
   const key = ids.map((id, i) => id + ':' + positions[i]).sort().join('|');
   const repeated = state.guesses.includes(key);
   if (!repeated) { state.guesses.push(key); state.misses++; }
   // Feedback belongs to a particular ORIGINAL tile, not every copy of its letter.
   const feedback = ids.map((id, i) => {
-    const answer = puzzle.answers.find(a => a.ids.includes(id));
-    const source = puzzle.cards.find(c => c.id === id).word;
-    const target = answer.words[answer.ids.indexOf(id)];
-    const status = source[positions[i]] !== target[positions[i]] ? 'swap' : 'stay';
+    const status = tileStatus(puzzle, id, positions[i]);
     state.feedback[id] ??= {};
     state.feedback[id][positions[i]] = status;
     return { id, index: positions[i], status };
@@ -87,13 +100,9 @@ export function revealHint(puzzle, state, random = Math.random) {
   }
   if (!candidates.length) return null;
   const chosen = candidates[Math.floor(random() * candidates.length)];
-  const answer = puzzle.answers.find(a => a.ids.includes(chosen.id));
-  const source = puzzle.cards.find(c => c.id === chosen.id).word;
-  const target = answer.words[answer.ids.indexOf(chosen.id)];
-  chosen.status = source[chosen.index] !== target[chosen.index] ? 'swap' : 'stay';
+  chosen.status = tileStatus(puzzle, chosen.id, chosen.index);
   state.feedback[chosen.id] ??= {};
   state.feedback[chosen.id][chosen.index] = chosen.status;
   state.hints++;
   return chosen;
 }
-export function hintCount(state) { return state.hints; }

@@ -1,8 +1,7 @@
-import { createState } from './game.mjs';
+import { createState, solvedAnswer, tileStatus } from './game.mjs';
 export const STORAGE_KEY = 'spoondle-progress-v1';
-const LEGACY_STORAGE_KEY = 'cross-talk-progress-v1';
 export function puzzleKey(puzzle) {
-  const text = JSON.stringify([puzzle.cards.map(c => [c.id,c.word]).sort(),puzzle.answers.map(a => [a.ids,a.words,a.label])]);
+  const text = JSON.stringify([puzzle.cards.map(c => [c.id,c.word]).sort(),puzzle.answers.map(a => a.digest)]);
   let hash = 2166136261;
   for (const c of text) { hash ^= c.charCodeAt(0); hash = Math.imul(hash,16777619); }
   return 'sp-' + (hash >>> 0).toString(36);
@@ -13,7 +12,9 @@ export function restoreRecord(puzzle, saved) {
   if (!saved || !Number.isFinite(saved.startedAt) || saved.startedAt <= 0) return fresh;
   try {
     const s = saved.state, base = fresh.state, ids = puzzle.cards.map(c=>c.id);
-    if (!Array.isArray(s.solved) || new Set(s.solved).size !== s.solved.length || s.solved.some(i=>!Number.isInteger(i)||!puzzle.answers[i])) return fresh;
+    if (!Array.isArray(s.solved) || s.solved.length>puzzle.answers.length || new Set(s.solved.flat()).size!==s.solved.length*2) return fresh;
+    const solved = s.solved.map(pair => Array.isArray(pair) && solvedAnswer(puzzle,pair)?.ids);
+    if (solved.some(ids=>!ids)) return fresh;
     if (![s.misses,s.hints].every(n=>Number.isInteger(n)&&n>=0) || !Array.isArray(s.guesses) || s.guesses.some(x=>typeof x!=='string')) return fresh;
     if (s.columns.length!==2 || s.columns.flat().length!==ids.length || new Set(s.columns.flat()).size!==ids.length || s.columns.some((col,i)=>col.some(id=>base.columnById[id]!==i))) return fresh;
     if (s.solved.length===puzzle.answers.length && (!Number.isFinite(saved.finishedAt)||saved.finishedAt<saved.startedAt)) return fresh;
@@ -21,17 +22,16 @@ export function restoreRecord(puzzle, saved) {
     for (const [id, values] of Object.entries(s.feedback || {})) {
       const card=puzzle.cards.find(c=>c.id===id); if(!card) return fresh;
       feedback[id]={};
-      const answer=puzzle.answers.find(a=>a.ids.includes(id)), target=answer.words[answer.ids.indexOf(id)];
       for(const index of Object.keys(values)) {
         if(!/^\d+$/.test(index)||Number(index)>=card.word.length)return fresh;
-        feedback[id][index]=card.word[index]===target[index]?'stay':'swap';
+        feedback[id][index]=tileStatus(puzzle,id,Number(index));
       }
     }
-    return { state:{...base,solved:[...s.solved],misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback}, startedAt:saved.startedAt, finishedAt:s.solved.length===puzzle.answers.length?saved.finishedAt:null };
+    return { state:{...base,solved,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback}, startedAt:saved.startedAt, finishedAt:s.solved.length===puzzle.answers.length?saved.finishedAt:null };
   } catch { return fresh; }
 }
 export function readProgress(storage) {
-  const raw=storage.getItem(STORAGE_KEY) ?? storage.getItem(LEGACY_STORAGE_KEY);
+  const raw=storage.getItem(STORAGE_KEY);
   if(!raw)return {records:{},completionDays:[],current:null};
   try { const data=JSON.parse(raw); return {records:data.records && typeof data.records==='object'?data.records:{},completionDays:Array.isArray(data.completionDays)?data.completionDays.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)):[],current:typeof data.current==='string'?data.current:null}; }
   catch { return {records:{},completionDays:[],current:null}; }
@@ -42,8 +42,8 @@ export function formatTime(ms) {
   return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`;
 }
 export function localDay(now=Date.now()) { const d=new Date(now);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-export function finishRecord(record, days, now=Date.now()) {
-  if(record.startedAt===null||record.finishedAt!==null||record.state.solved.length!==4)return false;
+export function finishRecord(puzzle, record, days, now=Date.now()) {
+  if(record.startedAt===null||record.finishedAt!==null||record.state.solved.length!==puzzle.answers.length)return false;
   record.finishedAt=Math.max(record.startedAt,now);const day=localDay(now);if(!days.includes(day))days.push(day);return true;
 }
 export function streak(days, now=Date.now()) {
@@ -55,5 +55,5 @@ export function streak(days, now=Date.now()) {
 export function shareText(puzzle, record, url) {
   if(record.finishedAt===null)throw new Error('Finish the puzzle before sharing your result.');
   const s=record.state;
-  return `Spoondle · Test puzzle ${puzzle.id}\n4/4 solved in ${formatTime(elapsedMs(record))}\n${s.misses} miss${s.misses===1?'':'es'} · ${s.hints} hint${s.hints===1?'':'s'}\nCan you beat my time?\n${url}`;
+  return `Spoondle · Test puzzle ${puzzle.id}\n${s.solved.length}/${puzzle.answers.length} solved in ${formatTime(elapsedMs(record))}\n${s.misses} miss${s.misses===1?'':'es'} · ${s.hints} hint${s.hints===1?'':'s'}\nCan you beat my time?\n${url}`;
 }
