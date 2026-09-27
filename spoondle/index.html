@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#284be8">
+<title>Spoondle — a word-swap puzzle</title>
+<meta name="description" content="Swap letters to uncover names, compound words, and hidden words. Play six test puzzles of Spoondle.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23284be8'/%3E%3Cpath d='M15 23h34l-8-8m8 26H15l8 8' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>try{const t=localStorage.getItem('spoondle-theme')??localStorage.getItem('cross-talk-theme');document.documentElement.dataset.theme=t==='dark'||t==='light'?t:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}</script>
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.mjs"></script>
+</head>
+<body>
+<div class="shell">
+<header class="masthead"><a class="brand" href="./" aria-label="Spoondle home">spoondle<span class="brand-dot">.</span></a><div class="header-actions"><button id="theme" class="round-button" aria-label="Use dark mode" aria-pressed="false"><span aria-hidden="true">☾</span></button><button id="help" class="round-button" aria-label="How to play">?</button></div></header>
+<main>
+<div class="puzzle-bar"><span class="edition">THE TEST EDITION</span><nav class="puzzle-nav" aria-label="Choose a puzzle"><button id="previous" class="nav-button" aria-label="Previous puzzle">←</button><span id="puzzle-label">Puzzle 1 / 6</span><button id="next" class="nav-button" aria-label="Next puzzle">→</button></nav></div>
+<section class="intro"><h1>Something got crossed.</h1><p>Pair the words. Trade a letter. Find four answers in the same category.</p></section>
+<section class="category-panel" aria-labelledby="category-heading"><span class="category-heading" id="category-heading">THIS PUZZLE'S CATEGORY</span><strong id="category-name">Names</strong><span id="category-description">Find familiar people, places, groups, or titles.</span></section>
+<div class="score-bar"><div class="progress"><span id="progress-dots" aria-hidden="true"></span><span id="progress-label">0 of 4 found</span></div><span class="mistakes" id="mistakes">0 misses</span></div>
+<div class="session-bar"><span class="timer-label">Time <strong id="timer" role="timer" aria-label="Elapsed time">0:00</strong></span><span id="streak-label" title="Finish a puzzle on consecutive days to build a play streak.">0-day play streak</span></div>
+<p id="save-warning" class="save-warning" role="status" hidden>Saving is unavailable in this browser. Keep this tab open to retain your progress.</p>
+<div id="board-stage" class="board-stage"><div id="board" class="board" aria-label="Two word columns" aria-describedby="selection-prompt"></div><div id="start-gate" class="start-gate"><div class="start-card"><h2>Ready to uncross?</h2><p>Reveal the words and start the clock.<br>No time limit. Take as long as you need.</p><button id="start" class="primary">Start puzzle</button><p class="timer-note">Once started, time keeps running until you finish, even if you leave.</p></div></div></div>
+<div id="selection-bar" class="selection-bar"><span id="selection-prompt">Pick one word from each column. Drag the handles to rearrange.</span><button id="clear" class="text-button" hidden>Clear selection</button></div>
+<div id="win" class="win" hidden><div class="win-symbol" aria-hidden="true">✓</div><h2>Everything clicks.</h2><p id="win-summary"></p><div class="share-actions"><button id="share-result" class="primary">Share result</button><button id="copy-result" class="secondary">Copy result</button></div><p id="share-status" role="status" class="share-status"></p><button id="next-after-win" class="primary">Try the next puzzle <span aria-hidden="true">→</span></button></div>
+<div class="board-tools" id="board-tools"><button id="shuffle" class="secondary"><span aria-hidden="true">⇄</span> Shuffle</button><button id="hint" class="secondary"><span aria-hidden="true">✦</span> Reveal a tile</button></div>
+<div class="feedback-key" id="feedback-key" aria-label="Tile feedback"><span><i class="key-tile swap"></i> Swap this tile</span><span><i class="key-tile stay"></i> Leave this tile</span><button id="feedback-help" class="text-button" aria-label="Learn about tile feedback">How it works</button></div>
+<div class="reorder-toggle-wrap" id="reorder-toggle-wrap"><button id="reorder-toggle" class="text-button" aria-pressed="false">Reorder</button></div>
+<p id="announcement" class="announcement" role="status" aria-live="polite"></p>
+<section id="discoveries" class="discoveries" aria-labelledby="discoveries-title" hidden><div class="section-label" id="discoveries-title">THE CONNECTIONS YOU FOUND</div><div id="solved-list"></div></section>
+</main>
+<footer><span>Eight words. Four swaps.</span><span>A language puzzle game by Zack Abrams</span></footer>
+</div>
+<dialog id="trade-dialog" class="trade-dialog" aria-labelledby="trade-title">
+<div class="dialog-top"><span class="edition">THE EXCHANGE</span><button class="close-button" data-close="trade-dialog" aria-label="Close letter exchange">×</button></div>
+<h2 id="trade-title">Make the trade.</h2><p class="dialog-description">Choose one letter in each word.</p>
+<div id="letter-rows" class="letter-rows"></div><div id="trade-feedback" class="trade-feedback" aria-live="polite" hidden></div>
+<div class="preview-wrap"><div class="preview-top"><span class="section-label">YOUR RESULT</span><button id="reverse" class="text-button">Reverse order ⇄</button></div><div id="preview" class="preview" aria-live="polite"></div></div>
+<p id="trade-message" class="trade-message" role="status">Make an answer in this puzzle's category.</p>
+<button id="submit" class="primary full" disabled>Check pair</button>
+</dialog>
+<dialog id="help-dialog" aria-labelledby="help-title"><div class="dialog-top"><span class="edition">HOW TO PLAY</span><button class="close-button" data-close="help-dialog" aria-label="Close instructions">×</button></div><h2 id="help-title">A fair exchange.</h2><ol class="rules"><li>Pick <strong>one word from each column</strong>. Tap anywhere on a word to select it. Drag a handle to move it up or down; words stay on their own side. Choose “Reorder” to show optional move buttons, or focus a handle and use the arrow keys.</li><li>Swap exactly one letter from each. All other letters stay put.</li><li>Find four answers in the category shown above the board: <strong>Names</strong> (people, places, groups, or titles), <strong>Compound words</strong> (two meaningful words joined into one), or <strong>Hidden words</strong> (an ordinary single word revealed by joining the new pieces, like FOR + GET → FORGET).</li></ol><div class="example"><div>HEA<b>L</b> + <b>D</b>OCK</div><span aria-hidden="true">↓</span><strong>HEADLOCK</strong></div><p>The swapped letters can be anywhere—even in different positions. Read the result in either order, with or without a space. Every letter in the answer comes from your two cards; no extra words are needed.</p><div class="help-feedback"><h3>Every miss leaves a clue.</h3><p><span class="key-tile swap"></span> <strong>Swap this tile.</strong> You found the right position to change, but the pair or exchange was wrong.</p><p><span class="key-tile stay"></span> <strong>Leave this tile.</strong> This letter stays in place in the answer.</p><p>Colors stay on the original letter tiles, even after you reorder the words. They never reveal the replacement letter. The hint button colors one random, unrevealed tile.</p></div><p>Use all eight cards to find four answers. Press Start to reveal the board. The timer runs until your last answer, including time away from the game; there is no time limit. Progress and results are saved on this browser. Finish a puzzle on consecutive days to build a play streak; multiple wins in one day count once. Share your time, misses, and hints without revealing any answers.</p><button class="primary full" data-close="help-dialog">Let's play</button></dialog>
+
+
+<dialog id="share-dialog" aria-labelledby="share-title"><div class="dialog-top"><span class="edition">YOUR RESULT</span><button class="close-button" data-close="share-dialog" aria-label="Close sharing">×</button></div><h2 id="share-title">Send a little challenge.</h2><p>Copy this result and send it to a friend. The link opens the same puzzle.</p><textarea id="share-text" readonly aria-label="Spoiler-free result" rows="7"></textarea><button class="primary full" data-close="share-dialog">Done</button></dialog>
+</body></html>
