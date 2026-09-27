@@ -47,7 +47,7 @@ const hintsLabel = n => `${n} hint${n === 1 ? '' : 's'}`;
 const categoryDescriptions = {
   'Names': 'Find familiar people, places, groups, or titles.',
   'Compound words': 'Join two meaningful pieces into one word.',
-  'Hidden words': 'Join the new pieces to reveal one hidden word.'
+  'Hidden words': 'Extra tricky! Join the new pieces to reveal one hidden word.'
 };
 const categoryPrompt = () => `Make an answer in the ${puzzle().category.toLowerCase()} category. Try either order.`;
 function announce(text) { $('announcement').textContent = text; }
