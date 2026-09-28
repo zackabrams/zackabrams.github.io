@@ -1,6 +1,6 @@
 import { puzzles } from './puzzles.mjs';
 import { swapWords, checkSwap, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint, hintTargets } from './game.mjs';
-import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, giveUpRecord, streak, shareText } from './progress.mjs';
+import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, giveUpRecord, pauseRecord, resumeRecord, streak, shareText } from './progress.mjs';
 const $ = id => document.getElementById(id);
 let saved = { records:{},completionDays:[],current:null }, storageAvailable = true;
 try { saved = readProgress(localStorage); } catch { storageAvailable = false; }
@@ -16,13 +16,15 @@ function persist() {
   try { localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));storageAvailable=true; } catch { storageAvailable=false; }
   $('save-warning').hidden=storageAvailable;
 }
+// Only the puzzle on screen, in a visible tab, has a running clock.
+function syncClocks() { records.forEach((r, i) => i === current && !document.hidden ? resumeRecord(r) : pauseRecord(r)); }
 function requireStarted() { if(record().startedAt===null)throw new Error('Press Start to reveal this puzzle and begin the timer.'); }
 function updateTimer() { $('timer').textContent=formatTime(elapsedMs(record()));const n=streak(saved.completionDays);$('streak-label').textContent=`${n}-day play streak`; }
 function startPuzzle() {
   if(record().startedAt!==null)return;
-  record().startedAt=Date.now();persist();render();
+  record().startedAt=Date.now();syncClocks();persist();render();
   if (!reducedMotion()) document.querySelectorAll('.word-row').forEach((row, i) => row.animate([{ opacity: 0, transform: 'translateY(12px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 340, delay: (i % 4) * 60 + (i >= 4 ? 30 : 0), easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }));
-  document.querySelector('[data-card]')?.focus();announce('Puzzle started. The timer runs until you finish.');
+  document.querySelector('[data-card]')?.focus();announce('Puzzle started. The clock runs while this puzzle is on screen.');
 }
 function resultText() {
   const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('p',keys[current]);
@@ -69,7 +71,7 @@ function tile(char, id, index, interactive = false) {
     t.id = `letter-${id}-${index}`;
     t.setAttribute('aria-label', `${char}, letter ${index + 1} of ${wordFor(id)}${status ? '. ' + feedbackText(status) : ''}`);
     t.setAttribute('aria-pressed', String(positions[id] === index));
-    t.addEventListener('click', () => { positions[id] = index; $('trade-feedback').hidden = true; $('trade-message').classList.remove('error'); $('trade-message').textContent = categoryPrompt(); renderTrade(); $(t.id)?.focus(); });
+    t.addEventListener('click', () => { if (positions[id] === index) delete positions[id]; else positions[id] = index; $('trade-feedback').hidden = true; $('trade-message').classList.remove('error'); $('trade-message').textContent = categoryPrompt(); renderTrade(); $(t.id)?.focus(); });
   }
   return t;
 }
@@ -284,7 +286,7 @@ function finishDrag(e) {
 function cancelDrag() { const d = cleanDrag(); if (d?.active) suppressHandleClickUntil = performance.now() + 600; }
 function goTo(index) {
   if (!Number.isInteger(index) || index < 0 || index >= puzzles.length) throw new Error(`Choose a puzzle from 1 to ${puzzles.length}.`);
-  cancelDrag(); document.querySelectorAll('dialog[open]').forEach(d => d.close()); current = index; const url=new URL(location.href);url.searchParams.set('p',keys[current]);history.replaceState(null,'',url); selected = []; positions = {}; reorderMode = false; $('share-status').textContent=''; announce(''); render();
+  cancelDrag(); document.querySelectorAll('dialog[open]').forEach(d => d.close()); current = index; syncClocks(); const url=new URL(location.href);url.searchParams.set('p',keys[current]);history.replaceState(null,'',url); selected = []; positions = {}; reorderMode = false; $('share-status').textContent=''; announce(''); render();
 }
 function openHint() {
   requireStarted();
@@ -323,17 +325,18 @@ $('reorder-toggle').addEventListener('click', () => { requireStarted(); reorderM
 $('shuffle').addEventListener('click', e => { requireStarted(); const before = captureRows(); shuffleColumns(puzzle(), state()); render({ before }); announce('Both columns shuffled. Every word stayed on its own side.'); if (e.detail > 0) $('shuffle').blur(); });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close).close()));
 $('trade-dialog').addEventListener('close', () => { lockTrade(false); if (!selected.length) return; selected = []; positions = {}; render(); });
-updateThemeButton(); render();
+syncClocks(); updateThemeButton(); render();
 let helpSeen = true; try { helpSeen = localStorage.getItem('spoondle-help-seen') !== null; } catch {}
 if (!helpSeen) $('help-dialog').showModal();
 $('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen', '1'); } catch {} });
 if(requestedKey && initialIndex<0)announce('That shared puzzle is not in this test edition. Choose one of the available puzzles.');
 setInterval(updateTimer,250);
-window.addEventListener('pagehide',persist);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)persist();else updateTimer();});
+window.addEventListener('pagehide',()=>{pauseRecord(record());persist();});
+window.addEventListener('pageshow',e=>{if(e.persisted){syncClocks();updateTimer();}});
+document.addEventListener('visibilitychange',()=>{syncClocks();persist();updateTimer();});
 window.addEventListener('storage',event=>{
   if(event.key!==STORAGE_KEY||!event.newValue)return;
-  try{saved=readProgress(localStorage);records=puzzles.map((p,i)=>restoreRecord(p,saved.records[keys[i]]));states=records.map(r=>r.state);selected=[];positions={};document.querySelectorAll('dialog[open]').forEach(d=>d.close());render({sync:true});}catch{}
+  try{saved=readProgress(localStorage);records=puzzles.map((p,i)=>restoreRecord(p,saved.records[keys[i]]));states=records.map(r=>r.state);syncClocks();selected=[];positions={};document.querySelectorAll('dialog[open]').forEach(d=>d.close());render({sync:true});}catch{}
 });
 const context = document.modelContext;
 if (context?.registerTool) {

@@ -6,7 +6,8 @@ export function puzzleKey(puzzle) {
   for (const c of text) { hash ^= c.charCodeAt(0); hash = Math.imul(hash,16777619); }
   return 'sp-' + (hash >>> 0).toString(36);
 }
-export function freshRecord(puzzle) { return { state:createState(puzzle), startedAt:null, finishedAt:null }; }
+// A record's clock runs from startedAt, minus awayMs spent off screen; pausedAt is set while it's paused.
+export function freshRecord(puzzle) { return { state:createState(puzzle), startedAt:null, finishedAt:null, pausedAt:null, awayMs:0 }; }
 export function restoreRecord(puzzle, saved) {
   const fresh = freshRecord(puzzle);
   if (!saved || !Number.isFinite(saved.startedAt) || saved.startedAt <= 0) return fresh;
@@ -30,7 +31,9 @@ export function restoreRecord(puzzle, saved) {
     const revealed = s.revealed ?? 0;
     if (!Number.isInteger(revealed) || revealed<0 || revealed>solved.length) return fresh;
     const log = Array.isArray(s.log) && s.log.every(x=>['hit','miss','hint','reveal'].includes(x)) ? [...s.log] : [];
-    return { state:{...base,solved,revealed,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback,log}, startedAt:saved.startedAt, finishedAt:s.solved.length===puzzle.answers.length?saved.finishedAt:null };
+    const awayMs = saved.awayMs ?? 0, pausedAt = saved.pausedAt ?? null, finished = s.solved.length===puzzle.answers.length;
+    if (!Number.isFinite(awayMs) || awayMs<0 || (pausedAt!==null && !(Number.isFinite(pausedAt) && pausedAt>=saved.startedAt))) return fresh;
+    return { state:{...base,solved,revealed,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback,log}, startedAt:saved.startedAt, finishedAt:finished?saved.finishedAt:null, pausedAt:finished?null:pausedAt, awayMs };
   } catch { return fresh; }
 }
 export function readProgress(storage) {
@@ -39,7 +42,16 @@ export function readProgress(storage) {
   try { const data=JSON.parse(raw); return {records:data.records && typeof data.records==='object'?data.records:{},completionDays:Array.isArray(data.completionDays)?data.completionDays.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)):[],current:typeof data.current==='string'?data.current:null}; }
   catch { return {records:{},completionDays:[],current:null}; }
 }
-export function elapsedMs(record, now=Date.now()) { return record.startedAt===null?0:Math.max(0,(record.finishedAt??now)-record.startedAt); }
+export function elapsedMs(record, now=Date.now()) { return record.startedAt===null?0:Math.max(0,(record.finishedAt??record.pausedAt??now)-record.startedAt-(record.awayMs??0)); }
+// The clock only runs while its puzzle is on screen: pause when the player leaves it, resume on return.
+export function pauseRecord(record, now=Date.now()) {
+  if(record.startedAt===null||record.finishedAt!==null||record.pausedAt!=null)return false;
+  record.pausedAt=Math.max(record.startedAt,now);return true;
+}
+export function resumeRecord(record, now=Date.now()) {
+  if(record.pausedAt==null||record.finishedAt!==null)return false;
+  record.awayMs=(record.awayMs??0)+Math.max(0,now-record.pausedAt);record.pausedAt=null;return true;
+}
 export function formatTime(ms) {
   const sec=Math.floor(ms/1000), h=Math.floor(sec/3600), m=Math.floor(sec/60)%60,s=sec%60;
   return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`;
@@ -47,12 +59,12 @@ export function formatTime(ms) {
 export function localDay(now=Date.now()) { const d=new Date(now);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 export function finishRecord(puzzle, record, days, now=Date.now()) {
   if(record.startedAt===null||record.finishedAt!==null||record.state.solved.length!==puzzle.answers.length)return false;
-  record.finishedAt=Math.max(record.startedAt,now);const day=localDay(now);if(!days.includes(day))days.push(day);return true;
+  resumeRecord(record,now);record.finishedAt=Math.max(record.startedAt,now);const day=localDay(now);if(!days.includes(day))days.push(day);return true;
 }
 // Giving up reveals the rest of the board and stops the clock, but doesn't count toward the streak.
 export function giveUpRecord(puzzle, record, now=Date.now()) {
   if(record.startedAt===null||record.finishedAt!==null||record.state.solved.length===puzzle.answers.length)return false;
-  revealAnswers(puzzle,record.state);record.finishedAt=Math.max(record.startedAt,now);return true;
+  resumeRecord(record,now);revealAnswers(puzzle,record.state);record.finishedAt=Math.max(record.startedAt,now);return true;
 }
 export function streak(days, now=Date.now()) {
   const known=new Set(days), date=new Date(now);let count=0;
