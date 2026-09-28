@@ -40,6 +40,11 @@ button{font:inherit;color:inherit}
 .nav button{width:34px;height:40px;padding:0;border:0;background:transparent;font-size:19px;cursor:pointer;border-radius:8px}
 .nav button:disabled{opacity:.3;cursor:default}
 
+.play-area{position:relative;display:flex;flex-direction:column;gap:16px}
+.start-overlay{position:absolute;inset:-2px;z-index:10;display:grid;place-items:center;border-radius:20px;background:color-mix(in srgb,var(--table) 55%,transparent);backdrop-filter:blur(12px) saturate(.7);-webkit-backdrop-filter:blur(12px) saturate(.7)}
+.start-button{min-width:176px;padding:15px 24px;border:1px solid var(--accent);border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:17px;font-weight:700;box-shadow:0 10px 30px var(--shadow);cursor:pointer;transition:transform .16s,box-shadow .16s}
+.start-button:hover{transform:translateY(-2px);box-shadow:0 14px 34px var(--shadow-lift)}
+.start-button:active{transform:translateY(1px)}
 .tray{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .found{height:40px;padding-inline:6px;border-radius:9px;border:1.5px dashed color-mix(in srgb,var(--line) 55%,transparent);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .found.filled{border:1.5px solid transparent;background:var(--accent-soft)}
@@ -112,4 +117,26 @@ dialog p{margin:12px 0;line-height:1.5}
 #share-text{width:100%;margin:12px 0 16px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--table);color:var(--ink);font:inherit;line-height:1.5;resize:vertical}
 .confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
 @keyframes dialog-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (max-width:600px){
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  .app{height:100dvh;min-height:0;overflow:hidden;gap:clamp(6px,1dvh,10px);padding-inline:12px;padding-block:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-bottom));touch-action:none}
+  .play-area{gap:clamp(6px,1dvh,10px);min-height:0}
+  .shelf{gap:clamp(4px,1dvh,8px) 8px;padding-block:0}
+  .mat{gap:8px;padding:10px 12px;border-radius:16px}
+  .slot{min-height:calc(var(--mat-s,50px) + 8px)}
+  .found{height:36px}
+  .message{min-height:26px;font-size:13px}
+  .bottom{flex:none}
+  dialog{touch-action:pan-y}
+  #share-text{font-size:16px}
+}
+@media (max-width:600px) and (max-height:650px){
+  .app{gap:5px;padding-block:max(5px,env(safe-area-inset-top)) max(5px,env(safe-area-inset-bottom))}
+  .play-area{gap:5px}
+  .shelf{gap:4px 8px}
+  .mat{gap:5px;padding:7px 10px}
+  .mat .word{--s:min(var(--mat-s,50px),42px)}
+  .slot{min-height:50px}
+  .message{min-height:22px}
+}
 @media (prefers-reduced-motion: reduce){.tile,.word{transition:none}dialog[open]{animation:none}}

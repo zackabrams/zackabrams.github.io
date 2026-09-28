@@ -23,17 +23,28 @@ function persist() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch {}
 }
 
-// ---------- the clock runs only for the puzzle on screen, in a visible tab, with How to play closed ----------
+// ---------- start each puzzle deliberately; pause its clock when it is not visible ----------
 function syncClocks() {
   const showing = !document.hidden && !$('help-dialog').open;
   records.forEach((r, i) => {
-    if (i !== board || !showing) { pauseRecord(r); return; }
-    if (r.startedAt === null) r.startedAt = Date.now();
+    if (i !== board || !showing || r.startedAt === null) { pauseRecord(r); return; }
     resumeRecord(r);
   });
 }
 function refreshClocks() { syncClocks(); persist(); updateStats(); }
-function ensureStarted() { if (record().startedAt === null) syncClocks(); }
+function showStartGate() {
+  const waiting = record().startedAt === null;
+  $('play-area').classList.toggle('waiting', waiting);
+  $('start-overlay').hidden = !waiting;
+  for (const id of ['tray', 'shelf', 'mat', 'message']) $(id).inert = waiting;
+  $('hint').disabled = waiting; $('give-up').disabled = waiting;
+}
+function startPuzzle() {
+  if (record().startedAt !== null) return;
+  record().startedAt = Date.now();
+  showStartGate(); refreshClocks();
+}
+function ensureStarted() { if (record().startedAt === null) startPuzzle(); }
 function updateStats() {
   const s = state(), plural = (n, word) => `${n} ${word}${n === 1 ? '' : word.endsWith('s') ? 'es' : 's'}`;
   $('timer').textContent = formatTime(elapsedMs(record()));
@@ -138,6 +149,7 @@ function build(save = true) {
     for (const [w, home] of homeOf) { const r = w.getBoundingClientRect(); home.style.width = `${r.width}px`; home.style.height = `${r.height}px`; }
   });
   if (!RM && record().finishedAt === null) document.querySelectorAll('.home:not(.done) .tile').forEach((t, i) => t.animate([{ transform: 'translateY(-18px) scale(1.12)' }, { transform: 'none' }], { duration: 440, delay: i * 18, easing: SPRING, fill: 'backwards' }));
+  showStartGate();
   if (save) persist();
   updateStats(); say();
 }
@@ -468,6 +480,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
 $('sound').addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('spoondle-sound', soundOn ? 'on' : 'off'); } catch {} showSound(); if (soundOn) clack('place'); });
 $('help').addEventListener('click', () => { $('help-dialog').showModal(); refreshClocks(); });
 $('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen-v2', '1'); } catch {} refreshClocks(); });
+$('start').addEventListener('click', startPuzzle);
 $('hint').addEventListener('click', useHint);
 $('give-up').addEventListener('click', () => { if (!busy) $('give-up-dialog').showModal(); });
 $('confirm-give-up').addEventListener('click', giveUp);
