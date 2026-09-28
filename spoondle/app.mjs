@@ -30,7 +30,7 @@ function syncClocks() {
 function refreshClocks() { syncClocks(); if (dealIn) render(); else { persist(); updateTimer(); } }
 // Playing a puzzle means it's on screen, so its clock starts now if it hasn't yet.
 function ensureStarted() { if (record().startedAt === null) syncClocks(); }
-function updateTimer() { $('timer').textContent=formatTime(elapsedMs(record()));const n=streak(saved.completionDays);$('streak-label').textContent=`${n}-day play streak`; }
+function updateTimer() { $('timer').textContent=formatTime(elapsedMs(record())); }
 function resultText() {
   const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('p',keys[current]);
   return shareText(puzzle(),record(),url.href);
@@ -137,7 +137,7 @@ function render(options = {}) {
     list.append(...availableColumn(p,s,column).map(makeRow));
     panel.append(list); return panel;
   }));
-  $('selection-prompt').textContent = selected.length === 1 ? `Now pick a word on the ${s.columnById[selected[0]] === 0 ? 'right' : 'left'}.` : 'Pick one word from each column. Drag the handles to rearrange.';
+  $('selection-prompt').textContent = selected.length === 1 ? `Now pick a word on the ${s.columnById[selected[0]] === 0 ? 'right' : 'left'}.` : 'Pick one word from each column.';
   $('clear').hidden = !selected.length;
   $('reorder-toggle').setAttribute('aria-pressed', String(reorderMode));
   $('reorder-toggle').textContent = reorderMode ? 'Done reordering' : 'Reorder';
@@ -145,11 +145,13 @@ function render(options = {}) {
   $('hint').title = $('hint').disabled ? 'Every letter you need to swap is already showing' : 'Show one letter you need to swap';
   const won = s.solved.length === p.answers.length;
   $('board-stage').hidden=won;
-  for (const id of ['selection-bar', 'board-tools', 'feedback-key', 'reorder-toggle-wrap']) $(id).hidden = won;
+  for (const id of ['selection-bar', 'board-tools', 'reorder-toggle-wrap']) $(id).hidden = won;
+  $('feedback-key').hidden = won || !Object.keys(s.feedback).length;
   updateTimer();if(!options.sync)persist();
   $('win').hidden = !won;
   $('win-symbol').textContent = s.revealed ? '⚑' : '✓'; $('win-title').textContent = s.revealed ? "Here's how it clicks." : 'Everything clicks.';
-  $('win-summary').textContent = `${s.revealed ? `Answers shown after ${formatTime(elapsedMs(record()))} · ${found} of ${p.answers.length} found` : `Finished in ${formatTime(elapsedMs(record()))}`} · ${s.misses} miss${s.misses === 1 ? '' : 'es'} · ${hintsLabel(s.hints)}`;
+  const days = streak(saved.completionDays);
+  $('win-summary').textContent = `${s.revealed ? `Answers shown after ${formatTime(elapsedMs(record()))} · ${found} of ${p.answers.length} found` : `Finished in ${formatTime(elapsedMs(record()))}`} · ${s.misses} miss${s.misses === 1 ? '' : 'es'} · ${hintsLabel(s.hints)}` + (days > 1 && !s.revealed ? ` · ${days}-day streak` : '');
   const upcoming = nextUnfinished();
   $('next-after-win').hidden = upcoming < 0;
   $('next-after-win').firstChild.textContent = upcoming === current + 1 ? 'Try the next puzzle ' : `Try puzzle ${upcoming + 1} `;
