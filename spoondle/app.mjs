@@ -187,6 +187,7 @@ function build(save = true) {
   showStartGate();
   if (save) persist();
   updateStats(); say();
+  placeLastPair(RM ? 0 : 250);
 }
 function goTo(index) {
   if (busy || index < 0 || index >= puzzles.length) return;
@@ -327,6 +328,17 @@ function solve(hit, [first, second]) {
     setTimeout(() => flyToTray(merged, hit), RM ? 300 : 1000);
   }, RM ? 100 : 280);
 }
+// With three answers found, the last two words are the only pair left, so they move onto the mat by
+// themselves. `keep` is a message to leave showing (the last answer's clue) once they've landed.
+function placeLastPair(delay = 0, keep = null) {
+  const r = record();
+  if (r.startedAt === null || r.finishedAt !== null || state().solved.length !== puzzle().answers.length - 1) return;
+  const waiting = [...homeOf.keys()].filter(w => !homeOf.get(w).classList.contains('done') && !w.closest('.slot'));
+  waiting.forEach((w, i) => setTimeout(() => {
+    if (busy || drag || !w.isConnected || w.closest('.slot')) return;
+    placeWord(w); if (keep) say(keep);
+  }, delay + i * 160));
+}
 function flyToTray(merged, hit) {
   const box = tray.children[state().solved.length - 1];
   const a = merged.getBoundingClientRect(), b = box.getBoundingClientRect();
@@ -342,7 +354,7 @@ function flyToTray(merged, hit) {
     $('count').textContent = `${board + 1} / ${puzzles.length}${done ? ' ✓' : ''}`;
     const label = document.createElement('b'); label.textContent = hit.label;
     say([label, hit.clue]);
-    if (done) celebrate();
+    if (done) celebrate(); else placeLastPair(RM ? 0 : 450, [label, hit.clue]);
   };
   if (RM) { finish(); return; }
   merged.animate([
