@@ -10,7 +10,7 @@ export function hash(text) {
   h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
-export const labelFor = (category, words) => words.join(category === 'Names' ? ' ' : '');
+export const labelFor = (category, words) => words.join(category === 'Proper nouns' ? ' ' : '');
 export const answerDigest = (boardKey, ids, label) => hash(`${boardKey}|${ids.join('|')}|${label}`).toString(36);
 export const tileOffset = (boardKey, id, length) => hash(`${boardKey}~${id}`) % length;
 function keystream(label, length) {
