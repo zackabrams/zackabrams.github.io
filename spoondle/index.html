@@ -22,12 +22,12 @@
 <meta name="twitter:image" content="https://zackabrams.com/spoondle/og.jpg?v=5">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<script>try{const t=localStorage.getItem('spoondle-theme');document.documentElement.dataset.theme=t==='dark'||t==='light'?t:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}</script>
+<script>/* The saved table, or the phone's mode until someone picks one: Kitchen table in light, Lamplight in dark. */try{const t=localStorage.getItem('spoondle-theme');document.documentElement.dataset.theme=['oak','linen','lamp','felt','light','dark'].includes(t)?t:(matchMedia('(prefers-color-scheme: dark)').matches?'lamp':'oak')}catch{document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'lamp':'oak'}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@600&display=swap">
-<link rel="stylesheet" href="style.css?v=btwkm5ew">
-<script type="module" src="app.mjs?v=28jcnx3n"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500&family=Rubik:wght@600&display=swap">
+<link rel="stylesheet" href="style.css?v=2048log2">
+<script type="module" src="app.mjs?v=1cr8hx0j"></script>
 </head>
 <body>
 <div class="app">
@@ -35,7 +35,7 @@
     <a class="brand" href="./" aria-label="Spoondle home">spoondle<span>.</span></a>
     <div class="tools">
       <button id="help" class="icon-btn" type="button" aria-label="How to play">?</button>
-      <button id="theme" class="icon-btn" type="button" aria-label="Use dark mode" aria-pressed="false"></button>
+      <button id="theme" class="icon-btn" type="button" aria-label="Choose a table" aria-haspopup="dialog"></button>
       <button id="sound" class="icon-btn" type="button" aria-label="Sound on" aria-pressed="true"></button>
     </div>
   </header>
@@ -70,6 +70,10 @@
   <p>Have fun!</p>
   <p class="fine">Inspired by <a href="https://en.wikipedia.org/wiki/Spoonerism" target="_blank" rel="noopener">spoonerisms</a>. A game by Zack Abrams.</p>
   <button class="pill primary full" type="button" data-close="help-dialog">Play</button>
+</dialog>
+<dialog id="theme-dialog" aria-labelledby="theme-title">
+  <div class="dialog-top"><h2 id="theme-title">Pick a table</h2><button class="close-button" data-close="theme-dialog" aria-label="Close">×</button></div>
+  <div class="swatches" id="swatches"></div>
 </dialog>
 <dialog id="give-up-dialog" aria-labelledby="give-up-title">
   <div class="dialog-top"><h2 id="give-up-title">Show the answers?</h2><button class="close-button" data-close="give-up-dialog" aria-label="Keep playing">×</button></div>

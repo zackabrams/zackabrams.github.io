@@ -57,8 +57,7 @@ try { soundOn = localStorage.getItem('spoondle-sound') !== 'off'; } catch {}
 const icon = path => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
 const SPEAKER_ON = icon('<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/>');
 const SPEAKER_OFF = icon('<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9.5l4 5M21 9.5l-4 5"/>');
-const MOON = icon('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>');
-const SUN = icon('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>');
+const TABLE = icon('<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>');
 function showSound() { $('sound').innerHTML = soundOn ? SPEAKER_ON : SPEAKER_OFF; $('sound').setAttribute('aria-pressed', String(soundOn)); $('sound').setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off'); }
 function ctx() { audio ??= new (window.AudioContext || window.webkitAudioContext)(); if (audio.state === 'suspended') audio.resume(); return audio; }
 function clack(kind = 'place', volume = 1) {
@@ -113,7 +112,8 @@ function paintFeedback() {
   }
 }
 function fillFound(box, label, revealed) {
-  const answer = document.createElement('span'); answer.className = 'answer'; answer.textContent = label;
+  const answer = document.createElement('span'); answer.className = 'answer';
+  for (const ch of label) { const c = document.createElement('span'); c.className = ch === ' ' ? 'sp' : 'ch'; c.textContent = ch; answer.append(c); }
   box.classList.add('filled'); box.classList.toggle('revealed', revealed);
   box.setAttribute('aria-label', revealed ? `${label}, revealed` : label);
   box.replaceChildren(answer);
@@ -170,7 +170,7 @@ function pill(label, onClick, primary = false) {
 }
 function say(parts = null) {
   const p = puzzle(), r = record(), s = state();
-  message.replaceChildren();
+  message.replaceChildren(); relight();
   $('actions').hidden = r.finishedAt !== null;
   $('hint').disabled = r.startedAt === null || !hintTargets(p, s).length;
   if (r.finishedAt !== null) {
@@ -399,6 +399,7 @@ function frame() {
   drag.vx *= .78; drag.rot += (Math.max(-14, Math.min(14, drag.vx * 1.6)) - drag.rot) * .25;
   drag.ox = press.x - press.x0; drag.oy = press.y - press.y0;
   drag.el.style.transform = `translate(${drag.ox}px,${drag.oy}px) scale(${drag.k}) rotate(${drag.rot}deg)`;
+  if (theme() === 'lamp') { const [dx, dy] = lampOffset(press.x, press.y, 44); drag.el.style.setProperty('--lsx-px', `${dx.toFixed(1)}px`); drag.el.style.setProperty('--lsy-px', `${(dy + 10).toFixed(1)}px`); }
   requestAnimationFrame(frame);
 }
 function aim() {
@@ -464,19 +465,50 @@ document.addEventListener('keydown', e => {
 });
 
 // ---------- header buttons, dialogs, and the page lifecycle ----------
-function showTheme() {
-  const dark = document.documentElement.dataset.theme === 'dark';
-  $('theme').innerHTML = dark ? SUN : MOON; $('theme').setAttribute('aria-pressed', String(dark)); $('theme').setAttribute('aria-label', dark ? 'Use light mode' : 'Use dark mode');
-  document.querySelector('meta[name="theme-color"]').content = dark ? '#121827' : '#dfe4ee';
+// ---------- tables: the picker, and Lamplight's shadows ----------
+const THEMES = [['oak', 'Kitchen table'], ['linen', 'Linen & cork'], ['lamp', 'Lamplight'], ['felt', 'Card table'], ['light', 'Light'], ['dark', 'Dark']];
+const THEME_COLOR = { oak: '#c68b49', linen: '#e6dfd2', lamp: '#241710', felt: '#1c5a40', light: '#dfe4ee', dark: '#121827' };
+const systemTheme = () => matchMedia('(prefers-color-scheme: dark)').matches ? 'lamp' : 'oak';
+const theme = () => document.documentElement.dataset.theme;
+function applyTheme(id, save = false) {
+  document.documentElement.dataset.theme = id;
+  if (save) try { localStorage.setItem('spoondle-theme', id); } catch {}
+  document.querySelector('meta[name="theme-color"]').content = THEME_COLOR[id];
+  for (const b of $('swatches').children) b.setAttribute('aria-pressed', String(b.dataset.pick === id));
+  relight();
 }
-$('theme').addEventListener('click', () => {
-  const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.theme = theme; try { localStorage.setItem('spoondle-theme', theme); } catch {} showTheme();
-});
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+function buildPicker() {
+  $('theme').innerHTML = TABLE;
+  $('swatches').replaceChildren(...THEMES.map(([id, name]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'swatch'; b.dataset.pick = id;
+    const art = document.createElement('span'); art.className = 'swatch-art'; art.dataset.theme = id;
+    const mat = document.createElement('span'); mat.className = 'swatch-mat';
+    art.append(mat, makeTile('S')); b.append(art, name);
+    b.addEventListener('click', () => { applyTheme(id, true); clack('place', .6); });
+    return b;
+  }));
+}
+// Lamplight: each tile's shadow falls away from the lamp hanging over the mat.
+let relightTimer = 0;
+function relight() { clearTimeout(relightTimer); relightTimer = setTimeout(lightTiles, RM ? 0 : 420); }
+function lampOffset(x, y, reach) {
+  const m = mat.getBoundingClientRect(), span = Math.max(innerHeight * .5, 300);
+  return [(x - (m.left + m.width / 2)) / span * reach, (y - (m.top + m.height * .45)) / span * reach];
+}
+function lightTiles() {
+  const tiles = document.querySelectorAll('.shelf .tile, .slot .tile');
+  if (theme() !== 'lamp') { for (const t of tiles) { t.style.removeProperty('--tsx-px'); t.style.removeProperty('--tsy-px'); } return; }
+  for (const t of tiles) {
+    const r = t.getBoundingClientRect(), [dx, dy] = lampOffset(r.left + r.width / 2, r.top + r.height / 2, 16);
+    t.style.setProperty('--tsx-px', `${dx.toFixed(1)}px`); t.style.setProperty('--tsy-px', `${(dy + 2).toFixed(1)}px`);
+  }
+}
+$('theme').addEventListener('click', () => $('theme-dialog').showModal());
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   let chosen = null; try { chosen = localStorage.getItem('spoondle-theme'); } catch {}
-  if (!chosen) { document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'; showTheme(); }
+  if (!chosen) applyTheme(systemTheme());
 });
+addEventListener('resize', relight);
 $('sound').addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('spoondle-sound', soundOn ? 'on' : 'off'); } catch {} showSound(); if (soundOn) clack('place'); });
 $('help').addEventListener('click', () => { $('help-dialog').showModal(); refreshClocks(); });
 $('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen-v2', '1'); } catch {} refreshClocks(); });
@@ -499,4 +531,4 @@ setInterval(updateStats, 250);
 
 let helpSeen = true; try { helpSeen = localStorage.getItem('spoondle-help-seen-v2') !== null; } catch {}
 if (!helpSeen) $('help-dialog').showModal();
-showTheme(); showSound(); build();
+buildPicker(); applyTheme(theme()); showSound(); build();
