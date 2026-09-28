@@ -184,7 +184,6 @@ function build(save = true) {
     for (const [w, home] of homeOf) { const r = w.getBoundingClientRect(); home.style.width = `${r.width}px`; home.style.height = `${r.height}px`; }
   });
   if (record().startedAt === null) pileUp();
-  else if (!RM && record().finishedAt === null) document.querySelectorAll('.home:not(.done) .tile').forEach((t, i) => t.animate([{ transform: 'translateY(-18px) scale(1.12)' }, { transform: 'none' }], { duration: 440, delay: i * 18, easing: SPRING, fill: 'backwards' }));
   showStartGate();
   if (save) persist();
   updateStats(); say();
@@ -192,7 +191,10 @@ function build(save = true) {
 function goTo(index) {
   if (busy || index < 0 || index >= puzzles.length) return;
   document.querySelectorAll('dialog[open]').forEach(d => d.close());
+  const direction = Math.sign(index - board);
   board = index; build();
+  // The new board slides in from the side you moved toward, like turning to the next page.
+  if (!RM && direction) $('play-area').animate([{ transform: `translateX(${direction * 56}px)`, opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.2,.8,.2,1)' });
 }
 function nextUnfinished() {
   for (let step = 1; step < puzzles.length; step++) { const i = (board + step) % puzzles.length; if (records[i].finishedAt === null) return i; }
