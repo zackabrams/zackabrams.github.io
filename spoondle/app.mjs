@@ -172,7 +172,7 @@ function say(parts = null) {
   const p = puzzle(), r = record(), s = state();
   message.replaceChildren();
   $('actions').hidden = r.finishedAt !== null;
-  $('hint').disabled = !hintTargets(p, s).length;
+  $('hint').disabled = r.startedAt === null || !hintTargets(p, s).length;
   if (r.finishedAt !== null) {
     const next = nextUnfinished();
     message.append(s.revealed ? 'Answers shown.' : `Solved in ${formatTime(elapsedMs(r))}.`, pill('Share', shareResult));
