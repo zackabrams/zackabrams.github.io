@@ -26,9 +26,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500&family=Rubik:wght@600&display=swap">
-<link rel="stylesheet" href="style.css?v=1uqdu67n">
+<link rel="stylesheet" href="style.css?v=18sr7qva">
 <script type="importmap">{"imports":{"./game.mjs":"./game.mjs?v=xrugpig1","./progress.mjs":"./progress.mjs?v=2dj2945d","./puzzles.mjs":"./puzzles.mjs?v=9hyzy3hw","./seal.mjs":"./seal.mjs?v=1jphmj7k"}}</script>
-<script type="module" src="app.mjs?v=m3jvlewg"></script>
+<script type="module" src="app.mjs?v=1uh8k8uv"></script>
 </head>
 <body>
 <div class="app">
@@ -46,6 +46,7 @@
   </div>
   <div class="play-area" id="play-area">
     <div class="tray" id="tray" aria-label="Answers found"></div>
+    <p class="clue" id="clue" aria-live="polite"></p>
     <div class="shelf" id="shelf" aria-label="Words"></div>
     <div class="mat" id="mat" aria-label="Mat"></div>
     <div class="message" id="message" role="status"></div>
@@ -65,7 +66,15 @@
     <li>Drag tiles around until you uncover an answer.</li>
     <li>Careful, it may be backwards!</li>
   </ol>
-  <div class="example"><div>DOO<b>M</b> + <b>R</b>AT</div><span aria-hidden="true">↓</span><strong>DOORMAT</strong></div>
+  <div class="examples">
+    <div class="example-track" id="example-track">
+      <figure class="example-card"><div class="example"><div class="ex"><div>DOO<b>M</b> + <b>R</b>AT</div><span aria-hidden="true">↓</span><strong>DOORMAT</strong></div><div class="ex backwards"><div><b>T</b>AP + CA<b>N</b></div><span aria-hidden="true">↓</span><strong>CATNAP</strong><em>backwards!</em></div></div><figcaption>Compound words</figcaption></figure>
+      <figure class="example-card"><div class="example"><div class="ex"><div><b>R</b>OB + <b>B</b>OSS</div><span aria-hidden="true">↓</span><strong>BOB ROSS</strong></div><div class="ex backwards"><div><b>N</b>AY + GREE<b>D</b></div><span aria-hidden="true">↓</span><strong>GREEN DAY</strong><em>backwards!</em></div></div><figcaption>Proper nouns</figcaption></figure>
+      <figure class="example-card"><div class="example"><div class="ex"><div>F<b>U</b>R + T<b>O</b>NE</div><span aria-hidden="true">↓</span><strong>FORTUNE</strong></div><div class="ex backwards"><div><b>R</b>AIN + BA<b>G</b></div><span aria-hidden="true">↓</span><strong>BARGAIN</strong><em>backwards!</em></div></div><figcaption>Hidden words</figcaption></figure>
+    </div>
+    <button class="example-arrow" id="example-prev" type="button" aria-label="Previous examples" disabled>‹</button>
+    <button class="example-arrow" id="example-next" type="button" aria-label="Next examples">›</button>
+  </div>
   <p><strong>Compound words</strong> join two words. <strong>Proper nouns</strong> are people, places, and titles. <strong>Hidden words</strong> hide an ordinary word across the pair, like FOR + GET → FORGET.</p>
   <p>Use the "Hint" button to reveal a tile that wants to swap. "Show a clue" will tell you if the tiles you chose are sticky or swappy.</p>
   <p>Have fun!</p>

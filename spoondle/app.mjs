@@ -3,7 +3,7 @@ import { checkSwap, tradeAnswer, guessKey, solvedAnswer, hintTargets, revealHint
 import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, giveUpRecord, pauseRecord, resumeRecord, shareText } from './progress.mjs';
 
 const $ = id => document.getElementById(id);
-const shelf = $('shelf'), mat = $('mat'), tray = $('tray'), message = $('message');
+const shelf = $('shelf'), mat = $('mat'), tray = $('tray'), clue = $('clue'), message = $('message');
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SPRING = 'cubic-bezier(.2,1.35,.45,1)', SNAP = RM ? 1 : 360;
 // How far past the mat's edge a letter has to be pulled before its whole word comes along.
@@ -146,10 +146,17 @@ function paintFeedback() {
     t.setAttribute('aria-label', t.dataset.letter + (status === 'swap' ? ', swap this letter' : status === 'stay' ? ', leave this letter' : ''));
   }
 }
+// Answers are written the way you'd write them: names and titles capitalized, everything else lowercase.
+// (Themes whose answers look like tiles or type set them in capitals anyway.)
+const MINOR = new Set(['A', 'AN', 'AND', 'AT', 'FOR', 'IN', 'OF', 'ON', 'THE', 'TO']);
+function written(label) {
+  if (puzzle().category !== 'Proper nouns') return label.toLowerCase();
+  return label.split(' ').map((w, i) => i && MINOR.has(w) ? w.toLowerCase() : w[0] + w.slice(1).toLowerCase()).join(' ');
+}
 function fillFound(box, label, revealed) {
   const answer = document.createElement('span'); answer.className = 'answer'; answer.style.setProperty('--n', label.length);
-  for (const ch of label) { const c = document.createElement('span'); c.className = ch === ' ' ? 'sp' : 'ch'; c.textContent = ch; answer.append(c); }
-  box.classList.add('filled'); box.classList.toggle('revealed', revealed);
+  for (const ch of written(label)) { const c = document.createElement('span'); c.className = ch === ' ' ? 'sp' : 'ch'; c.textContent = ch; answer.append(c); }
+  box.classList.add('filled'); box.classList.toggle('revealed', revealed); box.setAttribute('role', 'button'); box.tabIndex = 0;
   box.setAttribute('aria-label', revealed ? `${label}, revealed` : label);
   box.replaceChildren(answer);
   return answer;
@@ -162,14 +169,10 @@ function build(save = true) {
   $('count').textContent = `${board + 1} / ${puzzles.length}${record().finishedAt !== null && !s.revealed ? ' ✓' : ''}`;
   $('prev').disabled = board === 0; $('next').disabled = board === puzzles.length - 1;
   const url = new URL(location.href); url.searchParams.set('p', keys[board]); history.replaceState(null, '', url);
-  shelf.replaceChildren(); tray.replaceChildren(); mat.replaceChildren(); mat.className = 'mat'; mat.style.minHeight = '';
-  // Size tiles so the longest word fits in a table column and across the mat.
-  const longest = Math.max(...p.cards.map(c => c.word.length));
-  shelf.style.setProperty('--shelf-s', `${Math.max(20, Math.min(34, Math.floor(((shelf.clientWidth - 12) / 2 - 4 * (longest - 1)) / longest)))}px`);
-  mat.style.setProperty('--mat-s', `${Math.min(50, Math.floor((mat.clientWidth - 30 - 6 * (longest - 1)) / longest))}px`);
+  shelf.replaceChildren(); tray.replaceChildren(); clue.replaceChildren(); mat.replaceChildren(); mat.className = 'mat'; mat.style.minHeight = '';
   const columns = [0, 1].map(c => p.cards.filter(card => card.column === c));
   for (let i = 0; i < columns[0].length; i++) for (const column of columns) {
-    const home = document.createElement('div'); home.className = 'home'; const w = makeWord(column[i]);
+    const home = document.createElement('div'); home.className = 'home'; home.style.setProperty('--n', column[i].word.length); const w = makeWord(column[i]);
     home.append(w); homeOf.set(w, home); shelf.append(home);
     if (solvedIds.has(w.dataset.id)) home.classList.add('done');
     // Tapping a word's empty spot on the table calls it back from the mat.
@@ -179,15 +182,23 @@ function build(save = true) {
   for (let i = 0; i < p.answers.length; i++) { const f = document.createElement('div'); f.className = 'found'; tray.append(f); }
   s.solved.forEach((ids, i) => fillFound(tray.children[i], solvedAnswer(p, ids).label, i >= s.solved.length - s.revealed));
   slots = [0, 1].map(() => { const slot = document.createElement('div'); slot.className = 'slot'; mat.append(slot); return slot; });
-  paintFeedback();
-  requestAnimationFrame(() => {
-    for (const [w, home] of homeOf) { const r = w.getBoundingClientRect(); home.style.width = `${r.width}px`; home.style.height = `${r.height}px`; }
-  });
+  paintFeedback(); sizeTiles();
   if (record().startedAt === null) pileUp();
   showStartGate();
   if (save) persist();
   updateStats(); say();
   placeLastPair(RM ? 0 : 250);
+}
+// Tiles as big as the room allows: the two table columns are each as wide as their longest word,
+// and on a phone, where everything shares one screen, they give back height if the bottom is pushed off.
+function sizeTiles() {
+  const cards = puzzle().cards, app = shelf.closest('.app');
+  const [left, right] = [0, 1].map(c => Math.max(...cards.filter(card => card.column === c).map(card => card.word.length)));
+  const longest = Math.max(left, right);
+  mat.style.setProperty('--mat-s', `${Math.min(50, Math.floor((mat.clientWidth - 30 - 6 * (longest - 1)) / longest))}px`);
+  let size = Math.max(20, Math.min(46, Math.floor((shelf.clientWidth - 14 - 3 * (left + right - 2)) / (left + right))));
+  shelf.style.setProperty('--shelf-s', `${size}px`);
+  while (size > 20 && app.scrollHeight > app.clientHeight) shelf.style.setProperty('--shelf-s', `${size -= 2}px`);
 }
 function goTo(index) {
   if (busy || index < 0 || index >= puzzles.length) return;
@@ -328,17 +339,27 @@ function solve(hit, [first, second]) {
     setTimeout(() => flyToTray(merged, hit), RM ? 300 : 1000);
   }, RM ? 100 : 280);
 }
-// With three answers found, the last two words are the only pair left, so they move onto the mat by
-// themselves. `keep` is a message to leave showing (the last answer's clue) once they've landed.
-function placeLastPair(delay = 0, keep = null) {
+// With three answers found, the last two words are the only pair left, so they move onto the mat by themselves.
+function placeLastPair(delay = 0) {
   const r = record();
   if (r.startedAt === null || r.finishedAt !== null || state().solved.length !== puzzle().answers.length - 1) return;
   const waiting = [...homeOf.keys()].filter(w => !homeOf.get(w).classList.contains('done') && !w.closest('.slot'));
   waiting.forEach((w, i) => setTimeout(() => {
     if (busy || drag || !w.isConnected || w.closest('.slot')) return;
-    placeWord(w); if (keep) say(keep);
+    placeWord(w);
   }, delay + i * 160));
 }
+// A found answer's definition goes on the line under the answers. Tapping any found answer shows its own.
+function define(hit) {
+  const label = document.createElement('b'); label.textContent = hit.label;
+  clue.replaceChildren(label, hit.clue);
+}
+function defineFound(box) {
+  const ids = box && state().solved[[...tray.children].indexOf(box)];
+  if (ids) define(solvedAnswer(puzzle(), ids));
+}
+tray.addEventListener('click', e => defineFound(e.target.closest('.found.filled')));
+tray.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); defineFound(e.target.closest('.found.filled')); } });
 function flyToTray(merged, hit) {
   const box = tray.children[state().solved.length - 1];
   const a = merged.getBoundingClientRect(), b = box.getBoundingClientRect();
@@ -352,9 +373,8 @@ function flyToTray(merged, hit) {
     busy = false; clack('place', .6);
     const done = record().finishedAt !== null;
     $('count').textContent = `${board + 1} / ${puzzles.length}${done ? ' ✓' : ''}`;
-    const label = document.createElement('b'); label.textContent = hit.label;
-    say([label, hit.clue]);
-    if (done) celebrate(); else placeLastPair(RM ? 0 : 450, [label, hit.clue]);
+    define(hit); say();
+    if (done) celebrate(); else placeLastPair(RM ? 0 : 450);
   };
   if (RM) { finish(); return; }
   merged.animate([
@@ -558,10 +578,17 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   let chosen = null; try { chosen = localStorage.getItem('spoondle-theme'); } catch {}
   if (!chosen) applyTheme(systemTheme());
 });
-addEventListener('resize', () => { relight(); pileUp(); });
+addEventListener('resize', () => { sizeTiles(); relight(); pileUp(); });
 $('sound').addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('spoondle-sound', soundOn ? 'on' : 'off'); } catch {} showSound(); if (soundOn) clack('place'); });
 $('help').addEventListener('click', () => { $('help-dialog').showModal(); refreshClocks(); });
 $('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen-v2', '1'); } catch {} refreshClocks(); });
+// How to play: three example cards, flipped with a swipe or the arrows.
+const examples = $('example-track');
+const exampleShown = () => Math.round(examples.scrollLeft / (examples.clientWidth || 1));
+function flipExample(step) { examples.scrollTo({ left: (exampleShown() + step) * examples.clientWidth, behavior: RM ? 'auto' : 'smooth' }); }
+examples.addEventListener('scroll', () => { const i = exampleShown(); $('example-prev').disabled = i === 0; $('example-next').disabled = i === examples.children.length - 1; }, { passive: true });
+$('example-prev').addEventListener('click', () => flipExample(-1));
+$('example-next').addEventListener('click', () => flipExample(1));
 $('start').addEventListener('click', startPuzzle);
 $('hint').addEventListener('click', useHint);
 $('give-up').addEventListener('click', () => { if (!busy) $('give-up-dialog').showModal(); });
