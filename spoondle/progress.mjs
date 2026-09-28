@@ -63,7 +63,9 @@ export function finishRecord(puzzle, record, days, now=Date.now()) {
 // Giving up reveals the rest of the board and stops the clock, but doesn't count toward the streak.
 export function giveUpRecord(puzzle, record, now=Date.now()) {
   if(record.startedAt===null||record.finishedAt!==null||record.state.solved.length===puzzle.answers.length)return false;
-  resumeRecord(record,now);revealAnswers(puzzle,record.state);record.finishedAt=Math.max(record.startedAt,now);return true;
+  resumeRecord(record,now);revealAnswers(puzzle,record.state);
+  if(record.state.solved.length!==puzzle.answers.length)return false;
+  record.finishedAt=Math.max(record.startedAt,now);return true;
 }
 export function streak(days, now=Date.now()) {
   const known=new Set(days), date=new Date(now);let count=0;

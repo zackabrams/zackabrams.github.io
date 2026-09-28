@@ -183,6 +183,7 @@ function build(save = true) {
   requestAnimationFrame(() => {
     for (const [w, home] of homeOf) { const r = w.getBoundingClientRect(); home.style.width = `${r.width}px`; home.style.height = `${r.height}px`; }
   });
+  fitRacks();
   if (record().startedAt === null) pileUp();
   else if (!RM && record().finishedAt === null) document.querySelectorAll('.home:not(.done) .tile').forEach((t, i) => t.animate([{ transform: 'translateY(-18px) scale(1.12)' }, { transform: 'none' }], { duration: 440, delay: i * 18, easing: SPRING, fill: 'backwards' }));
   showStartGate();
@@ -510,6 +511,7 @@ function applyTheme(id, save = false) {
   document.documentElement.dataset.theme = id;
   if (save) try { localStorage.setItem('spoondle-theme', id); } catch {}
   document.querySelector('meta[name="theme-color"]').content = THEME_COLOR[id];
+  fitRacks();
   for (const b of $('swatches').children) b.setAttribute('aria-pressed', String(b.dataset.pick === id));
   relight();
 }
@@ -531,6 +533,16 @@ function lampOffset(x, y, reach) {
   const m = mat.getBoundingClientRect(), span = Math.max(innerHeight * .5, 300);
   return [(x - (m.left + m.width / 2)) / span * reach, (y - (m.top + m.height * .45)) / span * reach];
 }
+// Card table racks: one answer per rack when the screen has room, two per row when it doesn't.
+function fitRacks() {
+  tray.classList.remove('compact');
+  if (theme() !== 'felt') return;
+  // Too tall shows up as the board running under the bottom bar or the bar leaving the screen (phones),
+  // or as a page that scrolls (desktop).
+  const bottom = document.querySelector('.bottom').getBoundingClientRect();
+  const boardEnd = Math.max(...[...$('play-area').children].filter(el => !el.hidden).map(el => el.getBoundingClientRect().bottom));
+  if (boardEnd > bottom.top + 1 || bottom.bottom > innerHeight + 1 || document.documentElement.scrollHeight > innerHeight + 1) tray.classList.add('compact');
+}
 function lightTiles() {
   const tiles = document.querySelectorAll('.shelf .tile, .slot .tile');
   if (theme() !== 'lamp') { for (const t of tiles) { t.style.removeProperty('--tsx-px'); t.style.removeProperty('--tsy-px'); } return; }
@@ -544,7 +556,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   let chosen = null; try { chosen = localStorage.getItem('spoondle-theme'); } catch {}
   if (!chosen) applyTheme(systemTheme());
 });
-addEventListener('resize', () => { relight(); pileUp(); });
+addEventListener('resize', () => { fitRacks(); relight(); pileUp(); });
 $('sound').addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('spoondle-sound', soundOn ? 'on' : 'off'); } catch {} showSound(); if (soundOn) clack('place'); });
 $('help').addEventListener('click', () => { $('help-dialog').showModal(); refreshClocks(); });
 $('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen-v2', '1'); } catch {} refreshClocks(); });
