@@ -102,13 +102,11 @@ function paintFeedback() {
   }
 }
 function fillFound(box, label, revealed) {
-  const row = document.createElement('div'); row.className = 'word';
-  const size = Math.max(9, Math.min(18, Math.floor((box.clientWidth - 12 - 2 * (label.length - 1)) / label.length)));
-  box.style.setProperty('--mini', `${size}px`); box.classList.add('filled'); box.classList.toggle('revealed', revealed);
+  const answer = document.createElement('span'); answer.className = 'answer'; answer.textContent = label;
+  box.classList.add('filled'); box.classList.toggle('revealed', revealed);
   box.setAttribute('aria-label', revealed ? `${label}, revealed` : label);
-  for (const ch of label) row.append(ch === ' ' ? makeGap() : makeTile(ch));
-  box.replaceChildren(row);
-  return [...row.children];
+  box.replaceChildren(answer);
+  return answer;
 }
 function build(save = true) {
   const p = puzzle(), s = state(), solvedIds = new Set(s.solved.flat());
@@ -280,26 +278,29 @@ function solve(hit, [first, second]) {
   }, RM ? 100 : 280);
 }
 function flyToTray(merged, hit) {
-  const minis = fillFound(tray.children[state().solved.length - 1], hit.label, false);
-  minis.forEach(m => { m.style.opacity = '0'; });
-  const anims = [...merged.children].map((t, i) => {
-    if (t.classList.contains('gap')) return null;
-    const a = t.getBoundingClientRect(), m = minis[i].getBoundingClientRect();
-    const anim = t.animate([{ transform: 'none' }, { transform: `translate(${m.left + m.width / 2 - a.left - a.width / 2}px,${m.top + m.height / 2 - a.top - a.height / 2}px) scale(${m.width / a.width})` }], { duration: RM ? 1 : 480, delay: RM ? 0 : i * 32, easing: 'cubic-bezier(.55,0,.25,1)', fill: 'forwards' });
-    anim.finished.then(() => { minis[i].style.opacity = ''; t.style.opacity = '0'; if (!RM) minis[i].animate([{ scale: 1.3 }, { scale: 1 }], { duration: 220, easing: 'ease-out' }); }).catch(() => {});
-    return anim;
-  }).filter(Boolean);
-  Promise.all(anims.map(a => a.finished)).then(() => {
+  const box = tray.children[state().solved.length - 1];
+  const a = merged.getBoundingClientRect(), b = box.getBoundingClientRect();
+  const dx = b.left + b.width / 2 - a.left - a.width / 2;
+  const dy = b.top + b.height / 2 - a.top - a.height / 2;
+  const scale = Math.min(b.width / a.width, b.height / a.height, 1);
+  const finish = () => {
     merged.remove(); mat.classList.remove('merging'); mat.style.minHeight = '';
-    minis.forEach(m => { m.style.opacity = ''; });
+    const answer = fillFound(box, hit.label, false);
+    if (!RM) answer.animate([{ opacity: 0, scale: .85 }, { opacity: 1, scale: 1 }], { duration: 260, easing: 'ease-out' });
     busy = false; clack('place', .6);
     const done = record().finishedAt !== null;
     $('count').textContent = `${board + 1} / ${puzzles.length}${done ? ' ✓' : ''}`;
     const label = document.createElement('b'); label.textContent = hit.label;
     say([label, hit.clue]);
     if (done) celebrate();
-  }).catch(() => {});
+  };
+  if (RM) { finish(); return; }
+  merged.animate([
+    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+    { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0 }
+  ], { duration: 480, easing: 'cubic-bezier(.55,0,.25,1)', fill: 'forwards' }).finished.then(finish, finish);
 }
+
 
 // ---------- hints, giving up, sharing ----------
 function useHint() {

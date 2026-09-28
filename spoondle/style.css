@@ -41,10 +41,10 @@ button{font:inherit;color:inherit}
 .nav button:disabled{opacity:.3;cursor:default}
 
 .tray{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.found{height:34px;padding-inline:4px;border-radius:9px;border:1.5px dashed color-mix(in srgb,var(--line) 55%,transparent);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.found{height:40px;padding-inline:6px;border-radius:9px;border:1.5px dashed color-mix(in srgb,var(--line) 55%,transparent);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .found.filled{border:1.5px solid transparent;background:var(--accent-soft)}
 .found.revealed{background:transparent;border:1.5px dashed var(--line)}
-.found.revealed .tile{opacity:.55}
+.found.revealed .answer{opacity:.55}
 
 .shelf{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;padding-block:4px}
 .home{justify-self:center;display:flex;border-radius:9px}
@@ -76,11 +76,10 @@ button{font:inherit;color:inherit}
 .slot{min-height:calc(var(--mat-s,50px) + 20px);display:flex;align-items:center;justify-content:center;border-radius:12px;border:1.5px dashed var(--line)}
 .slot.full{border-color:transparent}
 .slot .word{--s:var(--mat-s,50px);--gap:6px}
-.slot .tile,.merged .tile,.found .tile{rotate:0deg}
+.slot .tile,.merged .tile{rotate:0deg}
 .mat.merging .slot{display:none}
 .merged{justify-self:center;align-self:center}
-.found .word{--s:var(--mini,18px);--gap:2px}
-.found .tile{cursor:default;text-shadow:none;box-shadow:0 1.5px 0 var(--tile-edge)}
+.found .answer{color:var(--ink);font:600 clamp(15px,4.4vw,18px)/1.1 "Rubik",system-ui,sans-serif;letter-spacing:.015em;text-transform:uppercase;white-space:nowrap}
 
 .message{min-height:44px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px;text-align:center;color:var(--muted);font-size:14px;text-wrap:balance}
 .message b{color:var(--ink);font-weight:700;letter-spacing:.03em}
