@@ -1,5 +1,5 @@
 import { puzzles } from './puzzles.mjs';
-import { swapWords, checkSwap, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint, hintTargets } from './game.mjs';
+import { swapWords, checkSwap, tradeAnswer, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint, hintTargets } from './game.mjs';
 import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, giveUpRecord, pauseRecord, resumeRecord, streak, shareText } from './progress.mjs';
 const $ = id => document.getElementById(id);
 let saved = { records:{},completionDays:[],current:null }, storageAvailable = true;
@@ -16,16 +16,21 @@ function persist() {
   try { localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));storageAvailable=true; } catch { storageAvailable=false; }
   $('save-warning').hidden=storageAvailable;
 }
-// Only the puzzle on screen, in a visible tab, has a running clock.
-function syncClocks() { records.forEach((r, i) => i === current && !document.hidden ? resumeRecord(r) : pauseRecord(r)); }
-function requireStarted() { if(record().startedAt===null)throw new Error('Press Start to reveal this puzzle and begin the timer.'); }
-function updateTimer() { $('timer').textContent=formatTime(elapsedMs(record()));const n=streak(saved.completionDays);$('streak-label').textContent=`${n}-day play streak`; }
-function startPuzzle() {
-  if(record().startedAt!==null)return;
-  record().startedAt=Date.now();syncClocks();persist();render();
-  if (!reducedMotion()) document.querySelectorAll('.word-row').forEach((row, i) => row.animate([{ opacity: 0, transform: 'translateY(12px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 340, delay: (i % 4) * 60 + (i >= 4 ? 30 : 0), easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }));
-  document.querySelector('[data-card]')?.focus();announce('Puzzle started. The clock runs while this puzzle is on screen.');
+// Only the puzzle on screen, in a visible tab and not behind How to play, has a running clock.
+// A puzzle's clock starts the first time it's shown, and its cards deal in.
+let dealIn = false;
+function syncClocks() {
+  const showing = !document.hidden && !$('help-dialog').open;
+  records.forEach((r, i) => {
+    if (i !== current || !showing) { pauseRecord(r); return; }
+    if (r.startedAt === null) { r.startedAt = Date.now(); dealIn = true; }
+    resumeRecord(r);
+  });
 }
+function refreshClocks() { syncClocks(); if (dealIn) render(); else { persist(); updateTimer(); } }
+// Playing a puzzle means it's on screen, so its clock starts now if it hasn't yet.
+function ensureStarted() { if (record().startedAt === null) syncClocks(); }
+function updateTimer() { $('timer').textContent=formatTime(elapsedMs(record()));const n=streak(saved.completionDays);$('streak-label').textContent=`${n}-day play streak`; }
 function resultText() {
   const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('p',keys[current]);
   return shareText(puzzle(),record(),url.href);
@@ -51,7 +56,7 @@ const categoryDescriptions = {
   'Compound words': 'Join two meaningful pieces into one word.',
   'Hidden words': 'Extra tricky! Join the new pieces to reveal one hidden word.'
 };
-const categoryPrompt = () => `Make an answer in the ${puzzle().category.toLowerCase()} category. Try either order.`;
+const categoryPrompt = () => `Make an answer in the ${puzzle().category.toLowerCase()} category. The right letters count as soon as you pick them.`;
 function announce(text) { $('announcement').textContent = text; }
 function captureRows() { return new Map([...document.querySelectorAll('[data-row]')].map(e => [e.dataset.row, e.getBoundingClientRect()])); }
 function animateReorder(before) {
@@ -71,7 +76,7 @@ function tile(char, id, index, interactive = false) {
     t.id = `letter-${id}-${index}`;
     t.setAttribute('aria-label', `${char}, letter ${index + 1} of ${wordFor(id)}${status ? '. ' + feedbackText(status) : ''}`);
     t.setAttribute('aria-pressed', String(positions[id] === index));
-    t.addEventListener('click', () => { if (positions[id] === index) delete positions[id]; else positions[id] = index; $('trade-feedback').hidden = true; $('trade-message').classList.remove('error'); $('trade-message').textContent = categoryPrompt(); renderTrade(); $(t.id)?.focus(); });
+    t.addEventListener('click', () => { if (positions[id] === index) delete positions[id]; else positions[id] = index; $('trade-feedback').hidden = true; $('trade-message').classList.remove('error'); renderTrade(); $(t.id)?.focus(); if (tradeAnswer(puzzle(), selected, selected.map(x => positions[x]))) submit(); });
   }
   return t;
 }
@@ -116,7 +121,7 @@ function makeRow(id) {
   return row;
 }
 function render(options = {}) {
-  const p = puzzle(), s = state(), started = record().startedAt !== null;
+  const p = puzzle(), s = state();
   $('puzzle-label').textContent = `Puzzle ${current + 1} / ${puzzles.length}${record().finishedAt !== null && !state().revealed ? ' ✓' : ''}`;
   $('category-name').textContent = p.category;
   $('category-description').textContent = categoryDescriptions[p.category];
@@ -129,8 +134,7 @@ function render(options = {}) {
   $('board').replaceChildren(...[0, 1].map(column => {
     const panel = el('section', 'word-column'); panel.setAttribute('aria-label', column === 0 ? 'Left column' : 'Right column'); panel.dataset.column = String(column);
     const list = el('div', 'column-words');
-    if(started)list.append(...availableColumn(p,s,column).map(makeRow));
-    else for(let i=0;i<4;i++){const row=el('div','word-row'),card=el('div','word-card'),tiles=el('span','word-tiles');for(let j=0;j<6;j++)tiles.append(el('span','tile','X'));card.append(tiles);row.append(card);list.append(row);}
+    list.append(...availableColumn(p,s,column).map(makeRow));
     panel.append(list); return panel;
   }));
   $('selection-prompt').textContent = selected.length === 1 ? `Now pick a word on the ${s.columnById[selected[0]] === 0 ? 'right' : 'left'}.` : 'Pick one word from each column. Drag the handles to rearrange.';
@@ -141,9 +145,7 @@ function render(options = {}) {
   $('hint').title = $('hint').disabled ? 'Every letter you need to swap is already showing' : 'Show one letter you need to swap';
   const won = s.solved.length === p.answers.length;
   $('board-stage').hidden=won;
-  $('board').classList.toggle('is-locked',!started);$('board').inert=!started;
-  $('board').setAttribute('aria-hidden',String(!started));$('start-gate').hidden=started;
-  for (const id of ['selection-bar', 'board-tools', 'feedback-key', 'reorder-toggle-wrap']) $(id).hidden = won || !started;
+  for (const id of ['selection-bar', 'board-tools', 'feedback-key', 'reorder-toggle-wrap']) $(id).hidden = won;
   updateTimer();if(!options.sync)persist();
   $('win').hidden = !won;
   $('win-symbol').textContent = s.revealed ? '⚑' : '✓'; $('win-title').textContent = s.revealed ? "Here's how it clicks." : 'Everything clicks.';
@@ -161,19 +163,23 @@ function render(options = {}) {
     const text = el('div'); text.append(el('div', 'solved-answer', solvedAnswer(p, ids).label), el('div', 'solved-source', ids.map(wordFor).join(' + ') + (shown ? ' · revealed' : ''))); row.append(text); return row;
   }));
   animateReorder(options.before);
+  if (dealIn) {
+    dealIn = false;
+    if (!reducedMotion()) document.querySelectorAll('.word-row').forEach((row, i) => row.animate([{ opacity: 0, transform: 'translateY(12px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 340, delay: (i % 4) * 60 + (i >= 4 ? 30 : 0), easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }));
+  }
 }
 function nextUnfinished() {
   for (let step = 1; step < puzzles.length; step++) { const i = (current + step) % puzzles.length; if (records[i].finishedAt === null) return i; }
   return -1;
 }
-function lockTrade(locked) { $('trade-dialog').classList.toggle('is-solved', locked); $('letter-rows').inert = locked; $('reverse').inert = locked; }
+function lockTrade(locked) { $('trade-dialog').classList.toggle('is-solved', locked); $('letter-rows').inert = locked; }
 function openTrade() {
   lockTrade(false); $('trade-feedback').hidden = true;
   $('trade-message').textContent = categoryPrompt(); $('trade-message').classList.remove('error', 'success');
   renderTrade(); if (!$('trade-dialog').open) $('trade-dialog').showModal();
 }
 function selectCard(id) {
-  requireStarted();
+  ensureStarted();
   if (!puzzle().cards.some(c => c.id === id) || usedIds(puzzle(), state()).has(id)) throw new Error('Choose an available word.');
   if (selected.includes(id)) selected = selected.filter(x => x !== id);
   else selected = [...selected.filter(x => state().columnById[x] !== state().columnById[id]), id];
@@ -189,17 +195,20 @@ function renderTrade() {
     const row = el('div', 'letter-row'); row.setAttribute('role', 'group'); row.setAttribute('aria-label', `Choose a letter in ${wordFor(id)}`);
     [...wordFor(id)].forEach((char, i) => row.append(tile(char, id, i, true))); group.append(row); return group;
   }));
-  const ready = selected.length === 2 && selected.every(id => Number.isInteger(positions[id])); $('submit').disabled = !ready;
-  $('preview').replaceChildren();
-  if (!ready) { $('preview').append(el('span', 'preview-placeholder', 'Your exchange will appear here.')); return; }
+  const ready = selected.length === 2 && selected.every(id => Number.isInteger(positions[id]));
+  $('preview').replaceChildren(); $('submit').disabled = true;
+  if (!ready) { $('trade-message').textContent = categoryPrompt(); $('preview').append(el('span', 'preview-placeholder', 'Your exchange will appear here.')); return; }
   const words = swapWords(puzzle(), selected, selected.map(id => positions[id]));
+  const unchanged = words.every((w, i) => w === wordFor(selected[i])), answer = !unchanged && tradeAnswer(puzzle(), selected, selected.map(id => positions[id]));
+  $('submit').disabled = unchanged || !!answer;
+  if (!$('trade-message').classList.contains('error')) $('trade-message').textContent = unchanged ? 'Those letters match, so nothing changes. Pick a different one.' : answer ? '' : 'Not an answer. Change a letter, or show a clue.';
   words.forEach((w, i) => {
     if (i) $('preview').append(el('span', 'preview-plus', '+'));
     const word = el('span', 'preview-word'); [...w].forEach((char, j) => word.append(el('span', j === positions[selected[i]] ? 'changed-letter' : '', char))); $('preview').append(word);
   });
 }
 function submit() {
-  requireStarted();
+  ensureStarted();
   const before = captureRows();
   const result = checkSwap(puzzle(), state(), selected, selected.map(id => positions[id]));
   if (result.correct) {
@@ -217,7 +226,7 @@ function submit() {
     }, reducedMotion() ? 300 : 850);
   } else {
     renderTrade();
-    $('trade-message').textContent = result.unchanged ? 'Those letters are identical. Choose different letters; no miss counted.' : result.repeated ? 'You already tried this exchange. No extra miss counted.' : 'Not quite. Your original tiles now carry a clue.';
+    $('trade-message').textContent = result.unchanged ? 'Those letters match, so nothing changes. Pick a different one.' : result.repeated ? 'You already have this clue. No extra miss counted.' : 'Clue added: your tiles are colored. That counts as one miss.';
     $('trade-message').classList.add('error');
     if (!reducedMotion() && !result.repeated && !result.unchanged) $('preview').animate([0, -7, 6, -4, 2, 0].map(x => ({ transform: `translateX(${x}px)` })), { duration: 380, easing: 'ease-out' });
     $('trade-feedback').hidden = !result.feedback;
@@ -248,13 +257,13 @@ function celebrate() {
   });
 }
 function move(id, index, before = captureRows()) {
-  requireStarted();
+  ensureStarted();
   const result = moveWord(puzzle(), state(), id, index); render({ before });
   announce(`${wordFor(id)} moved to position ${result.position} in the ${result.column === 0 ? 'left' : 'right'} column.`);
   return result;
 }
 function startDrag(e, id, row, handle) {
-  requireStarted();
+  ensureStarted();
   if (e.button !== 0 || drag) return;
   const column = state().columnById[id], ids = availableColumn(puzzle(), state(), column);
   const rects = ids.map(x => document.querySelector(`[data-row="${x}"]`).getBoundingClientRect());
@@ -289,7 +298,7 @@ function goTo(index) {
   cancelDrag(); document.querySelectorAll('dialog[open]').forEach(d => d.close()); current = index; syncClocks(); const url=new URL(location.href);url.searchParams.set('p',keys[current]);history.replaceState(null,'',url); selected = []; positions = {}; reorderMode = false; $('share-status').textContent=''; announce(''); render();
 }
 function openHint() {
-  requireStarted();
+  ensureStarted();
   const reveal = revealHint(puzzle(), state());
   if (!reveal) { announce('Every letter you need to swap is already showing.'); return null; }
   render();
@@ -299,7 +308,7 @@ function openHint() {
   return reveal;
 }
 function giveUp() {
-  requireStarted();
+  ensureStarted();
   const before = captureRows(), from = state().solved.length;
   $('give-up-dialog').close();
   if (!giveUpRecord(puzzle(), record())) return;
@@ -311,29 +320,28 @@ function updateThemeButton() {
   const dark = document.documentElement.dataset.theme === 'dark'; $('theme').setAttribute('aria-pressed', String(dark)); $('theme').setAttribute('aria-label', dark ? 'Use light mode' : 'Use dark mode'); $('theme').firstElementChild.textContent = dark ? '☀' : '☾';
   document.querySelector('meta[name="theme-color"]').content = dark ? '#111521' : '#f7f8fc';
 }
-$('start').addEventListener('click', startPuzzle);
 $('share-result').addEventListener('click',shareResult);$('copy-result').addEventListener('click',copyResult);
 $('theme').addEventListener('click', () => { const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = theme; try { localStorage.setItem('spoondle-theme', theme); } catch {} updateThemeButton(); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { let preference; try { preference = localStorage.getItem('spoondle-theme'); } catch {} if (!preference) { document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'; updateThemeButton(); } });
-$('help').addEventListener('click', () => $('help-dialog').showModal()); $('feedback-help').addEventListener('click', () => $('help-dialog').showModal());
+const openHelp = () => { $('help-dialog').showModal(); refreshClocks(); };
+$('help').addEventListener('click', openHelp); $('feedback-help').addEventListener('click', openHelp);
 $('hint').addEventListener('click', openHint); $('submit').addEventListener('click', submit);
-$('give-up').addEventListener('click', () => { requireStarted(); $('give-up-dialog').showModal(); }); $('confirm-give-up').addEventListener('click', giveUp);
-$('reverse').addEventListener('click', () => { selected.reverse(); renderTrade(); });
+$('give-up').addEventListener('click', () => { ensureStarted(); $('give-up-dialog').showModal(); }); $('confirm-give-up').addEventListener('click', giveUp);
 $('clear').addEventListener('click', () => { selected = []; render(); });
 $('previous').addEventListener('click', () => goTo(current - 1)); $('next').addEventListener('click', () => goTo(current + 1)); $('next-after-win').addEventListener('click', () => goTo(nextUnfinished()));
-$('reorder-toggle').addEventListener('click', () => { requireStarted(); reorderMode = !reorderMode; render(); announce(reorderMode ? 'Up and down buttons are shown beneath each word.' : 'Reorder controls hidden.'); });
-$('shuffle').addEventListener('click', e => { requireStarted(); const before = captureRows(); shuffleColumns(puzzle(), state()); render({ before }); announce('Both columns shuffled. Every word stayed on its own side.'); if (e.detail > 0) $('shuffle').blur(); });
+$('reorder-toggle').addEventListener('click', () => { ensureStarted(); reorderMode = !reorderMode; render(); announce(reorderMode ? 'Up and down buttons are shown beneath each word.' : 'Reorder controls hidden.'); });
+$('shuffle').addEventListener('click', e => { ensureStarted(); const before = captureRows(); shuffleColumns(puzzle(), state()); render({ before }); announce('Both columns shuffled. Every word stayed on its own side.'); if (e.detail > 0) $('shuffle').blur(); });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close).close()));
 $('trade-dialog').addEventListener('close', () => { lockTrade(false); if (!selected.length) return; selected = []; positions = {}; render(); });
-syncClocks(); updateThemeButton(); render();
 let helpSeen = true; try { helpSeen = localStorage.getItem('spoondle-help-seen') !== null; } catch {}
 if (!helpSeen) $('help-dialog').showModal();
-$('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen', '1'); } catch {} });
+$('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen', '1'); } catch {} refreshClocks(); });
+syncClocks(); updateThemeButton(); render();
 if(requestedKey && initialIndex<0)announce('That shared puzzle is not in this test edition. Choose one of the available puzzles.');
 setInterval(updateTimer,250);
 window.addEventListener('pagehide',()=>{pauseRecord(record());persist();});
-window.addEventListener('pageshow',e=>{if(e.persisted){syncClocks();updateTimer();}});
-document.addEventListener('visibilitychange',()=>{syncClocks();persist();updateTimer();});
+window.addEventListener('pageshow',e=>{if(e.persisted)refreshClocks();});
+document.addEventListener('visibilitychange',refreshClocks);
 window.addEventListener('storage',event=>{
   if(event.key!==STORAGE_KEY||!event.newValue)return;
   try{saved=readProgress(localStorage);records=puzzles.map((p,i)=>restoreRecord(p,saved.records[keys[i]]));states=records.map(r=>r.state);syncClocks();selected=[];positions={};document.querySelectorAll('dialog[open]').forEach(d=>d.close());render({sync:true});}catch{}
@@ -343,10 +351,10 @@ if (context?.registerTool) {
   const lifecycle = new AbortController();
   const tools = [
     { name: 'read_spoondle_board', description: 'Read available words by column, revealed tile feedback, progress, and selection. Does not reveal answers.', inputSchema: { type: 'object', properties: {}, additionalProperties: false }, annotations: { readOnlyHint: true }, execute: () => record().startedAt===null ? {puzzle:current+1,category:puzzle().category,started:false,message:'Start the puzzle to reveal its words.'} : ({ puzzle: current + 1, category:puzzle().category, columns: state().columns.map((_, column) => availableColumn(puzzle(), state(), column).map(id => ({ id, word: wordFor(id) }))), feedback: state().feedback, found: state().solved.length, misses: state().misses, selected }) },
-    { name: 'start_spoondle_puzzle', description: `Switch to one of ${puzzles.length} puzzles and start its timer. Saved progress is preserved.`, inputSchema: { type: 'object', properties: { puzzleNumber: { type: 'integer', minimum: 1, maximum: puzzles.length } }, required: ['puzzleNumber'], additionalProperties: false }, execute: input => { goTo(input?.puzzleNumber - 1); startPuzzle(); return { puzzle: current + 1 }; } },
+    { name: 'start_spoondle_puzzle', description: `Switch to one of ${puzzles.length} puzzles and start its timer. Saved progress is preserved.`, inputSchema: { type: 'object', properties: { puzzleNumber: { type: 'integer', minimum: 1, maximum: puzzles.length } }, required: ['puzzleNumber'], additionalProperties: false }, execute: input => { goTo(input?.puzzleNumber - 1); return { puzzle: current + 1 }; } },
     { name: 'reorder_spoondle_word', description: 'Move an available word to a zero-based position within its existing column.', inputSchema: { type: 'object', properties: { cardId: { type: 'string' }, position: { type: 'integer', minimum: 0, maximum: 3 } }, required: ['cardId', 'position'], additionalProperties: false }, execute: input => { if (!input || typeof input.cardId !== 'string') throw new Error('Choose a word.'); return move(input.cardId, input.position); } },
     { name: 'submit_spoondle_swap', description: 'Submit a reciprocal letter exchange using one word from each column. Incorrect new guesses add one miss and reveal tile feedback.', inputSchema: { type: 'object', properties: { cardIds: { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 2 }, letterIndices: { type: 'array', items: { type: 'integer', minimum: 0 }, minItems: 2, maxItems: 2 } }, required: ['cardIds', 'letterIndices'], additionalProperties: false }, execute: input => {
-      requireStarted();
+      ensureStarted();
       const ids = input?.cardIds, indices = input?.letterIndices; swapWords(puzzle(), ids, indices);
       if (ids.some(id => usedIds(puzzle(), state()).has(id))) throw new Error('Choose unsolved cards.');
       if (state().columnById[ids[0]] === state().columnById[ids[1]]) throw new Error('Choose one word from each column.');

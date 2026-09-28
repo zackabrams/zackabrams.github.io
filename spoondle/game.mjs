@@ -65,6 +65,8 @@ function matchAnswer(puzzle, ids, words) {
   }
   return null;
 }
+// The answer a trade makes, or null. Counts nothing, so the page can accept a right trade as soon as it's picked.
+export const tradeAnswer = (puzzle, ids, positions) => matchAnswer(puzzle, ids, swapWords(puzzle, ids, positions));
 // The answer a solved pair makes, or null when the two cards are not partners.
 export function solvedAnswer(puzzle, ids) {
   return matchAnswer(puzzle, ids, swapWords(puzzle, ids, ids.map(id => swapIndex(puzzle, id))));
