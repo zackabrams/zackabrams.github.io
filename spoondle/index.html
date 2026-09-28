@@ -23,12 +23,11 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script>/* The saved table, or the phone's mode until someone picks one: Kitchen table in light, Lamplight in dark. */try{const t=localStorage.getItem('spoondle-theme');document.documentElement.dataset.theme=['oak','linen','lamp','felt','light','dark'].includes(t)?t:(matchMedia('(prefers-color-scheme: dark)').matches?'lamp':'oak')}catch{document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'lamp':'oak'}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500&family=Rubik:wght@600&display=swap">
-<link rel="stylesheet" href="style.css?v=28vi5b3n">
+<link rel="preload" href="fonts/rubik.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/caveat.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css?v=22fqicgr">
 <script type="importmap">{"imports":{"./game.mjs":"./game.mjs?v=xrugpig1","./progress.mjs":"./progress.mjs?v=2dj2945d","./puzzles.mjs":"./puzzles.mjs?v=9hyzy3hw","./seal.mjs":"./seal.mjs?v=1jphmj7k"}}</script>
-<script type="module" src="app.mjs?v=1uh8k8uv"></script>
+<script type="module" src="app.mjs?v=13bg0x28"></script>
 </head>
 <body>
 <div class="app">
@@ -48,8 +47,10 @@
     <div class="tray" id="tray" aria-label="Answers found"></div>
     <p class="clue" id="clue" aria-live="polite"></p>
     <div class="shelf" id="shelf" aria-label="Words"></div>
-    <div class="mat" id="mat" aria-label="Mat"></div>
-    <div class="message" id="message" role="status"></div>
+    <div class="side">
+      <div class="mat" id="mat" aria-label="Mat"></div>
+      <div class="message" id="message" role="status"></div>
+    </div>
     <div class="start-overlay" id="start-overlay">
       <button id="start" class="start-button" type="button">Start puzzle</button>
     </div>
