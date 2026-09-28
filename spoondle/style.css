@@ -103,7 +103,7 @@ button{font:inherit;color:inherit}
 .nav button:disabled{opacity:.3;cursor:default}
 
 .play-area{position:relative;display:flex;flex-direction:column;gap:16px}
-.play-area.waiting .shelf .tile{filter:blur(9px)}
+.play-area.waiting .shelf .tile{cursor:default}
 .start-overlay{position:absolute;inset:-2px;z-index:10;display:grid;place-items:center;border-radius:20px;background:transparent}
 .start-button{min-width:176px;padding:15px 24px;border:1px solid var(--accent);border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:17px;font-weight:700;box-shadow:0 10px 30px var(--shadow);cursor:pointer;transition:transform .16s,box-shadow .16s}
 .start-button:hover{transform:translateY(-2px);box-shadow:0 14px 34px var(--shadow-lift)}

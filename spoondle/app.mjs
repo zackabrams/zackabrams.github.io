@@ -42,7 +42,42 @@ function showStartGate() {
 function startPuzzle() {
   if (record().startedAt !== null) return;
   record().startedAt = Date.now();
-  showStartGate(); refreshClocks();
+  unpile(); showStartGate(); refreshClocks();
+}
+// Before Start, the tiles lie face up in a jumbled heap in the middle of the table.
+function pileUp() {
+  if (record().startedAt !== null) return;
+  const tiles = [...document.querySelectorAll('.shelf .home:not(.done) .tile')];
+  tiles.forEach(t => { t.style.transform = ''; });
+  const box = shelf.getBoundingClientRect(), cx = box.left + box.width / 2, cy = box.top + box.height / 2;
+  const rx = Math.min(box.width * .26, 92), ry = Math.min(box.height * .28, 56);
+  for (const t of tiles) {
+    const r = t.getBoundingClientRect(), angle = Math.random() * Math.PI * 2, reach = Math.sqrt(Math.random());
+    const dx = cx + Math.cos(angle) * rx * reach - (r.left + r.width / 2), dy = cy + Math.sin(angle) * ry * reach - (r.top + r.height / 2);
+    const rot = Math.round(Math.random() * 360 - 180);
+    Object.assign(t.dataset, { px: dx.toFixed(1), py: dy.toFixed(1), pr: rot });
+    t.style.transform = `translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px) rotate(${rot}deg)`;
+    t.style.zIndex = String(1 + Math.floor(Math.random() * 9));   // stays under the Start button's layer
+  }
+}
+// On Start, the heap splits: each tile springs from the pile to its place in the two columns.
+function unpile() {
+  const tiles = [...document.querySelectorAll('.shelf .tile[data-px]')];
+  const order = tiles.map((t, i) => [Math.random(), t, i]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  let last = 0;
+  order.forEach((t, i) => {
+    const dx = +t.dataset.px, dy = +t.dataset.py, rot = +t.dataset.pr, delay = i * 24, duration = 620;
+    t.style.transform = ''; t.style.zIndex = ''; delete t.dataset.px; delete t.dataset.py; delete t.dataset.pr;
+    if (RM) return;
+    t.animate([
+      { transform: `translate(${dx}px,${dy}px) rotate(${rot}deg)` },
+      { transform: `translate(${(dx * .45).toFixed(1)}px,${(dy * .45 - 22).toFixed(1)}px) rotate(${Math.round(rot * .3)}deg) scale(1.14)`, offset: .45 },
+      { transform: 'none' }
+    ], { duration, delay, easing: 'cubic-bezier(.3,.7,.3,1)', fill: 'backwards' });
+    if (i % 3 === 0) setTimeout(() => clack('place', .35), delay + duration * .9);
+    last = delay + duration;
+  });
+  setTimeout(relight, last + 60);
 }
 function ensureStarted() { if (record().startedAt === null) startPuzzle(); }
 function updateStats() {
@@ -148,7 +183,8 @@ function build(save = true) {
   requestAnimationFrame(() => {
     for (const [w, home] of homeOf) { const r = w.getBoundingClientRect(); home.style.width = `${r.width}px`; home.style.height = `${r.height}px`; }
   });
-  if (!RM && record().finishedAt === null) document.querySelectorAll('.home:not(.done) .tile').forEach((t, i) => t.animate([{ transform: 'translateY(-18px) scale(1.12)' }, { transform: 'none' }], { duration: 440, delay: i * 18, easing: SPRING, fill: 'backwards' }));
+  if (record().startedAt === null) pileUp();
+  else if (!RM && record().finishedAt === null) document.querySelectorAll('.home:not(.done) .tile').forEach((t, i) => t.animate([{ transform: 'translateY(-18px) scale(1.12)' }, { transform: 'none' }], { duration: 440, delay: i * 18, easing: SPRING, fill: 'backwards' }));
   showStartGate();
   if (save) persist();
   updateStats(); say();
@@ -508,7 +544,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   let chosen = null; try { chosen = localStorage.getItem('spoondle-theme'); } catch {}
   if (!chosen) applyTheme(systemTheme());
 });
-addEventListener('resize', relight);
+addEventListener('resize', () => { relight(); pileUp(); });
 $('sound').addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('spoondle-sound', soundOn ? 'on' : 'off'); } catch {} showSound(); if (soundOn) clack('place'); });
 $('help').addEventListener('click', () => { $('help-dialog').showModal(); refreshClocks(); });
 $('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen-v2', '1'); } catch {} refreshClocks(); });
