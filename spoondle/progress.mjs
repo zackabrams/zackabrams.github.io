@@ -30,10 +30,9 @@ export function restoreRecord(puzzle, saved) {
     }
     const revealed = s.revealed ?? 0;
     if (!Number.isInteger(revealed) || revealed<0 || revealed>solved.length) return fresh;
-    const log = Array.isArray(s.log) && s.log.every(x=>['hit','miss','hint','reveal'].includes(x)) ? [...s.log] : [];
     const awayMs = saved.awayMs ?? 0, pausedAt = saved.pausedAt ?? null, finished = s.solved.length===puzzle.answers.length;
     if (!Number.isFinite(awayMs) || awayMs<0 || (pausedAt!==null && !(Number.isFinite(pausedAt) && pausedAt>=saved.startedAt))) return fresh;
-    return { state:{...base,solved,revealed,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback,log}, startedAt:saved.startedAt, finishedAt:finished?saved.finishedAt:null, pausedAt:finished?null:pausedAt, awayMs };
+    return { state:{...base,solved,revealed,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback}, startedAt:saved.startedAt, finishedAt:finished?saved.finishedAt:null, pausedAt:finished?null:pausedAt, awayMs };
   } catch { return fresh; }
 }
 export function readProgress(storage) {
@@ -72,11 +71,8 @@ export function streak(days, now=Date.now()) {
   while(known.has(localDay(date.getTime()))) {count++;date.setDate(date.getDate()-1);}
   return count;
 }
-// Every guess in order on one line: ✅ found an answer, ❌ missed, 💡 used a hint, 🏳️ gave up.
-const shareMark = { hit:'✅', miss:'❌', hint:'💡', reveal:'🏳️' };
-export const shareGrid = log => log.map(x=>shareMark[x]).join('');
 export function shareText(puzzle, record, url) {
   if(record.finishedAt===null)throw new Error('Finish the puzzle before sharing your result.');
-  const s=record.state, grid=shareGrid(s.log);
-  return `Spoondle · Test puzzle ${puzzle.id} (${puzzle.difficulty})\n${grid?grid+'\n':''}${s.revealed?`Gave up after ${formatTime(elapsedMs(record))} · ${s.solved.length-s.revealed} of ${puzzle.answers.length} found`:`Solved in ${formatTime(elapsedMs(record))}`} · ${s.misses} miss${s.misses===1?'':'es'} · ${s.hints} hint${s.hints===1?'':'s'}\n${s.revealed?'Can you solve it?':'Can you beat my time?'}\n${url}`;
+  const s=record.state;
+  return `Spoondle · Test puzzle ${puzzle.id} (${puzzle.difficulty})\n${s.revealed?`Gave up after ${formatTime(elapsedMs(record))} · ${s.solved.length-s.revealed} of ${puzzle.answers.length} found`:`Solved in ${formatTime(elapsedMs(record))}`} · ${s.misses} miss${s.misses===1?'':'es'} · ${s.hints} hint${s.hints===1?'':'s'}\n${s.revealed?'Can you solve it?':'Can you beat my time?'}\n${url}`;
 }

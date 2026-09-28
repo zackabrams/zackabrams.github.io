@@ -1,364 +1,488 @@
 import { puzzles } from './puzzles.mjs';
-import { swapWords, checkSwap, tradeAnswer, guessKey, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint, hintTargets } from './game.mjs';
-import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, giveUpRecord, pauseRecord, resumeRecord, streak, shareText } from './progress.mjs';
+import { checkSwap, tradeAnswer, guessKey, solvedAnswer, hintTargets, revealHint } from './game.mjs';
+import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, giveUpRecord, pauseRecord, resumeRecord, shareText } from './progress.mjs';
+
 const $ = id => document.getElementById(id);
-let saved = { records:{},completionDays:[],current:null }, storageAvailable = true;
-try { saved = readProgress(localStorage); } catch { storageAvailable = false; }
+const shelf = $('shelf'), mat = $('mat'), tray = $('tray'), message = $('message');
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SPRING = 'cubic-bezier(.2,1.35,.45,1)', SNAP = RM ? 1 : 360;
+// How far past the mat's edge a letter has to be pulled before its whole word comes along.
+const TEAR = 56;
+const CLUE_KEY = 'Yellow: swap this letter. Gray: leave it.';
+
+// ---------- saved progress ----------
+let saved = { records: {}, completionDays: [], current: null };
+try { saved = readProgress(localStorage); } catch {}
 const keys = puzzles.map(puzzleKey);
-let records = puzzles.map((p,i) => restoreRecord(p,saved.records[keys[i]]));
-let states = records.map(r=>r.state);
+let records = puzzles.map((p, i) => restoreRecord(p, saved.records[keys[i]]));
 const requestedKey = new URL(location.href).searchParams.get('p');
-const initialIndex = keys.indexOf(requestedKey || saved.current);
-let current = Math.max(0,initialIndex), selected = [], positions = {}, reorderMode = false, drag = null, suppressHandleClickUntil = 0;
-const puzzle = () => puzzles[current], state = () => states[current], record = () => records[current];
+let board = Math.max(0, keys.indexOf(requestedKey || saved.current));
+const puzzle = () => puzzles[board], record = () => records[board], state = () => records[board].state;
 function persist() {
-  saved.current=keys[current];records.forEach((r,i)=>{saved.records[keys[i]]=r;});
-  try { localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));storageAvailable=true; } catch { storageAvailable=false; }
-  $('save-warning').hidden=storageAvailable;
+  saved.current = keys[board]; records.forEach((r, i) => { saved.records[keys[i]] = r; });
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch {}
 }
-// Only the puzzle on screen, in a visible tab and not behind How to play, has a running clock.
-// A puzzle's clock starts the first time it's shown, and its cards deal in.
-let dealIn = false;
+
+// ---------- the clock runs only for the puzzle on screen, in a visible tab, with How to play closed ----------
 function syncClocks() {
   const showing = !document.hidden && !$('help-dialog').open;
   records.forEach((r, i) => {
-    if (i !== current || !showing) { pauseRecord(r); return; }
-    if (r.startedAt === null) { r.startedAt = Date.now(); dealIn = true; }
+    if (i !== board || !showing) { pauseRecord(r); return; }
+    if (r.startedAt === null) r.startedAt = Date.now();
     resumeRecord(r);
   });
 }
-function refreshClocks() { syncClocks(); if (dealIn) render(); else { persist(); updateTimer(); } }
-// Playing a puzzle means it's on screen, so its clock starts now if it hasn't yet.
+function refreshClocks() { syncClocks(); persist(); updateStats(); }
 function ensureStarted() { if (record().startedAt === null) syncClocks(); }
-function updateTimer() { $('timer').textContent=formatTime(elapsedMs(record())); }
-function resultText() {
-  const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('p',keys[current]);
-  return shareText(puzzle(),record(),url.href);
+function updateStats() {
+  const s = state(), plural = (n, word) => `${n} ${word}${n === 1 ? '' : word.endsWith('s') ? 'es' : 's'}`;
+  $('timer').textContent = formatTime(elapsedMs(record()));
+  $('tally').textContent = [s.misses && plural(s.misses, 'miss'), s.hints && plural(s.hints, 'hint')].filter(Boolean).join(' · ');
 }
-function manualCopy(text) { $('share-text').value=text;$('share-dialog').showModal();$('share-text').focus();$('share-text').select(); }
-async function copyResult() {
-  const text=resultText();
-  try { await navigator.clipboard.writeText(text);$('share-status').textContent='Copied! Send it to a friend.'; }
-  catch { manualCopy(text); }
+
+// ---------- sound: a short filtered click, like a plastic tile set down on a table ----------
+let audio = null, soundOn = true;
+try { soundOn = localStorage.getItem('spoondle-sound') !== 'off'; } catch {}
+const icon = path => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
+const SPEAKER_ON = icon('<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/>');
+const SPEAKER_OFF = icon('<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9.5l4 5M21 9.5l-4 5"/>');
+const MOON = icon('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>');
+const SUN = icon('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>');
+function showSound() { $('sound').innerHTML = soundOn ? SPEAKER_ON : SPEAKER_OFF; $('sound').setAttribute('aria-pressed', String(soundOn)); $('sound').setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off'); }
+function ctx() { audio ??= new (window.AudioContext || window.webkitAudioContext)(); if (audio.state === 'suspended') audio.resume(); return audio; }
+function clack(kind = 'place', volume = 1) {
+  // Phones buzz only once the player has touched the page; before that the browser refuses.
+  try { if (navigator.userActivation?.hasBeenActive !== false) navigator.vibrate?.(kind === 'pick' ? 4 : 9); } catch {}
+  if (!soundOn) return;
+  try {
+    const a = ctx(), t = a.currentTime, len = kind === 'pick' ? .016 : .03;
+    const buf = a.createBuffer(1, Math.ceil(a.sampleRate * len), a.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length) ** 3;
+    const src = a.createBufferSource(), filter = a.createBiquadFilter(), gain = a.createGain();
+    src.buffer = buf; filter.type = 'bandpass'; filter.frequency.value = kind === 'pick' ? 3400 : 1700 + Math.random() * 400; filter.Q.value = 1.6;
+    gain.gain.value = (kind === 'pick' ? .3 : .75) * volume;
+    src.connect(filter).connect(gain).connect(a.destination); src.start(t);
+    if (kind !== 'pick') {
+      const body = a.createOscillator(), bg = a.createGain();
+      body.frequency.value = kind === 'nope' ? 170 : 480 + Math.random() * 80;
+      bg.gain.setValueAtTime(.14 * volume, t); bg.gain.exponentialRampToValueAtTime(.001, t + (kind === 'nope' ? .16 : .05));
+      body.connect(bg).connect(a.destination); body.start(t); body.stop(t + .2);
+    }
+  } catch {}
 }
-async function shareResult() {
-  const text=resultText();
-  if(navigator.share) { try {await navigator.share({text});$('share-status').textContent='Result shared.';}catch(error){if(error.name!=='AbortError')manualCopy(text);} }
-  else await copyResult();
+function chime() {
+  if (!soundOn) return;
+  try {
+    const a = ctx(), t = a.currentTime;
+    [660, 990].forEach((f, i) => { const o = a.createOscillator(), g = a.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0, t + i * .09); g.gain.linearRampToValueAtTime(.12, t + i * .09 + .01); g.gain.exponentialRampToValueAtTime(.001, t + i * .09 + .35); o.connect(g).connect(a.destination); o.start(t + i * .09); o.stop(t + i * .09 + .4); });
+  } catch {}
 }
-const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-const el = (tag, className, text) => { const e = document.createElement(tag); if (className) e.className = className; if (text !== undefined) e.textContent = text; return e; };
-const wordFor = id => puzzle().cards.find(c => c.id === id).word;
-const CLUE_KEY = 'Yellow: swap this letter. Gray: leave it.';
-const feedbackText = status => status === 'swap' ? 'Swap this tile' : 'Leave this tile';
-const hintsLabel = n => `${n} hint${n === 1 ? '' : 's'}`;
-const categoryDescriptions = {
-  'Names': 'Proper nouns: people, places, story titles, and such.',
-  'Compound words': 'Join two meaningful pieces into one word.',
-  'Hidden words': 'Extra tricky! Join the new pieces to reveal one hidden word.'
-};
-function announce(text) { $('announcement').textContent = text; }
-function captureRows() { return new Map([...document.querySelectorAll('[data-row]')].map(e => [e.dataset.row, e.getBoundingClientRect()])); }
-function animateReorder(before) {
-  if (!before || reducedMotion()) return;
-  document.querySelectorAll('[data-row]').forEach(e => {
-    const previous = before.get(e.dataset.row), next = e.getBoundingClientRect();
-    if (previous && Math.abs(previous.top - next.top) > 1) e.animate([{ transform: `translateY(${previous.top - next.top}px)` }, { transform: 'translateY(0)' }], { duration: 260, easing: 'cubic-bezier(.2,.7,.2,1)' });
-  });
-}
-function tile(char, id, index, interactive = false) {
-  const status = state().feedback[id]?.[index];
-  const t = el(interactive ? 'button' : 'span', interactive ? 'letter' : 'tile');
-  t.dataset.index = String(index); t.dataset.word = id;
-  if (status) t.dataset.status = status;
-  t.append(el('span', 'tile-letter', char));
-  if (interactive) {
-    t.id = `letter-${id}-${index}`;
-    t.setAttribute('aria-label', `${char}, letter ${index + 1} of ${wordFor(id)}${status ? '. ' + feedbackText(status) : ''}`);
-    t.setAttribute('aria-pressed', String(positions[id] === index));
-    t.addEventListener('click', () => { if (positions[id] === index) delete positions[id]; else positions[id] = index; $('trade-message').classList.remove('error'); renderTrade(); $(t.id)?.focus(); if (tradeAnswer(puzzle(), selected, selected.map(x => positions[x]))) submit(); });
-  }
+
+// ---------- building a board ----------
+const homeOf = new Map();
+let slots = [], busy = false, press = null, drag = null, picked = null, lastSwap = null, lastWrong = null;
+function makeTile(ch, card = null, index = 0) {
+  const t = document.createElement('div'); t.className = 'tile'; t.textContent = ch; t.dataset.letter = ch;
+  if (card) { t.dataset.card = card; t.dataset.index = index; t.setAttribute('role', 'button'); t.tabIndex = 0; t.setAttribute('aria-label', ch); }
   return t;
 }
-function makeRow(id) {
-  const c = puzzle().cards.find(c => c.id === id), row = el('div', 'word-row' + (reorderMode ? ' reordering' : '')); row.dataset.row = id;
-  const handle = el('button', 'drag-handle', '⠿'); handle.dataset.handle = id;
-  handle.setAttribute('aria-label', `Select ${c.word}. Drag up or down to rearrange, or use arrow keys.`);
-  handle.title = 'Drag up or down';
-  handle.addEventListener('pointerdown', e => startDrag(e, id, row, handle));
-  handle.addEventListener('pointermove', updateDrag);
-  handle.addEventListener('pointerup', finishDrag);
-  handle.addEventListener('pointercancel', cancelDrag);
-  handle.addEventListener('lostpointercapture', () => { if (drag) cancelDrag(); });
-  handle.addEventListener('keydown', e => {
-    if (!['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
-    e.preventDefault(); const column = state().columnById[id], order = availableColumn(puzzle(), state(), column), index = order.indexOf(id);
-    const next = e.key === 'Home' ? 0 : e.key === 'End' ? order.length - 1 : Math.max(0, Math.min(order.length - 1, index + (e.key === 'ArrowUp' ? -1 : 1)));
-    move(id, next); document.querySelector(`[data-handle="${id}"]`)?.focus();
-  });
-  const b = el('button', 'word-card' + (selected.includes(id) ? ' selected' : '')); b.dataset.card = id;
-  b.setAttribute('aria-pressed', String(selected.includes(id))); b.setAttribute('aria-label', `${c.word}, ${state().columnById[id] === 0 ? 'left' : 'right'} column${selected.includes(id) ? ', selected' : ''}`);
-  const letters = el('span', 'word-tiles'); letters.setAttribute('aria-hidden', 'true'); [...c.word].forEach((char, i) => letters.append(tile(char, id, i))); b.append(letters);
-  const known = Object.entries(state().feedback[id] || {}).map(([i, status]) => `Letter ${Number(i) + 1}, ${c.word[i]}: ${feedbackText(status)}.`).join(' ');
-  if (known) { const note = el('span', 'sr-only', known); note.id = `feedback-${id}`; row.append(note); b.setAttribute('aria-describedby', note.id); }
-  row.addEventListener('click', () => { if (performance.now() < suppressHandleClickUntil) return; selectCard(id); });
-  row.append(handle, b);
-  if (reorderMode) {
-    const controls = el('div', 'row-reorder'); controls.setAttribute('role', 'group'); controls.setAttribute('aria-label', `Move ${c.word}`);
-    const order = availableColumn(puzzle(), state(), state().columnById[id]), index = order.indexOf(id);
-    for (const delta of [-1, 1]) {
-      const button = el('button', 'reorder-step', delta < 0 ? '↑' : '↓'); button.dataset.move = `${id}:${delta}`;
-      button.setAttribute('aria-label', `Move ${c.word} ${delta < 0 ? 'up' : 'down'}`);
-      button.disabled = delta < 0 ? index === 0 : index === order.length - 1;
-      button.addEventListener('click', e => {
-        e.stopPropagation(); move(id, index + delta);
-        const next = document.querySelector(`[data-move="${id}:${delta}"]`);
-        (next?.disabled ? document.querySelector(`[data-move="${id}:${-delta}"]`) : next)?.focus();
-      }); controls.append(button);
-    }
-    controls.addEventListener('click', e => e.stopPropagation()); row.append(controls);
-  }
-  return row;
+function makeGap() { const g = document.createElement('div'); g.className = 'gap'; return g; }
+function makeWord(card) {
+  const w = document.createElement('div'); w.className = 'word'; w.dataset.col = card.column; w.dataset.id = card.id;
+  [...card.word].forEach((ch, i) => { const t = makeTile(ch, card.id, i); t.style.setProperty('--r', `${(Math.random() * 4.4 - 2.2).toFixed(2)}deg`); w.append(t); });
+  return w;
 }
-function render(options = {}) {
-  const p = puzzle(), s = state();
-  $('puzzle-label').textContent = `Puzzle ${current + 1} / ${puzzles.length}${record().finishedAt !== null && !state().revealed ? ' ✓' : ''}`;
-  $('category-name').textContent = p.category;
-  $('category-description').textContent = categoryDescriptions[p.category];
-  $('difficulty').textContent = p.difficulty; $('difficulty').dataset.level = p.difficulty.toLowerCase();
-  $('previous').disabled = current === 0; $('next').disabled = current === puzzles.length - 1;
-  const found = s.solved.length - s.revealed;
-  $('progress-label').textContent = `${found} of ${p.answers.length} found`;
-  $('progress-dots').replaceChildren(...p.answers.map((_, i) => el('span', 'progress-square' + (i < found ? ' filled' : i < s.solved.length ? ' revealed' : '') + (options.reveal === i ? ' just-filled' : ''), i < found ? '✓' : '')));
-  $('mistakes').textContent = `${s.misses} miss${s.misses === 1 ? '' : 'es'}`;
-  $('board').replaceChildren(...[0, 1].map(column => {
-    const panel = el('section', 'word-column'); panel.setAttribute('aria-label', column === 0 ? 'Left column' : 'Right column'); panel.dataset.column = String(column);
-    const list = el('div', 'column-words');
-    list.append(...availableColumn(p,s,column).map(makeRow));
-    panel.append(list); return panel;
-  }));
-  $('selection-prompt').textContent = selected.length === 1 ? `Now pick a word on the ${s.columnById[selected[0]] === 0 ? 'right' : 'left'}.` : 'Pick one word from each column.';
-  $('clear').hidden = !selected.length;
-  $('reorder-toggle').setAttribute('aria-pressed', String(reorderMode));
-  $('reorder-toggle').textContent = reorderMode ? 'Done reordering' : 'Reorder';
-  $('hint').disabled = !hintTargets(p, s).length;
-  $('hint').title = $('hint').disabled ? 'Every letter you need to swap is already showing' : 'Show one letter you need to swap';
-  const won = s.solved.length === p.answers.length;
-  $('board-stage').hidden=won;
-  for (const id of ['selection-bar', 'board-tools', 'reorder-toggle-wrap']) $(id).hidden = won;
-  $('feedback-key').hidden = won || !Object.keys(s.feedback).length;
-  updateTimer();if(!options.sync)persist();
-  $('win').hidden = !won;
-  $('win-symbol').textContent = s.revealed ? '⚑' : '✓'; $('win-title').textContent = s.revealed ? "Here's how it clicks." : 'Everything clicks.';
-  const days = streak(saved.completionDays);
-  $('win-summary').textContent = `${s.revealed ? `Answers shown after ${formatTime(elapsedMs(record()))} · ${found} of ${p.answers.length} found` : `Finished in ${formatTime(elapsedMs(record()))}`} · ${s.misses} miss${s.misses === 1 ? '' : 'es'} · ${hintsLabel(s.hints)}` + (days > 1 && !s.revealed ? ` · ${days}-day streak` : '');
-  const upcoming = nextUnfinished();
-  $('next-after-win').hidden = upcoming < 0;
-  $('next-after-win').firstChild.textContent = upcoming === current + 1 ? 'Try the next puzzle ' : `Try puzzle ${upcoming + 1} `;
-  $('all-done').hidden = upcoming >= 0;
-  $('all-done').textContent = `That's all ${puzzles.length} test puzzles. Thanks for playing! Tell Zack what you thought.`;
-  $('discoveries').hidden = !s.solved.length;
-  $('solved-list').replaceChildren(...s.solved.map((ids, i) => {
-    const shown = i >= found, fresh = options.reveal === i || (shown && options.revealFrom !== undefined);
-    const row = el('div', 'solved-row' + (shown ? ' revealed' : '') + (fresh ? ' newly-solved' : '')); row.append(el('span', 'solved-check', shown ? '⚑' : '✓'));
-    if (fresh && shown) row.style.animationDelay = `${(i - options.revealFrom) * 110}ms`;
-    const text = el('div'); text.append(el('div', 'solved-answer', solvedAnswer(p, ids).label), el('div', 'solved-source', ids.map(wordFor).join(' + ') + (shown ? ' · revealed' : ''))); row.append(text); return row;
-  }));
-  animateReorder(options.before);
-  if (dealIn) {
-    dealIn = false;
-    if (!reducedMotion()) document.querySelectorAll('.word-row').forEach((row, i) => row.animate([{ opacity: 0, transform: 'translateY(12px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 340, delay: (i % 4) * 60 + (i >= 4 ? 30 : 0), easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }));
+// Clues and hints color the original tiles: amber for a letter to swap, gray for one to leave.
+function paintFeedback() {
+  const feedback = state().feedback;
+  for (const t of document.querySelectorAll('.tile[data-card]')) {
+    const status = feedback[t.dataset.card]?.[t.dataset.index];
+    if (status) t.dataset.status = status; else delete t.dataset.status;
+    t.setAttribute('aria-label', t.dataset.letter + (status === 'swap' ? ', swap this letter' : status === 'stay' ? ', leave this letter' : ''));
   }
+}
+function fillFound(box, label, revealed) {
+  const row = document.createElement('div'); row.className = 'word';
+  const size = Math.max(9, Math.min(18, Math.floor((box.clientWidth - 12 - 2 * (label.length - 1)) / label.length)));
+  box.style.setProperty('--mini', `${size}px`); box.classList.add('filled'); box.classList.toggle('revealed', revealed);
+  box.setAttribute('aria-label', revealed ? `${label}, revealed` : label);
+  for (const ch of label) row.append(ch === ' ' ? makeGap() : makeTile(ch));
+  box.replaceChildren(row);
+  return [...row.children];
+}
+function build(save = true) {
+  const p = puzzle(), s = state(), solvedIds = new Set(s.solved.flat());
+  busy = false; picked = null; lastSwap = null; lastWrong = null; homeOf.clear();
+  syncClocks();
+  $('category').textContent = p.category; $('level').textContent = p.difficulty; $('level').dataset.level = p.difficulty.toLowerCase();
+  $('count').textContent = `${board + 1} / ${puzzles.length}${record().finishedAt !== null && !s.revealed ? ' ✓' : ''}`;
+  $('prev').disabled = board === 0; $('next').disabled = board === puzzles.length - 1;
+  const url = new URL(location.href); url.searchParams.set('p', keys[board]); history.replaceState(null, '', url);
+  shelf.replaceChildren(); tray.replaceChildren(); mat.replaceChildren(); mat.className = 'mat'; mat.style.minHeight = '';
+  // Size tiles so the longest word fits in a table column and across the mat.
+  const longest = Math.max(...p.cards.map(c => c.word.length));
+  shelf.style.setProperty('--shelf-s', `${Math.max(20, Math.min(34, Math.floor(((shelf.clientWidth - 12) / 2 - 4 * (longest - 1)) / longest)))}px`);
+  mat.style.setProperty('--mat-s', `${Math.min(50, Math.floor((mat.clientWidth - 30 - 6 * (longest - 1)) / longest))}px`);
+  const columns = [0, 1].map(c => p.cards.filter(card => card.column === c));
+  for (let i = 0; i < columns[0].length; i++) for (const column of columns) {
+    const home = document.createElement('div'); home.className = 'home'; const w = makeWord(column[i]);
+    home.append(w); homeOf.set(w, home); shelf.append(home);
+    if (solvedIds.has(w.dataset.id)) home.classList.add('done');
+    // Tapping a word's empty spot on the table calls it back from the mat.
+    home.addEventListener('click', () => { if (home.classList.contains('empty') && !busy && w.closest('.slot')) sendHome(w); });
+    home.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === home && home.classList.contains('empty')) { e.preventDefault(); sendHome(w); } });
+  }
+  for (let i = 0; i < p.answers.length; i++) { const f = document.createElement('div'); f.className = 'found'; tray.append(f); }
+  s.solved.forEach((ids, i) => fillFound(tray.children[i], solvedAnswer(p, ids).label, i >= s.solved.length - s.revealed));
+  slots = [0, 1].map(() => { const slot = document.createElement('div'); slot.className = 'slot'; mat.append(slot); return slot; });
+  paintFeedback();
+  requestAnimationFrame(() => {
+    for (const [w, home] of homeOf) { const r = w.getBoundingClientRect(); home.style.width = `${r.width}px`; home.style.height = `${r.height}px`; }
+  });
+  if (!RM && record().finishedAt === null) document.querySelectorAll('.home:not(.done) .tile').forEach((t, i) => t.animate([{ transform: 'translateY(-18px) scale(1.12)' }, { transform: 'none' }], { duration: 440, delay: i * 18, easing: SPRING, fill: 'backwards' }));
+  if (save) persist();
+  updateStats(); say();
+}
+function goTo(index) {
+  if (busy || index < 0 || index >= puzzles.length) return;
+  document.querySelectorAll('dialog[open]').forEach(d => d.close());
+  board = index; build();
 }
 function nextUnfinished() {
-  for (let step = 1; step < puzzles.length; step++) { const i = (current + step) % puzzles.length; if (records[i].finishedAt === null) return i; }
+  for (let step = 1; step < puzzles.length; step++) { const i = (board + step) % puzzles.length; if (records[i].finishedAt === null) return i; }
   return -1;
 }
-function lockTrade(locked) { $('trade-dialog').classList.toggle('is-solved', locked); $('letter-rows').inert = locked; }
-function openTrade() {
-  lockTrade(false);
-  $('trade-message').textContent = ''; $('trade-message').classList.remove('error', 'success');
-  renderTrade(); if (!$('trade-dialog').open) $('trade-dialog').showModal();
+
+// ---------- the line under the mat ----------
+function pill(label, onClick, primary = false) {
+  const b = document.createElement('button'); b.type = 'button'; b.className = primary ? 'pill primary' : 'pill'; b.textContent = label;
+  b.addEventListener('click', () => onClick(b)); return b;
 }
-function selectCard(id) {
-  ensureStarted();
-  if (!puzzle().cards.some(c => c.id === id) || usedIds(puzzle(), state()).has(id)) throw new Error('Choose an available word.');
-  if (selected.includes(id)) selected = selected.filter(x => x !== id);
-  else selected = [...selected.filter(x => state().columnById[x] !== state().columnById[id]), id];
-  render();
-  if (selected.length === 2) {
-    selected.sort((a, b) => state().columnById[a] - state().columnById[b]); positions = {};
-    openTrade();
+function say(parts = null) {
+  const p = puzzle(), r = record(), s = state();
+  message.replaceChildren();
+  $('actions').hidden = r.finishedAt !== null;
+  $('hint').disabled = !hintTargets(p, s).length;
+  if (r.finishedAt !== null) {
+    const next = nextUnfinished();
+    message.append(s.revealed ? 'Answers shown.' : `Solved in ${formatTime(elapsedMs(r))}.`, pill('Share', shareResult));
+    message.append(next >= 0 ? pill('Next puzzle', () => goTo(next), true) : 'That’s all nine. Thanks for playing!');
+    return;
   }
+  if (parts) { message.append(...parts); return; }
+  const n = slots.filter(slot => slot.querySelector('.word')).length;
+  message.textContent = n === 0 ? 'Drag a word onto the mat.' : n === 1 ? 'Now one from the other side.' : 'Drag a letter onto the other word.';
 }
-function renderTrade() {
-  $('letter-rows').replaceChildren(...selected.map(id => {
-    const group = el('div', 'letter-group');
-    const row = el('div', 'letter-row'); row.setAttribute('role', 'group'); row.setAttribute('aria-label', `Choose a letter in ${wordFor(id)}`);
-    [...wordFor(id)].forEach((char, i) => row.append(tile(char, id, i, true))); group.append(row); return group;
-  }));
-  const ready = selected.length === 2 && selected.every(id => Number.isInteger(positions[id]));
-  $('preview').replaceChildren(); $('submit').hidden = true;
-  if (!ready) { $('trade-message').textContent = ''; return; }
-  const words = swapWords(puzzle(), selected, selected.map(id => positions[id]));
-  const unchanged = words.every((w, i) => w === wordFor(selected[i])), answer = !unchanged && tradeAnswer(puzzle(), selected, selected.map(id => positions[id]));
-  const clued = state().guesses.includes(guessKey(selected, selected.map(id => positions[id])));
-  $('submit').hidden = unchanged || !!answer || clued;
-  if (!$('trade-message').classList.contains('error')) $('trade-message').textContent = unchanged ? 'Those letters match.' : answer ? '' : clued ? CLUE_KEY : 'Not an answer.';
-  words.forEach((w, i) => {
-    if (i) $('preview').append(el('span', 'preview-plus', '+'));
-    const word = el('span', 'preview-word'); [...w].forEach((char, j) => word.append(el('span', j === positions[selected[i]] ? 'changed-letter' : '', char))); $('preview').append(word);
+
+// ---------- motion: move elements in the DOM, then animate each from where it was ----------
+function flip(els, mutate, { lifted = null, duration = SNAP } = {}) {
+  const before = els.map(el => {
+    if (lifted && lifted.el === el) { el.style.transform = ''; return { el, r: el.getBoundingClientRect() }; }
+    const r = el.getBoundingClientRect();
+    // A tile previewing a trade is measured where it shows, then set down without a second slide.
+    if (el.style.translate) { el.style.transition = 'none'; el.style.translate = ''; requestAnimationFrame(() => { el.style.transition = ''; }); }
+    return { el, r };
   });
-}
-function submit() {
-  ensureStarted();
-  const before = captureRows();
-  const result = checkSwap(puzzle(), state(), selected, selected.map(id => positions[id]));
-  if (result.correct) {
-    finishRecord(puzzle(),record(),saved.completionDays);
-    lockTrade(true); $('submit').hidden = true;
-    $('trade-message').classList.remove('error'); $('trade-message').classList.add('success'); $('trade-message').textContent = 'Correct!';
-    $('preview').replaceChildren(...[...result.label].map((char, i) => { const t = el('span', char === ' ' ? 'solved-gap' : 'solved-letter', char); t.style.setProperty('--i', i); return t; }));
-    const board = current;
-    setTimeout(() => {
-      if (current !== board) return;
-      if ($('trade-dialog').open) $('trade-dialog').close();
-      selected = []; positions = {}; render({ before, reveal: result.index });
-      announce(`${result.label}. ${result.clue}`);
-      if (state().solved.length === puzzle().answers.length) { $('win').scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'nearest' }); celebrate(); }
-    }, reducedMotion() ? 300 : 850);
-  } else {
-    renderTrade();
-    $('trade-message').textContent = result.unchanged ? 'Those letters match.' : CLUE_KEY;
-    if (!reducedMotion() && !result.repeated && !result.unchanged) $('preview').animate([0, -7, 6, -4, 2, 0].map(x => ({ transform: `translateX(${x}px)` })), { duration: 380, easing: 'ease-out' });
-    if (result.feedback) {
-      if (!reducedMotion()) result.feedback.forEach((f, i) => $(`letter-${f.id}-${f.index}`)?.animate([{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(80deg)' }, { transform: 'rotateX(0deg)' }], { duration: 360, delay: i * 80 }));
-    }
-    render();
+  mutate();
+  for (const { el, r } of before) {
+    if (!el.isConnected) continue;
+    const n = el.getBoundingClientRect(), s = n.width ? r.width / n.width : 1;
+    let dx = r.left + r.width / 2 - (n.left + n.width / 2), dy = r.top + r.height / 2 - (n.top + n.height / 2), rot = 0, k = 1;
+    if (lifted && lifted.el === el) { dx += lifted.ox; dy += lifted.oy; rot = lifted.rot; k = lifted.k; }
+    const anim = el.animate([{ transform: `translate(${dx}px,${dy}px) scale(${s * k}) rotate(${rot}deg)` }, { transform: 'none' }], { duration, easing: SPRING });
+    if (lifted && lifted.el === el) anim.finished.then(() => el.classList.remove('lifted')).catch(() => {});
   }
-  return result;
+}
+function snapBack(d) {
+  const el = d.el; el.style.transform = '';
+  el.animate([{ transform: `translate(${d.ox}px,${d.oy}px) scale(${d.k}) rotate(${d.rot}deg)` }, { transform: 'none' }], { duration: SNAP, easing: SPRING })
+    .finished.then(() => el.classList.remove('lifted')).catch(() => {});
+  clack('place', .5);
+}
+function domSwap(a, b) { const m = document.createComment(''); a.replaceWith(m); b.replaceWith(a); m.replaceWith(b); }
+const inside = (r, x, y, pad = 0) => x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
+const wordOn = side => slots[side]?.querySelector('.word') ?? null;
+const text = w => [...w.children].map(t => t.dataset.letter).join('');
+function syncSlots() { slots.forEach(slot => slot.classList.toggle('full', !!slot.querySelector('.word'))); }
+function markHome(word, empty) {
+  const home = homeOf.get(word); home.classList.toggle('empty', empty);
+  if (empty) { home.tabIndex = 0; home.setAttribute('role', 'button'); home.setAttribute('aria-label', `Put ${text(word)} back`); }
+  else { home.removeAttribute('tabindex'); home.removeAttribute('role'); home.removeAttribute('aria-label'); }
+}
+
+// ---------- the rules: words go to the mat; letters trade between the two words there ----------
+function placeWord(word, lifted = null) {
+  ensureStarted();
+  const side = +word.dataset.col, old = wordOn(side);
+  if (old === word) { if (lifted) snapBack(lifted); return; }
+  flip(old ? [word, old] : [word], () => {
+    if (old) { homeOf.get(old).append(old); markHome(old, false); }
+    slots[side].append(word); markHome(word, true); syncSlots();
+  }, { lifted });
+  clack('place'); lastWrong = null; say();
+}
+function sendHome(word, lifted = null) {
+  if (picked) { picked.classList.remove('picked'); picked = null; }
+  flip([word], () => { homeOf.get(word).append(word); markHome(word, false); syncSlots(); }, { lifted });
+  clack('place', .8); lastWrong = null; say();
+}
+function trade(a, b, lifted = null) {
+  ensureStarted();
+  const wa = a.parentNode, wb = b.parentNode;
+  const ids = [wa.dataset.id, wb.dataset.id], positions = [+a.dataset.index, +b.dataset.index];
+  flip([a, b], () => domSwap(a, b), { lifted });
+  clack('place'); lastSwap = [a, b]; lastWrong = null;
+  const unchanged = a.dataset.letter === b.dataset.letter, hit = unchanged ? null : tradeAnswer(puzzle(), ids, positions);
+  busy = true;
+  setTimeout(() => {
+    if (!hit) return nope(unchanged ? null : { ids, positions });
+    checkSwap(puzzle(), state(), ids, positions);
+    finishRecord(puzzle(), record(), saved.completionDays);
+    persist(); updateStats();
+    solve(hit, hit.ids[0] === ids[0] ? [wa, wb] : [wb, wa]);
+  }, 220);
+}
+function nope(wrong) {
+  clack('nope', .7);
+  if (!RM) slots.forEach(slot => slot.querySelector('.word')?.animate([{ rotate: '0deg' }, { rotate: '-2.5deg' }, { rotate: '2deg' }, { rotate: '-1deg' }, { rotate: '0deg' }], { duration: 380 }));
+  setTimeout(() => {
+    const [a, b] = lastSwap; flip([a, b], () => domSwap(a, b)); clack('place', .5); busy = false;
+    if (!wrong) return say(['Those letters match.']);
+    // A wrong trade is free. Its clue costs a miss, and only once per trade.
+    const clued = state().guesses.includes(guessKey(wrong.ids, wrong.positions));
+    lastWrong = clued ? null : wrong;
+    say(clued ? ['Not an answer.'] : ['Not an answer.', pill('Show a clue (+1 miss)', showClue)]);
+  }, 760);
+}
+function showClue() {
+  if (!lastWrong || busy) return;
+  const { ids, positions } = lastWrong; lastWrong = null;
+  const result = checkSwap(puzzle(), state(), ids, positions);
+  paintFeedback(); persist(); updateStats(); clack('place', .6);
+  if (!RM) result.feedback?.forEach((f, i) => document.querySelector(`.tile[data-card="${f.id}"][data-index="${f.index}"]`)?.animate([{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(85deg)' }, { transform: 'rotateX(0deg)' }], { duration: 380, delay: i * 90 }));
+  say([CLUE_KEY]);
+}
+function solve(hit, [first, second]) {
+  chime(); first.classList.add('solved'); second.classList.add('solved');
+  setTimeout(() => {
+    const tiles = [...first.children, ...second.children], merged = document.createElement('div');
+    merged.className = 'word merged solved';
+    const n = hit.label.length, gap = 4, size = Math.min(50, Math.floor((mat.clientWidth - 30 - gap * (n - 1)) / n));
+    merged.style.setProperty('--s', `${size}px`); merged.style.setProperty('--gap', `${gap}px`);
+    mat.style.minHeight = `${mat.offsetHeight}px`;
+    for (const w of [first, second]) { markHome(w, false); homeOf.get(w).classList.add('done'); }
+    flip(tiles, () => {
+      merged.append(...first.children); if (hit.label.includes(' ')) merged.append(makeGap()); merged.append(...second.children);
+      mat.classList.add('merging'); mat.append(merged); first.remove(); second.remove(); syncSlots();
+    }, { duration: RM ? 1 : 440 });
+    clack('place', .8);
+    setTimeout(() => flyToTray(merged, hit), RM ? 300 : 1000);
+  }, RM ? 100 : 280);
+}
+function flyToTray(merged, hit) {
+  const minis = fillFound(tray.children[state().solved.length - 1], hit.label, false);
+  minis.forEach(m => { m.style.opacity = '0'; });
+  const anims = [...merged.children].map((t, i) => {
+    if (t.classList.contains('gap')) return null;
+    const a = t.getBoundingClientRect(), m = minis[i].getBoundingClientRect();
+    const anim = t.animate([{ transform: 'none' }, { transform: `translate(${m.left + m.width / 2 - a.left - a.width / 2}px,${m.top + m.height / 2 - a.top - a.height / 2}px) scale(${m.width / a.width})` }], { duration: RM ? 1 : 480, delay: RM ? 0 : i * 32, easing: 'cubic-bezier(.55,0,.25,1)', fill: 'forwards' });
+    anim.finished.then(() => { minis[i].style.opacity = ''; t.style.opacity = '0'; if (!RM) minis[i].animate([{ scale: 1.3 }, { scale: 1 }], { duration: 220, easing: 'ease-out' }); }).catch(() => {});
+    return anim;
+  }).filter(Boolean);
+  Promise.all(anims.map(a => a.finished)).then(() => {
+    merged.remove(); mat.classList.remove('merging'); mat.style.minHeight = '';
+    minis.forEach(m => { m.style.opacity = ''; });
+    busy = false; clack('place', .6);
+    const done = record().finishedAt !== null;
+    $('count').textContent = `${board + 1} / ${puzzles.length}${done ? ' ✓' : ''}`;
+    const label = document.createElement('b'); label.textContent = hit.label;
+    say([label, hit.clue]);
+    if (done) celebrate();
+  }).catch(() => {});
+}
+
+// ---------- hints, giving up, sharing ----------
+function useHint() {
+  if (busy) return;
+  ensureStarted();
+  const hint = revealHint(puzzle(), state()); if (!hint) return;
+  paintFeedback(); persist(); updateStats(); clack('pick');
+  const tile = document.querySelector(`.tile[data-card="${hint.id}"][data-index="${hint.index}"]`);
+  if (tile && !RM) tile.animate([{ scale: 1 }, { scale: 1.25 }, { scale: 1 }], { duration: 480, easing: 'ease-out' });
+  say([`Hint: swap the ${tile?.dataset.letter} in ${puzzle().cards.find(c => c.id === hint.id).word}.`]);
+}
+function giveUp() {
+  $('give-up-dialog').close();
+  if (busy || !giveUpRecord(puzzle(), record())) return;
+  build();
+  if (!RM) [...tray.querySelectorAll('.found.revealed')].forEach((box, i) => box.animate([{ opacity: 0, transform: 'scale(.9)' }, { opacity: 1, transform: 'none' }], { duration: 320, delay: i * 90, easing: SPRING, fill: 'backwards' }));
+}
+function resultText() {
+  const url = new URL(location.href); url.search = ''; url.hash = ''; url.searchParams.set('p', keys[board]);
+  return shareText(puzzle(), record(), url.href);
+}
+async function shareResult(button) {
+  const text = resultText();
+  if (navigator.share) { try { await navigator.share({ text }); return; } catch (e) { if (e.name === 'AbortError') return; } }
+  try { await navigator.clipboard.writeText(text); button.textContent = 'Copied!'; }
+  catch { $('share-text').value = text; $('share-dialog').showModal(); $('share-text').select(); }
 }
 function celebrate() {
-  if (reducedMotion()) return;
-  const canvas = el('canvas', 'confetti'), ctx = canvas.getContext('2d'), w = innerWidth, h = innerHeight, dpr = devicePixelRatio || 1;
-  canvas.setAttribute('aria-hidden', 'true'); canvas.width = w * dpr; canvas.height = h * dpr; ctx.scale(dpr, dpr); document.body.append(canvas);
-  const css = getComputedStyle(document.documentElement), colors = ['--primary', '--swap', '--selected-line', '--stay-line'].map(v => css.getPropertyValue(v).trim());
-  const bits = Array.from({ length: 150 }, (_, i) => ({ x: w * (.35 + Math.random() * .3), y: h * .4, vx: (Math.random() - .5) * 13, vy: -5 - Math.random() * 11, size: 6 + Math.random() * 6, angle: Math.random() * 6, spin: (Math.random() - .5) * .3, color: colors[i % colors.length] }));
+  if (RM) return;
+  const canvas = document.createElement('canvas'), c2 = canvas.getContext('2d'), w = innerWidth, h = innerHeight, dpr = devicePixelRatio || 1;
+  canvas.className = 'confetti'; canvas.setAttribute('aria-hidden', 'true'); canvas.width = w * dpr; canvas.height = h * dpr; c2.scale(dpr, dpr); document.body.append(canvas);
+  const css = getComputedStyle(document.documentElement), colors = ['--accent', '--medium-bg', '--tile-mid', '--line'].map(v => css.getPropertyValue(v).trim());
+  const bits = Array.from({ length: 150 }, (_, i) => ({ x: w * (.35 + Math.random() * .3), y: h * .45, vx: (Math.random() - .5) * 13, vy: -5 - Math.random() * 11, size: 6 + Math.random() * 6, angle: Math.random() * 6, spin: (Math.random() - .5) * .3, color: colors[i % colors.length] }));
   const start = performance.now(), length = 1900;
   requestAnimationFrame(function frame(now) {
-    const t = now - start; ctx.clearRect(0, 0, w, h); ctx.globalAlpha = Math.max(0, 1 - Math.max(0, t - 900) / (length - 900));
+    const t = now - start; c2.clearRect(0, 0, w, h); c2.globalAlpha = Math.max(0, 1 - Math.max(0, t - 900) / (length - 900));
     for (const b of bits) {
       b.vy += .35; b.vx *= .985; b.x += b.vx; b.y += b.vy; b.angle += b.spin;
-      ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.angle); ctx.fillStyle = b.color; ctx.fillRect(-b.size / 2, -b.size / 3, b.size, b.size * .66); ctx.restore();
+      c2.save(); c2.translate(b.x, b.y); c2.rotate(b.angle); c2.fillStyle = b.color; c2.fillRect(-b.size / 2, -b.size / 3, b.size, b.size * .66); c2.restore();
     }
     if (t < length) requestAnimationFrame(frame); else canvas.remove();
   });
 }
-function move(id, index, before = captureRows()) {
-  ensureStarted();
-  const result = moveWord(puzzle(), state(), id, index); render({ before });
-  announce(`${wordFor(id)} moved to position ${result.position} in the ${result.column === 0 ? 'left' : 'right'} column.`);
-  return result;
+
+// ---------- taps: a word on the table hops onto the mat ----------
+function tap({ word, onMat }) { if (!onMat) placeWord(word); }
+// Keyboard players pick one letter, then another, to trade them.
+function pickLetter(tile) {
+  if (!picked) { picked = tile; tile.classList.add('picked'); clack('pick'); return; }
+  const a = picked; a.classList.remove('picked'); picked = null;
+  if (a === tile) return;
+  if (a.parentNode === tile.parentNode) { picked = tile; tile.classList.add('picked'); clack('pick'); return; }
+  if (wordOn(0) && wordOn(1)) trade(a, tile);
 }
-function startDrag(e, id, row, handle) {
-  ensureStarted();
-  if (e.button !== 0 || drag) return;
-  const column = state().columnById[id], ids = availableColumn(puzzle(), state(), column);
-  const rects = ids.map(x => document.querySelector(`[data-row="${x}"]`).getBoundingClientRect());
-  drag = { id, column, ids, rects, from: ids.indexOf(id), target: ids.indexOf(id), startY: e.clientY, row, handle, pointerId: e.pointerId, active: false };
-  handle.setPointerCapture(e.pointerId);
-}
-function updateDrag(e) {
-  if (!drag || drag.pointerId !== e.pointerId) return;
-  const d = drag; let dy = e.clientY - d.startY;
-  if (!d.active && Math.abs(dy) < 7) return;
-  d.active = true; e.preventDefault(); d.row.classList.add('dragging');
-  const own = d.rects[d.from]; dy = Math.max(d.rects[0].top - own.top, Math.min(d.rects.at(-1).bottom - own.bottom, dy));
-  d.row.style.transform = `translateY(${dy}px)`;
-  const center = own.top + own.height / 2 + dy;
-  d.target = d.rects.reduce((best, r, i) => Math.abs(r.top + r.height / 2 - center) < Math.abs(d.rects[best].top + d.rects[best].height / 2 - center) ? i : best, 0);
-  document.querySelectorAll('[data-row]').forEach(row => row.classList.toggle('drop-target', row.dataset.row === d.ids[d.target] && d.target !== d.from));
-}
-function cleanDrag() {
-  const d = drag; if (!d) return; drag = null;
-  d.row.style.transform = ''; d.row.classList.remove('dragging'); document.querySelectorAll('.drop-target').forEach(e => e.classList.remove('drop-target'));
-  if (d.handle.hasPointerCapture(d.pointerId)) d.handle.releasePointerCapture(d.pointerId);
-  return d;
-}
-function finishDrag(e) {
-  if (!drag || drag.pointerId !== e.pointerId) return;
-  const before = captureRows(), d = cleanDrag();
-  if (d.active) { suppressHandleClickUntil = performance.now() + 600; e.preventDefault(); move(d.id, d.target, before); }
-}
-function cancelDrag() { const d = cleanDrag(); if (d?.active) suppressHandleClickUntil = performance.now() + 600; }
-function goTo(index) {
-  if (!Number.isInteger(index) || index < 0 || index >= puzzles.length) throw new Error(`Choose a puzzle from 1 to ${puzzles.length}.`);
-  cancelDrag(); document.querySelectorAll('dialog[open]').forEach(d => d.close()); current = index; syncClocks(); const url=new URL(location.href);url.searchParams.set('p',keys[current]);history.replaceState(null,'',url); selected = []; positions = {}; reorderMode = false; $('share-status').textContent=''; announce(''); render();
-}
-function openHint() {
-  ensureStarted();
-  const reveal = revealHint(puzzle(), state());
-  if (!reveal) { announce('Every letter you need to swap is already showing.'); return null; }
-  render();
-  announce(`Hint: swap the ${wordFor(reveal.id)[reveal.index]} in ${wordFor(reveal.id)} (letter ${reveal.index + 1}).`);
-  const target = document.querySelector(`[data-card="${reveal.id}"] [data-index="${reveal.index}"]`);
-  if (target && !reducedMotion()) target.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], { duration: 480 });
-  return reveal;
-}
-function giveUp() {
-  ensureStarted();
-  const before = captureRows(), from = state().solved.length;
-  $('give-up-dialog').close();
-  if (!giveUpRecord(puzzle(), record())) return;
-  selected = []; positions = {}; reorderMode = false; render({ before, revealFrom: from });
-  announce(`Answers shown: ${state().solved.slice(from).map(ids => solvedAnswer(puzzle(), ids).label).join(', ')}.`);
-  $('win').scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'nearest' });
-}
-function updateThemeButton() {
-  const dark = document.documentElement.dataset.theme === 'dark'; $('theme').setAttribute('aria-pressed', String(dark)); $('theme').setAttribute('aria-label', dark ? 'Use light mode' : 'Use dark mode'); $('theme').firstElementChild.textContent = dark ? '☀' : '☾';
-  document.querySelector('meta[name="theme-color"]').content = dark ? '#111521' : '#f7f8fc';
-}
-$('share-result').addEventListener('click',shareResult);$('copy-result').addEventListener('click',copyResult);
-$('theme').addEventListener('click', () => { const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = theme; try { localStorage.setItem('spoondle-theme', theme); } catch {} updateThemeButton(); });
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { let preference; try { preference = localStorage.getItem('spoondle-theme'); } catch {} if (!preference) { document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'; updateThemeButton(); } });
-const openHelp = () => { $('help-dialog').showModal(); refreshClocks(); };
-$('help').addEventListener('click', openHelp); $('feedback-help').addEventListener('click', openHelp);
-$('hint').addEventListener('click', openHint); $('submit').addEventListener('click', submit);
-$('give-up').addEventListener('click', () => { ensureStarted(); $('give-up-dialog').showModal(); }); $('confirm-give-up').addEventListener('click', giveUp);
-$('clear').addEventListener('click', () => { selected = []; render(); });
-$('previous').addEventListener('click', () => goTo(current - 1)); $('next').addEventListener('click', () => goTo(current + 1)); $('next-after-win').addEventListener('click', () => goTo(nextUnfinished()));
-$('reorder-toggle').addEventListener('click', () => { ensureStarted(); reorderMode = !reorderMode; render(); announce(reorderMode ? 'Up and down buttons are shown beneath each word.' : 'Reorder controls hidden.'); });
-$('shuffle').addEventListener('click', e => { ensureStarted(); const before = captureRows(); shuffleColumns(puzzle(), state()); render({ before }); announce('Both columns shuffled. Every word stayed on its own side.'); if (e.detail > 0) $('shuffle').blur(); });
-document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close).close()));
-$('trade-dialog').addEventListener('close', () => { lockTrade(false); if (!selected.length) return; selected = []; positions = {}; render(); });
-let helpSeen = true; try { helpSeen = localStorage.getItem('spoondle-help-seen') !== null; } catch {}
-if (!helpSeen) $('help-dialog').showModal();
-$('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen', '1'); } catch {} refreshClocks(); });
-syncClocks(); updateThemeButton(); render();
-if(requestedKey && initialIndex<0)announce('That shared puzzle is not in this test edition. Choose one of the available puzzles.');
-setInterval(updateTimer,250);
-window.addEventListener('pagehide',()=>{pauseRecord(record());persist();});
-window.addEventListener('pageshow',e=>{if(e.persisted)refreshClocks();});
-document.addEventListener('visibilitychange',refreshClocks);
-window.addEventListener('storage',event=>{
-  if(event.key!==STORAGE_KEY||!event.newValue)return;
-  try{saved=readProgress(localStorage);records=puzzles.map((p,i)=>restoreRecord(p,saved.records[keys[i]]));states=records.map(r=>r.state);syncClocks();selected=[];positions={};document.querySelectorAll('dialog[open]').forEach(d=>d.close());render({sync:true});}catch{}
+
+// ---------- dragging: words on the table, single letters on the mat ----------
+document.addEventListener('pointerdown', e => {
+  const tile = e.target.closest('.shelf .tile, .slot .tile');
+  if (!tile || busy || press || e.button > 0) return;
+  e.preventDefault();
+  press = { id: e.pointerId, tile, word: tile.closest('.word'), onMat: !!tile.closest('.slot'), x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY };
 });
-const context = document.modelContext;
-if (context?.registerTool) {
-  const lifecycle = new AbortController();
-  const tools = [
-    { name: 'read_spoondle_board', description: 'Read available words by column, revealed tile feedback, progress, and selection. Does not reveal answers.', inputSchema: { type: 'object', properties: {}, additionalProperties: false }, annotations: { readOnlyHint: true }, execute: () => record().startedAt===null ? {puzzle:current+1,category:puzzle().category,started:false,message:'Start the puzzle to reveal its words.'} : ({ puzzle: current + 1, category:puzzle().category, columns: state().columns.map((_, column) => availableColumn(puzzle(), state(), column).map(id => ({ id, word: wordFor(id) }))), feedback: state().feedback, found: state().solved.length, misses: state().misses, selected }) },
-    { name: 'start_spoondle_puzzle', description: `Switch to one of ${puzzles.length} puzzles and start its timer. Saved progress is preserved.`, inputSchema: { type: 'object', properties: { puzzleNumber: { type: 'integer', minimum: 1, maximum: puzzles.length } }, required: ['puzzleNumber'], additionalProperties: false }, execute: input => { goTo(input?.puzzleNumber - 1); return { puzzle: current + 1 }; } },
-    { name: 'reorder_spoondle_word', description: 'Move an available word to a zero-based position within its existing column.', inputSchema: { type: 'object', properties: { cardId: { type: 'string' }, position: { type: 'integer', minimum: 0, maximum: 3 } }, required: ['cardId', 'position'], additionalProperties: false }, execute: input => { if (!input || typeof input.cardId !== 'string') throw new Error('Choose a word.'); return move(input.cardId, input.position); } },
-    { name: 'submit_spoondle_swap', description: 'Submit a reciprocal letter exchange using one word from each column. Incorrect new guesses add one miss and reveal tile feedback.', inputSchema: { type: 'object', properties: { cardIds: { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 2 }, letterIndices: { type: 'array', items: { type: 'integer', minimum: 0 }, minItems: 2, maxItems: 2 } }, required: ['cardIds', 'letterIndices'], additionalProperties: false }, execute: input => {
-      ensureStarted();
-      const ids = input?.cardIds, indices = input?.letterIndices; swapWords(puzzle(), ids, indices);
-      if (ids.some(id => usedIds(puzzle(), state()).has(id))) throw new Error('Choose unsolved cards.');
-      if (state().columnById[ids[0]] === state().columnById[ids[1]]) throw new Error('Choose one word from each column.');
-      selected = [...ids]; positions = Object.fromEntries(ids.map((id, i) => [id, indices[i]])); openTrade(); return submit();
-    } }
-  ];
-  for (const tool of tools) { try { Promise.resolve(context.registerTool({ ...tool, annotations: { readOnlyHint: false, untrustedContentHint: false, ...tool.annotations } }, { signal: lifecycle.signal })).catch(() => {}); } catch {} }
-  window.addEventListener('pagehide', () => lifecycle.abort(), { once: true });
+document.addEventListener('pointermove', e => {
+  if (!press || e.pointerId !== press.id) return;
+  press.x = e.clientX; press.y = e.clientY;
+  if (!drag) {
+    if (Math.hypot(press.x - press.x0, press.y - press.y0) < 6) return;
+    if (picked) { picked.classList.remove('picked'); picked = null; }
+    ensureStarted();
+    drag = { el: press.onMat ? press.tile : press.word, mode: press.onMat ? 'tile' : 'word', ox: 0, oy: 0, rot: 0, k: press.onMat ? 1.14 : 1.05, vx: 0, lastX: press.x, target: null };
+    if (press.onMat) {
+      // The gap this letter leaves, and where the other word's letters sit before any preview moves them.
+      drag.gap = press.tile.getBoundingClientRect();
+      const other = wordOn(1 - +press.word.dataset.col);
+      drag.spots = other ? [...other.children].map(t => ({ t, r: t.getBoundingClientRect() })) : [];
+    }
+    drag.el.classList.add('lifted'); clack('pick'); requestAnimationFrame(frame);
+  }
+  drag.vx += e.clientX - drag.lastX; drag.lastX = e.clientX;
+  aim();
+});
+function frame() {
+  if (!drag || !press) return;
+  drag.vx *= .78; drag.rot += (Math.max(-14, Math.min(14, drag.vx * 1.6)) - drag.rot) * .25;
+  drag.ox = press.x - press.x0; drag.oy = press.y - press.y0;
+  drag.el.style.transform = `translate(${drag.ox}px,${drag.oy}px) scale(${drag.k}) rotate(${drag.rot}deg)`;
+  requestAnimationFrame(frame);
 }
+function aim() {
+  const matRect = mat.getBoundingClientRect();
+  if (drag.mode === 'tile' && !inside(matRect, press.x, press.y, TEAR)) {
+    // Pulled well past the mat's edge: the whole word comes along, ready to go back to the table.
+    preview(null);
+    drag.el.style.transform = ''; drag.el.classList.remove('lifted');
+    drag.el = press.word; drag.mode = 'word'; drag.k = 1.05; drag.fromMat = true;
+    drag.el.classList.add('lifted'); clack('pick');
+  }
+  if (drag.mode === 'word') {
+    const over = inside(matRect, press.x, press.y, 16);
+    mat.classList.toggle('ready', over && !drag.fromMat);
+    const bumped = drag.fromMat ? null : wordOn(+drag.el.dataset.col);
+    if (bumped && bumped !== drag.el) { bumped.classList.toggle('leaving', over); drag.leaving = bumped; }
+    return;
+  }
+  // Nearest letter of the other word, judged by where its letters started, with no dead zones between them.
+  let best = null, bestD = Infinity;
+  for (const { t, r } of drag.spots) {
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    if (Math.abs(press.y - cy) > r.height * .9 || Math.abs(press.x - cx) > r.width * .85) continue;
+    const d = Math.hypot(press.x - cx, press.y - cy); if (d < bestD) { best = { t, cx, cy }; bestD = d; }
+  }
+  preview(best);
+}
+// Shows the trade before it happens: the hovered letter slides into the gap the dragged letter left.
+function preview(spot) {
+  const target = spot?.t ?? null;
+  if (target === drag.target) return;
+  if (drag.target) { drag.target.style.translate = ''; drag.target.classList.remove('target'); }
+  drag.target = target;
+  if (!target) return;
+  target.classList.add('target');
+  target.style.translate = `${drag.gap.left + drag.gap.width / 2 - spot.cx}px ${drag.gap.top + drag.gap.height / 2 - spot.cy}px`;
+  clack('pick', .6);
+}
+function finish(e, cancelled) {
+  if (!press || e.pointerId !== press.id) return;
+  const p = press; press = null;
+  if (!drag) { if (!cancelled) tap(p); return; }
+  const d = drag; mat.classList.remove('ready'); d.leaving?.classList.remove('leaving');
+  if (cancelled || d.mode !== 'tile') preview(null);
+  drag = null; d.target?.classList.remove('target');
+  if (cancelled) return snapBack(d);
+  if (d.mode === 'word') {
+    const onMat = inside(mat.getBoundingClientRect(), p.x, p.y, 16);
+    if (d.fromMat) return onMat ? snapBack(d) : sendHome(d.el, d);
+    return onMat ? placeWord(d.el, d) : snapBack(d);
+  }
+  return d.target ? trade(d.el, d.target, d) : snapBack(d);
+}
+document.addEventListener('pointerup', e => finish(e, false));
+document.addEventListener('pointercancel', e => finish(e, true));
+document.addEventListener('keydown', e => {
+  const tile = e.target.closest?.('.shelf .tile, .slot .tile');
+  if (!tile || busy) return;
+  const word = tile.closest('.word'), onMat = !!tile.closest('.slot');
+  if (onMat && (e.key === 'Escape' || e.key === 'Backspace')) { e.preventDefault(); return sendHome(word); }
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  e.preventDefault(); return onMat ? pickLetter(tile) : placeWord(word);
+});
+
+// ---------- header buttons, dialogs, and the page lifecycle ----------
+function showTheme() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  $('theme').innerHTML = dark ? SUN : MOON; $('theme').setAttribute('aria-pressed', String(dark)); $('theme').setAttribute('aria-label', dark ? 'Use light mode' : 'Use dark mode');
+  document.querySelector('meta[name="theme-color"]').content = dark ? '#121827' : '#dfe4ee';
+}
+$('theme').addEventListener('click', () => {
+  const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = theme; try { localStorage.setItem('spoondle-theme', theme); } catch {} showTheme();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  let chosen = null; try { chosen = localStorage.getItem('spoondle-theme'); } catch {}
+  if (!chosen) { document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'; showTheme(); }
+});
+$('sound').addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('spoondle-sound', soundOn ? 'on' : 'off'); } catch {} showSound(); if (soundOn) clack('place'); });
+$('help').addEventListener('click', () => { $('help-dialog').showModal(); refreshClocks(); });
+$('help-dialog').addEventListener('close', () => { try { localStorage.setItem('spoondle-help-seen-v2', '1'); } catch {} refreshClocks(); });
+$('hint').addEventListener('click', useHint);
+$('give-up').addEventListener('click', () => { if (!busy) $('give-up-dialog').showModal(); });
+$('confirm-give-up').addEventListener('click', giveUp);
+$('prev').addEventListener('click', () => goTo(board - 1));
+$('next').addEventListener('click', () => goTo(board + 1));
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => $(b.dataset.close).close()));
+document.addEventListener('visibilitychange', refreshClocks);
+window.addEventListener('pagehide', () => { pauseRecord(record()); persist(); });
+window.addEventListener('pageshow', e => { if (e.persisted) refreshClocks(); });
+// Another tab saved progress: take it, without saving back, so two open tabs don't echo each other.
+window.addEventListener('storage', e => {
+  if (e.key !== STORAGE_KEY || !e.newValue || busy || drag) return;
+  try { saved = readProgress(localStorage); records = puzzles.map((p, i) => restoreRecord(p, saved.records[keys[i]])); build(false); } catch {}
+});
+setInterval(updateStats, 250);
+
+let helpSeen = true; try { helpSeen = localStorage.getItem('spoondle-help-seen-v2') !== null; } catch {}
+if (!helpSeen) $('help-dialog').showModal();
+showTheme(); showSound(); build();

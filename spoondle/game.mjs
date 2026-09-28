@@ -8,43 +8,18 @@ export const tileStatus = (puzzle, id, index) => index === swapIndex(puzzle, id)
 export function createState(puzzle) {
   const columnById = Object.fromEntries(puzzle.cards.map(c => [c.id, c.column]));
   return {
-    solved: [], revealed: 0, misses: 0, hints: 0, guesses: [], feedback: {}, log: [], columnById,
+    solved: [], revealed: 0, misses: 0, hints: 0, guesses: [], feedback: {}, columnById,
     columns: [0, 1].map(column => puzzle.cards.filter(c => c.column === column).map(c => c.id))
   };
 }
 // Each solved entry is the pair of card ids in the order its answer reads; the last `revealed` of them
-// were shown after giving up. The log records each counted attempt in order for the shared result:
-// 'hit', 'miss', 'hint', or 'reveal'.
+// were shown after giving up.
 export function usedIds(puzzle, state) {
   return new Set(state.solved.flat());
 }
 export function availableColumn(puzzle, state, column) {
   const used = usedIds(puzzle, state);
   return state.columns[column].filter(id => !used.has(id));
-}
-export function moveWord(puzzle, state, id, targetIndex) {
-  const column = state.columnById[id];
-  if (column === undefined) throw new Error('Unknown word card.');
-  const available = availableColumn(puzzle, state, column);
-  const from = available.indexOf(id);
-  if (from < 0) throw new Error('That word has already been solved.');
-  if (!Number.isInteger(targetIndex) || targetIndex < 0 || targetIndex >= available.length) throw new Error('Choose a position within this column.');
-  available.splice(from, 1); available.splice(targetIndex, 0, id);
-  const solved = state.columns[column].filter(x => !available.includes(x));
-  state.columns[column] = [...available, ...solved];
-  return { column, position: targetIndex + 1 };
-}
-export function shuffleColumns(puzzle, state, random = Math.random) {
-  for (let column = 0; column < 2; column++) {
-    const order = availableColumn(puzzle, state, column);
-    const before = order.join('|');
-    for (let i = order.length - 1; i > 0; i--) {
-      const j = Math.floor(random() * (i + 1));
-      [order[i], order[j]] = [order[j], order[i]];
-    }
-    if (order.length > 1 && before === order.join('|')) order.push(order.shift());
-    state.columns[column] = [...order, ...state.columns[column].filter(id => !order.includes(id))];
-  }
 }
 export function swapWords(puzzle, ids, positions) {
   if (!Array.isArray(ids) || ids.length !== 2 || ids[0] === ids[1]) throw new Error('Choose two different words.');
@@ -81,7 +56,7 @@ export function checkSwap(puzzle, state, ids, positions) {
   if (words.every((w, i) => w === cardFor(puzzle, ids[i]).word)) return { correct: false, unchanged: true, words };
   const answer = matchAnswer(puzzle, ids, words);
   if (answer) {
-    state.solved.push(answer.ids); state.log.push('hit');
+    state.solved.push(answer.ids);
     return { correct: true, index: state.solved.length - 1, words, label: answer.label, clue: answer.clue };
   }
   const key = guessKey(ids, positions);
@@ -94,7 +69,6 @@ export function checkSwap(puzzle, state, ids, positions) {
     state.feedback[id][positions[i]] = status;
     return { id, index: positions[i], status };
   });
-  if (!repeated) state.log.push('miss');
   return { correct: false, repeated, words, feedback };
 }
 // A hint shows the letter to swap on one unsolved card whose swap tile isn't showing yet.
@@ -108,7 +82,7 @@ export function revealHint(puzzle, state, random = Math.random) {
   const chosen = { ...candidates[Math.floor(random() * candidates.length)], status: 'swap' };
   state.feedback[chosen.id] ??= {};
   state.feedback[chosen.id][chosen.index] = chosen.status;
-  state.hints++; state.log.push('hint');
+  state.hints++;
   return chosen;
 }
 // Solves the rest of the board for a player who gives up, returning how many answers it revealed.
@@ -119,6 +93,5 @@ export function revealAnswers(puzzle, state) {
     if (partner) state.solved.push(solvedAnswer(puzzle, [a, partner]).ids);
   }
   state.revealed = state.solved.length - before;
-  state.log.push('reveal');
   return state.revealed;
 }
