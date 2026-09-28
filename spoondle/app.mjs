@@ -1,6 +1,6 @@
 import { puzzles } from './puzzles.mjs';
-import { swapWords, checkSwap, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint } from './game.mjs';
-import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, streak, shareText } from './progress.mjs';
+import { swapWords, checkSwap, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint, hintTargets } from './game.mjs';
+import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, giveUpRecord, streak, shareText } from './progress.mjs';
 const $ = id => document.getElementById(id);
 let saved = { records:{},completionDays:[],current:null }, storageAvailable = true;
 try { saved = readProgress(localStorage); } catch { storageAvailable = false; }
@@ -115,13 +115,14 @@ function makeRow(id) {
 }
 function render(options = {}) {
   const p = puzzle(), s = state(), started = record().startedAt !== null;
-  $('puzzle-label').textContent = `Puzzle ${current + 1} / ${puzzles.length}${record().finishedAt !== null ? ' ✓' : ''}`;
+  $('puzzle-label').textContent = `Puzzle ${current + 1} / ${puzzles.length}${record().finishedAt !== null && !state().revealed ? ' ✓' : ''}`;
   $('category-name').textContent = p.category;
   $('category-description').textContent = categoryDescriptions[p.category];
   $('difficulty').textContent = p.difficulty; $('difficulty').dataset.level = p.difficulty.toLowerCase();
   $('previous').disabled = current === 0; $('next').disabled = current === puzzles.length - 1;
-  $('progress-label').textContent = `${s.solved.length} of ${p.answers.length} found`;
-  $('progress-dots').replaceChildren(...p.answers.map((_, i) => el('span', 'progress-square' + (i < s.solved.length ? ' filled' : '') + (options.reveal === i ? ' just-filled' : ''), i < s.solved.length ? '✓' : '')));
+  const found = s.solved.length - s.revealed;
+  $('progress-label').textContent = `${found} of ${p.answers.length} found`;
+  $('progress-dots').replaceChildren(...p.answers.map((_, i) => el('span', 'progress-square' + (i < found ? ' filled' : i < s.solved.length ? ' revealed' : '') + (options.reveal === i ? ' just-filled' : ''), i < found ? '✓' : '')));
   $('mistakes').textContent = `${s.misses} miss${s.misses === 1 ? '' : 'es'}`;
   $('board').replaceChildren(...[0, 1].map(column => {
     const panel = el('section', 'word-column'); panel.setAttribute('aria-label', column === 0 ? 'Left column' : 'Right column'); panel.dataset.column = String(column);
@@ -134,9 +135,8 @@ function render(options = {}) {
   $('clear').hidden = !selected.length;
   $('reorder-toggle').setAttribute('aria-pressed', String(reorderMode));
   $('reorder-toggle').textContent = reorderMode ? 'Done reordering' : 'Reorder';
-  const used = usedIds(p, s);
-  $('hint').disabled = !p.cards.some(c => !used.has(c.id) && [...c.word].some((_, i) => !s.feedback[c.id]?.[i]));
-  $('hint').title = $('hint').disabled ? 'Every remaining tile color has been revealed' : 'Reveal one random, unrevealed tile';
+  $('hint').disabled = !hintTargets(p, s).length;
+  $('hint').title = $('hint').disabled ? 'Every letter you need to swap is already showing' : 'Show one letter you need to swap';
   const won = s.solved.length === p.answers.length;
   $('board-stage').hidden=won;
   $('board').classList.toggle('is-locked',!started);$('board').inert=!started;
@@ -144,7 +144,8 @@ function render(options = {}) {
   for (const id of ['selection-bar', 'board-tools', 'feedback-key', 'reorder-toggle-wrap']) $(id).hidden = won || !started;
   updateTimer();if(!options.sync)persist();
   $('win').hidden = !won;
-  $('win-summary').textContent = `Finished in ${formatTime(elapsedMs(record()))} · ${s.misses} miss${s.misses === 1 ? '' : 'es'} · ${hintsLabel(s.hints)}`;
+  $('win-symbol').textContent = s.revealed ? '⚑' : '✓'; $('win-title').textContent = s.revealed ? "Here's how it clicks." : 'Everything clicks.';
+  $('win-summary').textContent = `${s.revealed ? `Answers shown after ${formatTime(elapsedMs(record()))} · ${found} of ${p.answers.length} found` : `Finished in ${formatTime(elapsedMs(record()))}`} · ${s.misses} miss${s.misses === 1 ? '' : 'es'} · ${hintsLabel(s.hints)}`;
   const upcoming = nextUnfinished();
   $('next-after-win').hidden = upcoming < 0;
   $('next-after-win').firstChild.textContent = upcoming === current + 1 ? 'Try the next puzzle ' : `Try puzzle ${upcoming + 1} `;
@@ -152,8 +153,10 @@ function render(options = {}) {
   $('all-done').textContent = `That's all ${puzzles.length} test puzzles. Thanks for playing! Tell Zack what you thought.`;
   $('discoveries').hidden = !s.solved.length;
   $('solved-list').replaceChildren(...s.solved.map((ids, i) => {
-    const row = el('div', 'solved-row' + (options.reveal === i ? ' newly-solved' : '')); row.append(el('span', 'solved-check', '✓'));
-    const text = el('div'); text.append(el('div', 'solved-answer', solvedAnswer(p, ids).label), el('div', 'solved-source', ids.map(wordFor).join(' + '))); row.append(text); return row;
+    const shown = i >= found, fresh = options.reveal === i || (shown && options.revealFrom !== undefined);
+    const row = el('div', 'solved-row' + (shown ? ' revealed' : '') + (fresh ? ' newly-solved' : '')); row.append(el('span', 'solved-check', shown ? '⚑' : '✓'));
+    if (fresh && shown) row.style.animationDelay = `${(i - options.revealFrom) * 110}ms`;
+    const text = el('div'); text.append(el('div', 'solved-answer', solvedAnswer(p, ids).label), el('div', 'solved-source', ids.map(wordFor).join(' + ') + (shown ? ' · revealed' : ''))); row.append(text); return row;
   }));
   animateReorder(options.before);
 }
@@ -286,12 +289,21 @@ function goTo(index) {
 function openHint() {
   requireStarted();
   const reveal = revealHint(puzzle(), state());
-  if (!reveal) { announce('All remaining tile colors have been revealed.'); return null; }
+  if (!reveal) { announce('Every letter you need to swap is already showing.'); return null; }
   render();
-  announce(`${wordFor(reveal.id)}, letter ${reveal.index + 1}: ${feedbackText(reveal.status).toLowerCase()}. One hint used.`);
+  announce(`Hint: swap the ${wordFor(reveal.id)[reveal.index]} in ${wordFor(reveal.id)} (letter ${reveal.index + 1}).`);
   const target = document.querySelector(`[data-card="${reveal.id}"] [data-index="${reveal.index}"]`);
   if (target && !reducedMotion()) target.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], { duration: 480 });
   return reveal;
+}
+function giveUp() {
+  requireStarted();
+  const before = captureRows(), from = state().solved.length;
+  $('give-up-dialog').close();
+  if (!giveUpRecord(puzzle(), record())) return;
+  selected = []; positions = {}; reorderMode = false; render({ before, revealFrom: from });
+  announce(`Answers shown: ${state().solved.slice(from).map(ids => solvedAnswer(puzzle(), ids).label).join(', ')}.`);
+  $('win').scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'nearest' });
 }
 function updateThemeButton() {
   const dark = document.documentElement.dataset.theme === 'dark'; $('theme').setAttribute('aria-pressed', String(dark)); $('theme').setAttribute('aria-label', dark ? 'Use light mode' : 'Use dark mode'); $('theme').firstElementChild.textContent = dark ? '☀' : '☾';
@@ -303,6 +315,7 @@ $('theme').addEventListener('click', () => { const theme = document.documentElem
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { let preference; try { preference = localStorage.getItem('spoondle-theme'); } catch {} if (!preference) { document.documentElement.dataset.theme = e.matches ? 'dark' : 'light'; updateThemeButton(); } });
 $('help').addEventListener('click', () => $('help-dialog').showModal()); $('feedback-help').addEventListener('click', () => $('help-dialog').showModal());
 $('hint').addEventListener('click', openHint); $('submit').addEventListener('click', submit);
+$('give-up').addEventListener('click', () => { requireStarted(); $('give-up-dialog').showModal(); }); $('confirm-give-up').addEventListener('click', giveUp);
 $('reverse').addEventListener('click', () => { selected.reverse(); renderTrade(); });
 $('clear').addEventListener('click', () => { selected = []; render(); });
 $('previous').addEventListener('click', () => goTo(current - 1)); $('next').addEventListener('click', () => goTo(current + 1)); $('next-after-win').addEventListener('click', () => goTo(nextUnfinished()));

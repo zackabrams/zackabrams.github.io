@@ -1,4 +1,4 @@
-import { createState, solvedAnswer, tileStatus } from './game.mjs';
+import { createState, solvedAnswer, tileStatus, revealAnswers } from './game.mjs';
 export const STORAGE_KEY = 'spoondle-progress-v1';
 export function puzzleKey(puzzle) {
   const text = JSON.stringify([puzzle.cards.map(c => [c.id,c.word]).sort(),puzzle.answers.map(a => a.digest)]);
@@ -27,8 +27,10 @@ export function restoreRecord(puzzle, saved) {
         feedback[id][index]=tileStatus(puzzle,id,Number(index));
       }
     }
-    const log = Array.isArray(s.log) && s.log.every(x=>['hit','miss','hint'].includes(x)) ? [...s.log] : [];
-    return { state:{...base,solved,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback,log}, startedAt:saved.startedAt, finishedAt:s.solved.length===puzzle.answers.length?saved.finishedAt:null };
+    const revealed = s.revealed ?? 0;
+    if (!Number.isInteger(revealed) || revealed<0 || revealed>solved.length) return fresh;
+    const log = Array.isArray(s.log) && s.log.every(x=>['hit','miss','hint','reveal'].includes(x)) ? [...s.log] : [];
+    return { state:{...base,solved,revealed,misses:s.misses,hints:s.hints,guesses:[...s.guesses],columns:s.columns.map(c=>[...c]),feedback,log}, startedAt:saved.startedAt, finishedAt:s.solved.length===puzzle.answers.length?saved.finishedAt:null };
   } catch { return fresh; }
 }
 export function readProgress(storage) {
@@ -47,17 +49,22 @@ export function finishRecord(puzzle, record, days, now=Date.now()) {
   if(record.startedAt===null||record.finishedAt!==null||record.state.solved.length!==puzzle.answers.length)return false;
   record.finishedAt=Math.max(record.startedAt,now);const day=localDay(now);if(!days.includes(day))days.push(day);return true;
 }
+// Giving up reveals the rest of the board and stops the clock, but doesn't count toward the streak.
+export function giveUpRecord(puzzle, record, now=Date.now()) {
+  if(record.startedAt===null||record.finishedAt!==null||record.state.solved.length===puzzle.answers.length)return false;
+  revealAnswers(puzzle,record.state);record.finishedAt=Math.max(record.startedAt,now);return true;
+}
 export function streak(days, now=Date.now()) {
   const known=new Set(days), date=new Date(now);let count=0;
   if(!known.has(localDay(date.getTime())))date.setDate(date.getDate()-1);
   while(known.has(localDay(date.getTime()))) {count++;date.setDate(date.getDate()-1);}
   return count;
 }
-// Every guess in order on one line: ✅ found an answer, ❌ missed, 💡 used a hint.
-const shareMark = { hit:'✅', miss:'❌', hint:'💡' };
+// Every guess in order on one line: ✅ found an answer, ❌ missed, 💡 used a hint, 🏳️ gave up.
+const shareMark = { hit:'✅', miss:'❌', hint:'💡', reveal:'🏳️' };
 export const shareGrid = log => log.map(x=>shareMark[x]).join('');
 export function shareText(puzzle, record, url) {
   if(record.finishedAt===null)throw new Error('Finish the puzzle before sharing your result.');
   const s=record.state, grid=shareGrid(s.log);
-  return `Spoondle · Test puzzle ${puzzle.id} (${puzzle.difficulty})\n${grid?grid+'\n':''}Solved in ${formatTime(elapsedMs(record))} · ${s.misses} miss${s.misses===1?'':'es'} · ${s.hints} hint${s.hints===1?'':'s'}\nCan you beat my time?\n${url}`;
+  return `Spoondle · Test puzzle ${puzzle.id} (${puzzle.difficulty})\n${grid?grid+'\n':''}${s.revealed?`Gave up after ${formatTime(elapsedMs(record))} · ${s.solved.length-s.revealed} of ${puzzle.answers.length} found`:`Solved in ${formatTime(elapsedMs(record))}`} · ${s.misses} miss${s.misses===1?'':'es'} · ${s.hints} hint${s.hints===1?'':'s'}\n${s.revealed?'Can you solve it?':'Can you beat my time?'}\n${url}`;
 }

@@ -8,12 +8,13 @@ export const tileStatus = (puzzle, id, index) => index === swapIndex(puzzle, id)
 export function createState(puzzle) {
   const columnById = Object.fromEntries(puzzle.cards.map(c => [c.id, c.column]));
   return {
-    solved: [], misses: 0, hints: 0, guesses: [], feedback: {}, log: [], columnById,
+    solved: [], revealed: 0, misses: 0, hints: 0, guesses: [], feedback: {}, log: [], columnById,
     columns: [0, 1].map(column => puzzle.cards.filter(c => c.column === column).map(c => c.id))
   };
 }
-// Each solved entry is the pair of card ids in the order its answer reads.
-// The log records each counted attempt in order for the shared result: 'hit', 'miss', or 'hint'.
+// Each solved entry is the pair of card ids in the order its answer reads; the last `revealed` of them
+// were shown after giving up. The log records each counted attempt in order for the shared result:
+// 'hit', 'miss', 'hint', or 'reveal'.
 export function usedIds(puzzle, state) {
   return new Set(state.solved.flat());
 }
@@ -92,19 +93,28 @@ export function checkSwap(puzzle, state, ids, positions) {
   if (!repeated) state.log.push('miss');
   return { correct: false, repeated, words, feedback };
 }
+// A hint shows the letter to swap on one unsolved card whose swap tile isn't showing yet.
+export function hintTargets(puzzle, state) {
+  const used = usedIds(puzzle, state);
+  return puzzle.cards.filter(c => !used.has(c.id)).map(c => ({ id: c.id, index: swapIndex(puzzle, c.id) })).filter(t => !state.feedback[t.id]?.[t.index]);
+}
 export function revealHint(puzzle, state, random = Math.random) {
-  const used = usedIds(puzzle, state), candidates = [];
-  for (const card of puzzle.cards) {
-    if (used.has(card.id)) continue;
-    for (let index = 0; index < card.word.length; index++) {
-      if (!state.feedback[card.id]?.[index]) candidates.push({ id: card.id, index });
-    }
-  }
+  const candidates = hintTargets(puzzle, state);
   if (!candidates.length) return null;
-  const chosen = candidates[Math.floor(random() * candidates.length)];
-  chosen.status = tileStatus(puzzle, chosen.id, chosen.index);
+  const chosen = { ...candidates[Math.floor(random() * candidates.length)], status: 'swap' };
   state.feedback[chosen.id] ??= {};
   state.feedback[chosen.id][chosen.index] = chosen.status;
   state.hints++; state.log.push('hint');
   return chosen;
+}
+// Solves the rest of the board for a player who gives up, returning how many answers it revealed.
+export function revealAnswers(puzzle, state) {
+  const before = state.solved.length, [left, right] = [0, 1].map(column => availableColumn(puzzle, state, column));
+  for (const a of left) {
+    const partner = right.find(b => !usedIds(puzzle, state).has(b) && solvedAnswer(puzzle, [a, b]));
+    if (partner) state.solved.push(solvedAnswer(puzzle, [a, partner]).ids);
+  }
+  state.revealed = state.solved.length - before;
+  state.log.push('reveal');
+  return state.revealed;
 }
