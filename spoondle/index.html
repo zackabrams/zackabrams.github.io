@@ -23,7 +23,7 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script>try{const t=localStorage.getItem('spoondle-theme');document.documentElement.dataset.theme=t==='dark'||t==='light'?t:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}</script>
-<link rel="stylesheet" href="style.css?v=154uo0j2">
+<link rel="stylesheet" href="style.css?v=52v5lle8">
 <script type="module" src="app.mjs"></script>
 </head>
 <body>
@@ -48,12 +48,11 @@
 <footer><span>Eight words. Four swaps. Inspired by <a href="https://en.wikipedia.org/wiki/Spoonerism" target="_blank" rel="noopener">spoonerisms</a>.</span><span>A language puzzle game by Zack Abrams</span></footer>
 </div>
 <dialog id="trade-dialog" class="trade-dialog" aria-labelledby="trade-title">
-<div class="dialog-top"><span class="edition">THE EXCHANGE</span><button class="close-button" data-close="trade-dialog" aria-label="Close letter exchange">×</button></div>
-<h2 id="trade-title">Make the trade.</h2><p class="dialog-description">Choose one letter in each word. Tap a letter again to clear it.</p>
-<div id="letter-rows" class="letter-rows"></div><div id="trade-feedback" class="trade-feedback" aria-live="polite" hidden></div>
-<div class="preview-wrap"><div class="preview-top"><span class="section-label">YOUR RESULT</span></div><div id="preview" class="preview" aria-live="polite"></div></div>
-<p id="trade-message" class="trade-message" role="status">Make an answer in this puzzle's category.</p>
-<button id="submit" class="secondary full" disabled>Show a clue (+1 miss)</button>
+<div class="dialog-top"><p id="trade-title" class="trade-title">Pick a letter in each word.</p><button class="close-button" data-close="trade-dialog" aria-label="Close">×</button></div>
+<div id="letter-rows" class="letter-rows"></div>
+<div id="preview" class="preview" aria-live="polite"></div>
+<p id="trade-message" class="trade-message" role="status"></p>
+<button id="submit" class="secondary full" hidden>Show a clue (+1 miss)</button>
 </dialog>
 <dialog id="help-dialog" aria-labelledby="help-title"><div class="dialog-top"><span class="edition">HOW TO PLAY</span><button class="close-button" data-close="help-dialog" aria-label="Close instructions">×</button></div><h2 id="help-title">A fair exchange.</h2><ol class="rules"><li>Pick <strong>one word from each column</strong>. Tap anywhere on a word to select it. Drag a handle to move it up or down; words stay on their own side. Choose “Reorder” to show optional move buttons, or focus a handle and use the arrow keys.</li><li>Pick one letter in each to swap. All other letters stay put. When the trade makes an answer, it counts right away.</li><li>Find four answers in the category shown above the board: <strong>Compound words</strong> (easy: two meaningful words joined into one), <strong>Names</strong> (medium: proper nouns such as people, places, and story titles), or <strong>Hidden words</strong> (hard: an ordinary single word revealed by joining the new pieces, like FOR + GET → FORGET).</li></ol><div class="example"><div>DOO<b>M</b> + <b>R</b>AT</div><span aria-hidden="true">↓</span><strong>DOORMAT</strong></div><p>The swapped letters can be anywhere—even in different positions. Read the result in either order, with or without a space. Every letter in the answer comes from your two cards; no extra words are needed.</p><div class="help-feedback"><h3>Need a clue?</h3><p>If your letters don’t make an answer, <strong>Show a clue</strong> colors the two tiles you picked. Each clue counts as one miss.</p><p><span class="key-tile swap"></span> <strong>Swap this tile.</strong> You found the right position to change, but the pair or exchange was wrong.</p><p><span class="key-tile stay"></span> <strong>Leave this tile.</strong> This letter stays in place in the answer.</p><p>Colors stay on the original letter tiles, even after you reorder the words. They never reveal the replacement letter.</p><p><strong>Stuck?</strong> Each <strong>Hint</strong> shows one letter you need to swap, on a word you haven’t solved. If you’d rather see the answers, <strong>Give up</strong> shows the rest; the clock stops, and that puzzle won’t count toward your streak.</p></div><p>Use all eight cards to find four answers. Each puzzle’s clock starts when you first open it and runs only while it’s on your screen; there is no time limit. Progress and results are saved on this browser. Finish a puzzle on consecutive days to build a play streak; multiple wins in one day count once. Share your time, misses, and hints without revealing any answers.</p><button class="primary full" data-close="help-dialog">Let's play</button></dialog>
 

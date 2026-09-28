@@ -71,6 +71,8 @@ export const tradeAnswer = (puzzle, ids, positions) => matchAnswer(puzzle, ids, 
 export function solvedAnswer(puzzle, ids) {
   return matchAnswer(puzzle, ids, swapWords(puzzle, ids, ids.map(id => swapIndex(puzzle, id))));
 }
+// Identifies a trade regardless of which word was picked first.
+export const guessKey = (ids, positions) => ids.map((id, i) => id + ':' + positions[i]).sort().join('|');
 export function checkSwap(puzzle, state, ids, positions) {
   const words = swapWords(puzzle, ids, positions);
   if (state.columnById[ids[0]] === state.columnById[ids[1]]) throw new Error('Choose one word from each column.');
@@ -82,7 +84,7 @@ export function checkSwap(puzzle, state, ids, positions) {
     state.solved.push(answer.ids); state.log.push('hit');
     return { correct: true, index: state.solved.length - 1, words, label: answer.label, clue: answer.clue };
   }
-  const key = ids.map((id, i) => id + ':' + positions[i]).sort().join('|');
+  const key = guessKey(ids, positions);
   const repeated = state.guesses.includes(key);
   if (!repeated) { state.guesses.push(key); state.misses++; }
   // Feedback belongs to a particular ORIGINAL tile, not every copy of its letter.

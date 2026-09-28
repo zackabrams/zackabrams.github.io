@@ -1,5 +1,5 @@
 import { puzzles } from './puzzles.mjs';
-import { swapWords, checkSwap, tradeAnswer, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint, hintTargets } from './game.mjs';
+import { swapWords, checkSwap, tradeAnswer, guessKey, solvedAnswer, usedIds, availableColumn, moveWord, shuffleColumns, revealHint, hintTargets } from './game.mjs';
 import { STORAGE_KEY, puzzleKey, restoreRecord, readProgress, elapsedMs, formatTime, finishRecord, giveUpRecord, pauseRecord, resumeRecord, streak, shareText } from './progress.mjs';
 const $ = id => document.getElementById(id);
 let saved = { records:{},completionDays:[],current:null }, storageAvailable = true;
@@ -49,6 +49,7 @@ async function shareResult() {
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const el = (tag, className, text) => { const e = document.createElement(tag); if (className) e.className = className; if (text !== undefined) e.textContent = text; return e; };
 const wordFor = id => puzzle().cards.find(c => c.id === id).word;
+const CLUE_KEY = 'Yellow: swap this letter. Gray: leave it.';
 const feedbackText = status => status === 'swap' ? 'Swap this tile' : 'Leave this tile';
 const hintsLabel = n => `${n} hint${n === 1 ? '' : 's'}`;
 const categoryDescriptions = {
@@ -56,7 +57,6 @@ const categoryDescriptions = {
   'Compound words': 'Join two meaningful pieces into one word.',
   'Hidden words': 'Extra tricky! Join the new pieces to reveal one hidden word.'
 };
-const categoryPrompt = () => `Make an answer in the ${puzzle().category.toLowerCase()} category. The right letters count as soon as you pick them.`;
 function announce(text) { $('announcement').textContent = text; }
 function captureRows() { return new Map([...document.querySelectorAll('[data-row]')].map(e => [e.dataset.row, e.getBoundingClientRect()])); }
 function animateReorder(before) {
@@ -76,7 +76,7 @@ function tile(char, id, index, interactive = false) {
     t.id = `letter-${id}-${index}`;
     t.setAttribute('aria-label', `${char}, letter ${index + 1} of ${wordFor(id)}${status ? '. ' + feedbackText(status) : ''}`);
     t.setAttribute('aria-pressed', String(positions[id] === index));
-    t.addEventListener('click', () => { if (positions[id] === index) delete positions[id]; else positions[id] = index; $('trade-feedback').hidden = true; $('trade-message').classList.remove('error'); renderTrade(); $(t.id)?.focus(); if (tradeAnswer(puzzle(), selected, selected.map(x => positions[x]))) submit(); });
+    t.addEventListener('click', () => { if (positions[id] === index) delete positions[id]; else positions[id] = index; $('trade-message').classList.remove('error'); renderTrade(); $(t.id)?.focus(); if (tradeAnswer(puzzle(), selected, selected.map(x => positions[x]))) submit(); });
   }
   return t;
 }
@@ -176,8 +176,8 @@ function nextUnfinished() {
 }
 function lockTrade(locked) { $('trade-dialog').classList.toggle('is-solved', locked); $('letter-rows').inert = locked; }
 function openTrade() {
-  lockTrade(false); $('trade-feedback').hidden = true;
-  $('trade-message').textContent = categoryPrompt(); $('trade-message').classList.remove('error', 'success');
+  lockTrade(false);
+  $('trade-message').textContent = ''; $('trade-message').classList.remove('error', 'success');
   renderTrade(); if (!$('trade-dialog').open) $('trade-dialog').showModal();
 }
 function selectCard(id) {
@@ -193,17 +193,18 @@ function selectCard(id) {
 }
 function renderTrade() {
   $('letter-rows').replaceChildren(...selected.map(id => {
-    const group = el('div', 'letter-group'); group.append(el('div', 'letter-label', state().columnById[id] === 0 ? 'LEFT WORD' : 'RIGHT WORD'));
+    const group = el('div', 'letter-group');
     const row = el('div', 'letter-row'); row.setAttribute('role', 'group'); row.setAttribute('aria-label', `Choose a letter in ${wordFor(id)}`);
     [...wordFor(id)].forEach((char, i) => row.append(tile(char, id, i, true))); group.append(row); return group;
   }));
   const ready = selected.length === 2 && selected.every(id => Number.isInteger(positions[id]));
-  $('preview').replaceChildren(); $('submit').disabled = true;
-  if (!ready) { $('trade-message').textContent = categoryPrompt(); $('preview').append(el('span', 'preview-placeholder', 'Your exchange will appear here.')); return; }
+  $('preview').replaceChildren(); $('submit').hidden = true;
+  if (!ready) { $('trade-message').textContent = ''; return; }
   const words = swapWords(puzzle(), selected, selected.map(id => positions[id]));
   const unchanged = words.every((w, i) => w === wordFor(selected[i])), answer = !unchanged && tradeAnswer(puzzle(), selected, selected.map(id => positions[id]));
-  $('submit').disabled = unchanged || !!answer;
-  if (!$('trade-message').classList.contains('error')) $('trade-message').textContent = unchanged ? 'Those letters match, so nothing changes. Pick a different one.' : answer ? '' : 'Not an answer. Change a letter, or show a clue.';
+  const clued = state().guesses.includes(guessKey(selected, selected.map(id => positions[id])));
+  $('submit').hidden = unchanged || !!answer || clued;
+  if (!$('trade-message').classList.contains('error')) $('trade-message').textContent = unchanged ? 'Those letters match.' : answer ? '' : clued ? CLUE_KEY : 'Not an answer.';
   words.forEach((w, i) => {
     if (i) $('preview').append(el('span', 'preview-plus', '+'));
     const word = el('span', 'preview-word'); [...w].forEach((char, j) => word.append(el('span', j === positions[selected[i]] ? 'changed-letter' : '', char))); $('preview').append(word);
@@ -215,7 +216,7 @@ function submit() {
   const result = checkSwap(puzzle(), state(), selected, selected.map(id => positions[id]));
   if (result.correct) {
     finishRecord(puzzle(),record(),saved.completionDays);
-    lockTrade(true); $('submit').disabled = true; $('trade-feedback').hidden = true;
+    lockTrade(true); $('submit').hidden = true;
     $('trade-message').classList.remove('error'); $('trade-message').classList.add('success'); $('trade-message').textContent = 'Correct!';
     $('preview').replaceChildren(...[...result.label].map((char, i) => { const t = el('span', char === ' ' ? 'solved-gap' : 'solved-letter', char); t.style.setProperty('--i', i); return t; }));
     const board = current;
@@ -228,14 +229,9 @@ function submit() {
     }, reducedMotion() ? 300 : 850);
   } else {
     renderTrade();
-    $('trade-message').textContent = result.unchanged ? 'Those letters match, so nothing changes. Pick a different one.' : result.repeated ? 'You already have this clue. No extra miss counted.' : 'Clue added: your tiles are colored. That counts as one miss.';
-    $('trade-message').classList.add('error');
+    $('trade-message').textContent = result.unchanged ? 'Those letters match.' : CLUE_KEY;
     if (!reducedMotion() && !result.repeated && !result.unchanged) $('preview').animate([0, -7, 6, -4, 2, 0].map(x => ({ transform: `translateX(${x}px)` })), { duration: 380, easing: 'ease-out' });
-    $('trade-feedback').hidden = !result.feedback;
     if (result.feedback) {
-      $('trade-feedback').replaceChildren(...result.feedback.map(f => {
-        const line = el('div', 'feedback-line'); line.append(el('span', `key-tile ${f.status}`), el('span', '', `${wordFor(f.id)} · ${wordFor(f.id)[f.index]}: ${feedbackText(f.status).toLowerCase()}.`)); return line;
-      }));
       if (!reducedMotion()) result.feedback.forEach((f, i) => $(`letter-${f.id}-${f.index}`)?.animate([{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(80deg)' }, { transform: 'rotateX(0deg)' }], { duration: 360, delay: i * 80 }));
     }
     render();
