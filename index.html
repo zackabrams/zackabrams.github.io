@@ -739,7 +739,7 @@ a.spoon:hover{border-bottom-color:var(--rule);}
     <a href="#panels" class="navpanels">Panels</a>
     <a href="#independent">AI video</a>
     <a href="#contact">Contact</a>
-    <a class="pdf" href="ZackAbramsResume.pdf">Résumé (PDF) ↓</a>
+    <a class="pdf" href="ZackAbramsResume.pdf" target="_blank" rel="noopener">Résumé (PDF) ↓</a>
   </nav>
 
   <figure class="hero">
@@ -824,28 +824,32 @@ a.spoon:hover{border-bottom-color:var(--rule);}
 </div>
 <div class="gcol">
 <div class="group" id="stories">
-<h3 class="group-title">Markets, hacks &amp; regulation</h3>
-      <p class="group-note">Recent breaking coverage at The Block, where I'm Weekend Editor.</p>
-      <ul class="work">
+<h3 class="group-title">Latest bylines</h3>
+      <p class="group-note">My newest stories at The Block, where I&rsquo;m Weekend Editor. Updated automatically.</p>
+      <ul class="work" id="bylines-list">
         <li>
-          <h4><a href="https://www.theblock.co/news/ecosystems/2026-04-05-drift-links-280-million-exploit-to-six-month-social-engineering-op-run-by-suspected-north-korean-actors-396361">Drift links $280 million exploit to six-month social engineering op run by suspected North Korean actors</a></h4>
-          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2026</span></div>
+          <h4><a href="https://www.theblock.co/news/defi/2026-09-27-onchain-analyst-links-18-4-million-in-robinhood-chain-memecoin-extractions-to-single-rug-pull-operation-416960">Onchain analyst links $18.4 million in Robinhood Chain memecoin extractions to single rug-pull operation</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>Sep 27, 2026</span></div>
         </li>
         <li>
-          <h4><a href="https://www.theblock.co/news/defi/2026-09-13-symbiosis-says-it-recovered-15-btc-after-bitcoin-bridge-exploit-offers-attacker-20-bounty-414568">Symbiosis says it recovered 15 BTC after Bitcoin bridge exploit, offers attacker 20% bounty</a></h4>
-          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2026</span></div>
+          <h4><a href="https://www.theblock.co/news/ecosystems/2026-09-27-its-really-not-just-a-blockchain-anymore-vitalik-buterin-maps-ethereums-path-to-2030-416953">'It's really not just a blockchain anymore': Vitalik Buterin maps Ethereum's path to 2030</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>Sep 27, 2026</span></div>
         </li>
         <li>
-          <h4><a href="https://www.theblock.co/news/regulation/2026-09-12-crypto-billionaires-ben-delo-and-christopher-harborne-each-donate-36-million-to-farages-reform-uk-414509">Crypto billionaires Ben Delo and Christopher Harborne each donate £36 million to Farage's Reform UK</a></h4>
-          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2026</span></div>
+          <h4><a href="https://www.theblock.co/news/markets/2026-09-26-bitcoin-etfs-turn-positive-for-2026-with-2-4-billion-weekly-inflow-their-largest-since-october-416944">Bitcoin ETFs turn positive for 2026 with $2.4 billion weekly inflow, their largest since October</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>Sep 26, 2026</span></div>
         </li>
         <li>
-          <h4><a href="https://www.theblock.co/news/defi/2026-08-29-layer-1-blockchain-fogo-halts-mainnet-after-attacker-receives-400-million-fogo-tokens-10-of-circulating-supply-413064">Layer 1 blockchain Fogo halts mainnet after attacker receives 400 million FOGO tokens, 10% of circulating supply</a></h4>
-          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2026</span></div>
+          <h4><a href="https://www.theblock.co/news/regulation/2026-09-26-kalshi-loses-appeal-over-ohio-and-tennessee-sports-betting-laws-widening-circuit-split-416937">Kalshi loses appeal over Ohio and Tennessee sports betting laws, widening circuit split</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>Sep 26, 2026</span></div>
         </li>
         <li>
-          <h4><a href="https://www.theblock.co/post/359097/hacken-cites-human-error-after-private-key-leak-triggers-5-million-crash-in-hai-value">Hacken cites 'human error' after private key leak triggers $5 million crash in $HAI value</a></h4>
-          <div class="meta"><span>The Block</span><span class="dot">·</span><span>2025</span></div>
+          <h4><a href="https://www.theblock.co/news/defi/2026-09-20-zetachain-votes-to-shut-down-layer-1-network-and-move-zeta-to-solana-415878">ZetaChain votes to shut down Layer 1 network and move ZETA to Solana</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>Sep 20, 2026</span></div>
+        </li>
+        <li>
+          <h4><a href="https://www.theblock.co/news/regulation/2026-09-20-polymarket-faced-10-million-fraud-attempt-as-its-ceo-pushed-growth-over-compliance-concerns-wsj-415875">Polymarket faced $10 million fraud attempt as its CEO pushed growth over compliance concerns: WSJ</a></h4>
+          <div class="meta"><span>The Block</span><span class="dot">·</span><span>Sep 20, 2026</span></div>
         </li>
       </ul>
       <a class="more" href="https://www.theblock.co/author/zack-abrams">All 850+ stories at The Block →</a>
@@ -1064,12 +1068,30 @@ a.spoon:hover{border-bottom-color:var(--rule);}
     });
     tune(); wire.classList.add('ticking');
   }
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function when(it){
+    var m=/\/(\d{4})-(\d{2})-(\d{2})-/.exec(it.url) || /^(\d{4})-(\d{2})-(\d{2})/.exec(it.date||'');
+    return m ? MON[+m[2]-1]+' '+(+m[3])+', '+m[1] : '';
+  }
+  function el(tag,cls,text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+  function section(ok){
+    var list=document.getElementById('bylines-list'); if(!list) return;
+    list.textContent='';
+    ok.slice(0,6).forEach(function(it){
+      var li=el('li'), h=el('h4'), a=el('a',null,it.title), meta=el('div','meta'), d=when(it);
+      a.href=it.url; h.appendChild(a);
+      meta.appendChild(el('span',null,'The Block'));
+      if(d){ meta.appendChild(el('span','dot','\u00b7')); meta.appendChild(el('span',null,d)); }
+      li.appendChild(h); li.appendChild(meta); list.appendChild(li);
+    });
+  }
   function fill(items){
     var ok=(items||[]).filter(function(it){
       return it && typeof it.title==='string' && it.title.length>10 &&
              typeof it.url==='string' && it.url.indexOf('https://www.theblock.co/')===0;
     }).slice(0,8);
     if(ok.length<3) return;
+    section(ok);
     track.textContent='';
     ok.forEach(function(it){
       var li=document.createElement('li'), a=document.createElement('a'),

@@ -2,7 +2,11 @@ name: Refresh latest bylines
 
 on:
   schedule:
-    - cron: "17 * * * *"   # hourly: the RSS feed only holds the newest ~19 stories
+    # Weekends only, hourly, since that's when Zack files. Times are UTC:
+    # Saturday and Sunday all day, plus Monday 00:00-05:00 UTC to cover
+    # Sunday evening in New York. The RSS feed only holds ~19 stories.
+    - cron: "17 * * * 6,0"
+    - cron: "17 0-5 * * 1"
   workflow_dispatch:
   push:
     branches: [master]

@@ -114,8 +114,16 @@ def from_rss():
         l = re.search(r"<link[^>]*>(.*?)</link>", it, re.S)
         title = clean((t.group(1) if t else "").replace("<![CDATA[", "").replace("]]>", ""))
         url = norm_url((l.group(1) if l else "").replace("<![CDATA[", "").replace("]]>", ""))
+        d = re.search(r"<pubDate[^>]*>(.*?)</pubDate>", it, re.S)
+        date = None
+        if d:
+            try:
+                from email.utils import parsedate_to_datetime
+                date = parsedate_to_datetime(d.group(1).strip()).strftime("%Y-%m-%d")
+            except (TypeError, ValueError):
+                pass
         if url and title:
-            out.append({"title": title, "url": url})
+            out.append({"title": title, "url": url, **({"date": date} if date else {})})
     print(f"  [rss] {len(items)} items in feed, {len(out)} by {AUTHOR}")
     if items:
         tags = sorted(set(re.findall(r"<([a-zA-Z][\w:]*)", items[0])))
