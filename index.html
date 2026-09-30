@@ -1018,18 +1018,45 @@ a.award{transition:background-color .2s ease,color .2s ease;}
 })();
 
 (function(){
-  /* newswire: duplicate the list once so translateX(-50%) loops seamlessly */
+  /* newswire: headlines come from bylines.json (refreshed by a scheduled
+     GitHub Action); the list in the markup is the fallback */
   var wire=document.querySelector('.wire'); if(!wire) return;
-  if(document.documentElement.getAttribute('data-anim')!=='on') return;
   var track=wire.querySelector('.wire-track');
-  [].slice.call(track.children).forEach(function(li){
-    var c=li.cloneNode(true); c.setAttribute('aria-hidden','true');
-    c.querySelectorAll('a').forEach(function(a){ a.tabIndex=-1; });
-    track.appendChild(c);
-  });
-  function tune(){ wire.style.setProperty('--wire-dur', Math.max(30, (track.scrollWidth/2)/48)+'s'); }
-  tune(); window.addEventListener('resize', tune);
-  wire.classList.add('ticking');
+  var motion=document.documentElement.getAttribute('data-anim')==='on';
+  function tune(){ wire.style.setProperty('--wire-dur', Math.max(30,(track.scrollWidth/2)/48)+'s'); }
+  function build(){
+    [].slice.call(track.querySelectorAll('li[aria-hidden]')).forEach(function(li){ li.remove(); });
+    if(!motion) return;
+    [].slice.call(track.children).forEach(function(li){
+      var c=li.cloneNode(true); c.setAttribute('aria-hidden','true');
+      c.querySelectorAll('a').forEach(function(a){ a.tabIndex=-1; });
+      track.appendChild(c);
+    });
+    tune(); wire.classList.add('ticking');
+  }
+  function fill(items){
+    var ok=(items||[]).filter(function(it){
+      return it && typeof it.title==='string' && it.title.length>10 &&
+             typeof it.url==='string' && it.url.indexOf('https://www.theblock.co/')===0;
+    }).slice(0,8);
+    if(ok.length<3) return;
+    track.textContent='';
+    ok.forEach(function(it){
+      var li=document.createElement('li'), a=document.createElement('a'),
+          b=document.createElement('b'), sp=document.createElement('span');
+      a.href=it.url; b.textContent='The Block'; sp.textContent=it.title;
+      a.appendChild(b); a.appendChild(sp); li.appendChild(a); track.appendChild(li);
+    });
+    build();
+  }
+  build();
+  if(motion) window.addEventListener('resize', tune);
+  if(window.fetch && location.protocol!=='file:'){
+    fetch('bylines.json',{cache:'no-cache'})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){ if(d) fill(d.items); })
+      .catch(function(){});
+  }
 })();
 
 (function(){
