@@ -664,10 +664,30 @@ a.award{transition:background-color .2s ease,color .2s ease;}
 ::view-transition-group(lb-photo){animation-duration:.42s;animation-timing-function:cubic-bezier(.22,.61,.36,1);}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s;}
 
+
+/* ---------- Spoondle callout ---------- */
+.spoon-band{margin-top:30px;}
+.spoon{
+  display:flex;align-items:center;gap:16px;padding:14px 18px;
+  border:1px solid var(--rule);border-top:3px solid var(--ink);
+  background:var(--accent-soft);color:var(--body);
+}
+a.spoon:hover{border-bottom-color:var(--rule);}
+.spoon-icon{flex:none;width:52px;height:52px;display:block;transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
+.spoon:hover .spoon-icon{transform:rotate(-8deg) scale(1.06);}
+.spoon-text{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.spoon-text b{font-family:var(--serif);font-size:1.1rem;line-height:1.3;color:var(--ink);}
+.spoon-text span{font-size:.85rem;color:var(--muted);}
+.spoon-go{margin-left:auto;flex:none;font-size:.74rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);transition:transform .25s cubic-bezier(.22,.61,.36,1);}
+.spoon:hover .spoon-go{transform:translateX(3px);}
+.spoon:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+@media (max-width:620px){.spoon-go{display:none;}.spoon{gap:14px;padding:12px 14px;}.spoon-icon{width:46px;height:46px;}}
+@media (prefers-reduced-motion:reduce){.spoon:hover .spoon-icon,.spoon:hover .spoon-go{transform:none;}}
+
 /* ---------- print ---------- */
 @media print{
   :root{--ground:#fff;--paper:#fff;--ink:#000;--body:#222;--muted:#555;--accent:#1d4ed8;--rule:#ccc;}
-  .nav,.foot,.stats,.panels,.hero,.wire{display:none;}
+  .nav,.foot,.stats,.panels,.hero,.wire,.spoon-band{display:none;}
   .reveal{opacity:1!important;transform:none!important;}
   .sheet{max-width:none;padding:0;border:0;}
   .columns{gap:0 28px;padding-bottom:0;}
@@ -736,6 +756,14 @@ a.award{transition:background-color .2s ease,color .2s ease;}
     <a class="stat" href="#stories"><b>850+</b><span>Stories published</span></a>
     <a class="stat" href="#awards"><b>2</b><span>SABEW honors</span></a>
     <a class="stat" href="#video"><b>10M+</b><span>Social media video views</span></a>
+  </div>
+
+  <div class="spoon-band">
+    <a class="spoon" href="https://spoondle.app/">
+      <img class="spoon-icon" src="images/spoondle-icon.png" alt="" width="52" height="52">
+      <span class="spoon-text"><b>Try my word game, Spoondle!</b><span>Pair two words, swap one letter. You&rsquo;ll get it spooner or plater.</span></span>
+      <span class="spoon-go" aria-hidden="true">Play &rarr;</span>
+    </a>
   </div>
 
   <section class="portfolio">

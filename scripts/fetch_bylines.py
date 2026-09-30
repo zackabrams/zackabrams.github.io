@@ -1,139 +1,155 @@
 #!/usr/bin/env python3
-"""Fetch Zack Abrams's latest stories from his author page on The Block
-and write them to bylines.json for the homepage ticker.
+"""Refresh bylines.json with Zack Abrams's latest stories on The Block.
 
-The page structure isn't guaranteed, so this tries, in order:
-  1. Next.js page data (__NEXT_DATA__)
-  2. JSON-LD blocks
-  3. Plain article links in the HTML
-It refuses to overwrite bylines.json unless it finds at least MIN_ITEMS.
+The Block's bot protection returns 403 to GitHub's servers, so this tries
+several routes and logs each one:
+  1. the author page, fetched directly
+  2. the author page through the r.jina.ai reader (a real browser)
+  3. The Block's RSS feed, keeping only stories credited to Zack
+Stories from an author page are only kept after their article page is
+confirmed to carry his byline, so sidebar links to colleagues' stories
+can't slip in. New finds are merged ahead of the previous list, and the
+file is never overwritten with fewer than MIN_ITEMS stories.
 """
 import html, json, re, sys, urllib.request
 from datetime import datetime, timezone
 
-AUTHOR_URL = "https://www.theblock.co/author/zack-abrams"
+AUTHOR = "Zack Abrams"
+AUTHOR_URL = "https://www.theblock.co/author/zack-abrams/"
+RSS_URL = "https://www.theblock.co/rss.xml"
+READER = "https://r.jina.ai/"
 BASE = "https://www.theblock.co"
 OUT = "bylines.json"
-MAX_ITEMS, MIN_ITEMS = 8, 3
+MAX_ITEMS, MIN_ITEMS, MAX_CHECKS = 8, 3, 12
 ARTICLE = re.compile(r"^/(post|news)/")
+UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 
-def fetch(url):
-    req = urllib.request.Request(url, headers={
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/126.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml",
-        "Accept-Language": "en-US,en;q=0.9",
-    })
-    with urllib.request.urlopen(req, timeout=30) as r:
+def get(url, accept="text/html,application/xhtml+xml,*/*"):
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": accept,
+                                               "Accept-Language": "en-US,en;q=0.9"})
+    with urllib.request.urlopen(req, timeout=45) as r:
         return r.read().decode("utf-8", "replace")
+
+def direct(url):  return get(url)
+def reader(url):  return get(READER + url, accept="text/plain")
 
 def norm_url(u):
     if not isinstance(u, str) or not u:
         return None
-    u = u.strip()
+    u = html.unescape(u.strip())
     if u.startswith(BASE):
         u = u[len(BASE):]
     if not u.startswith("/"):
-        u = "/" + u
+        return None
     u = u.split("?")[0].split("#")[0]
     return BASE + u if ARTICLE.match(u) else None
 
 def clean(t):
     t = html.unescape(re.sub(r"<[^>]+>", " ", t or ""))
-    return re.sub(r"\s+", " ", t).strip()
-
-def walk(o):
-    if isinstance(o, dict):
-        yield o
-        for v in o.values():
-            yield from walk(v)
-    elif isinstance(o, list):
-        for v in o:
-            yield from walk(v)
-
-def from_objects(objs):
-    out = []
-    for d in objs:
-        title = d.get("title") or d.get("headline") or d.get("name")
-        if isinstance(title, dict):
-            title = title.get("rendered")
-        url = None
-        for k in ("url", "link", "permalink", "canonical", "href", "mainEntityOfPage"):
-            v = d.get(k)
-            if isinstance(v, dict):
-                v = v.get("@id") or v.get("url")
-            url = norm_url(v)
-            if url:
-                break
-        if not url and isinstance(d.get("slug"), str) and d.get("id"):
-            url = norm_url(f"/post/{d['id']}/{d['slug']}")
-        date = next((d[k] for k in ("published", "publishedAt", "datePublished", "date", "published_at") if isinstance(d.get(k), str)), None)
-        title = clean(title) if isinstance(title, str) else ""
-        if url and len(title) >= 20:
-            out.append({"title": title, "url": url, "date": date})
-    return out
-
-def strategies(page):
-    m = re.search(r'<script[^>]+id="__NEXT_DATA__"[^>]*>(.*?)</script>', page, re.S)
-    if m:
-        try:
-            yield "next-data", from_objects(walk(json.loads(m.group(1))))
-        except ValueError:
-            pass
-    ld = []
-    for m in re.finditer(r'<script[^>]+type="application/ld\+json"[^>]*>(.*?)</script>', page, re.S):
-        try:
-            ld.extend(walk(json.loads(m.group(1))))
-        except ValueError:
-            pass
-    yield "json-ld", from_objects(ld)
-    links = []
-    for m in re.finditer(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', page, re.S):
-        url, title = norm_url(html.unescape(m.group(1))), clean(m.group(2))
-        if url and len(title) >= 25:
-            links.append({"title": title, "url": url, "date": None})
-    yield "links", links
+    t = re.sub(r"[*_`#]+", "", t)
+    return re.sub(r"\s+", " ", t).strip(" -|")
 
 def dedupe(items):
     seen, out = set(), []
     for it in items:
-        if it["url"] not in seen:
+        if it and it["url"] not in seen:
             seen.add(it["url"]); out.append(it)
+    return out
+
+def links_in(page):
+    """Article links from HTML anchors or from reader markdown [title](url)."""
+    found = []
+    for m in re.finditer(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', page, re.S):
+        found.append((m.group(1), m.group(2)))
+    for m in re.finditer(r'\[([^\]]{20,300})\]\((https://www\.theblock\.co/[^)\s]+)\)', page):
+        found.append((m.group(2), m.group(1)))
+    out = []
+    for href, text in found:
+        url, title = norm_url(href), clean(text)
+        if url and 25 <= len(title) <= 300 and not title.lower().startswith("image"):
+            out.append({"title": title, "url": url})
+    return dedupe(out)
+
+def by_zack(fetch, url):
+    try:
+        page = fetch(url)
+    except Exception as e:
+        print(f"      could not check {url}: {e}")
+        return False
+    head = page[:20000]
+    return AUTHOR in head or "/author/zack-abrams" in head
+
+def from_author_page(fetch, label):
+    try:
+        page = fetch(AUTHOR_URL)
+    except Exception as e:
+        print(f"  [{label}] author page failed: {e}")
+        return []
+    cands = links_in(page)
+    print(f"  [{label}] author page: {len(page):,} bytes, {len(cands)} candidate links")
+    kept = []
+    for c in cands[:MAX_CHECKS]:
+        ok = by_zack(fetch, c["url"])
+        print(f"      {'keep' if ok else 'skip'}: {c['title'][:80]}")
+        if ok:
+            kept.append(c)
+        if len(kept) >= MAX_ITEMS:
+            break
+    return kept
+
+def from_rss():
+    try:
+        xml = get(RSS_URL, accept="application/rss+xml,application/xml,text/xml")
+    except Exception as e:
+        print(f"  [rss] failed: {e}")
+        return []
+    items = re.findall(r"<item\b.*?</item>", xml, re.S)
+    out = []
+    for it in items:
+        who = " ".join(re.findall(r"<(?:dc:creator|author)[^>]*>(.*?)</(?:dc:creator|author)>", it, re.S))
+        if AUTHOR.lower() not in clean(who.replace("<![CDATA[", "").replace("]]>", "")).lower():
+            continue
+        t = re.search(r"<title[^>]*>(.*?)</title>", it, re.S)
+        l = re.search(r"<link[^>]*>(.*?)</link>", it, re.S)
+        title = clean((t.group(1) if t else "").replace("<![CDATA[", "").replace("]]>", ""))
+        url = norm_url((l.group(1) if l else "").replace("<![CDATA[", "").replace("]]>", ""))
+        if url and title:
+            out.append({"title": title, "url": url})
+    print(f"  [rss] {len(items)} items in feed, {len(out)} by {AUTHOR}")
     return out
 
 def main():
     try:
-        page = fetch(AUTHOR_URL)
-    except Exception as e:
-        print(f"fetch failed: {e}")
+        old = json.load(open(OUT))
+    except (OSError, ValueError):
+        old = {"items": []}
+    fresh, used = [], None
+    for label, fn in (("direct", lambda: from_author_page(direct, "direct")),
+                      ("reader", lambda: from_author_page(reader, "reader")),
+                      ("rss", from_rss)):
+        print(f"trying {label}")
+        got = fn()
+        if got:
+            fresh, used = got, label
+            break
+    merged = dedupe(fresh + old.get("items", []))[:MAX_ITEMS]
+    print(f"found {len(fresh)} new via {used}; {len(merged)} after merging with the previous list")
+    if len(merged) < MIN_ITEMS:
+        print(f"fewer than {MIN_ITEMS} stories; leaving {OUT} untouched")
         return 1
-    print(f"fetched {len(page):,} bytes; title: {clean((re.search(r'<title>(.*?)</title>', page, re.S) or [None,''])[1])[:80]!r}")
-    for name, items in strategies(page):
-        items = dedupe(items)
-        print(f"  {name}: {len(items)} candidate stories")
-        if len(items) >= MIN_ITEMS:
-            if any(i["date"] for i in items):
-                items.sort(key=lambda i: i["date"] or "", reverse=True)
-            items = items[:MAX_ITEMS]
-            for i in items:
-                print(f"    - {i['title'][:90]}")
-            data = {"source": AUTHOR_URL, "strategy": name,
-                    "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                    "items": [{"title": i["title"], "url": i["url"]} for i in items]}
-            try:
-                old = json.load(open(OUT))
-                if old.get("items") == data["items"]:
-                    print("no change")
-                    return 0
-            except (OSError, ValueError):
-                pass
-            json.dump(data, open(OUT, "w"), indent=2, ensure_ascii=False)
-            open(OUT, "a").write("\n")
-            print(f"wrote {OUT}")
-            return 0
-    print("no strategy found enough stories; leaving bylines.json untouched")
-    print("page sample:", re.sub(r"\s+", " ", page[:1500]))
-    return 1
+    if merged == old.get("items"):
+        print("no change")
+        return 0
+    data = {"source": AUTHOR_URL, "via": used,
+            "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "items": merged}
+    with open(OUT, "w") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False); f.write("\n")
+    print(f"wrote {OUT}")
+    for i in merged:
+        print(f"  - {i['title'][:90]}")
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
