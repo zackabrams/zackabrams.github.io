@@ -117,6 +117,16 @@ def from_rss():
         if url and title:
             out.append({"title": title, "url": url})
     print(f"  [rss] {len(items)} items in feed, {len(out)} by {AUTHOR}")
+    if items:
+        tags = sorted(set(re.findall(r"<([a-zA-Z][\w:]*)", items[0])))
+        print(f"  [rss] fields per item: {', '.join(tags)}")
+        seen = []
+        for it in items:
+            for m in re.findall(r"<(dc:creator|author|media:credit|creator)[^>]*>(.*?)</\1>", it, re.S):
+                seen.append(clean(m[1].replace("<![CDATA[", "").replace("]]>", "")))
+        print(f"  [rss] credited authors: {sorted(set(seen))[:25]}")
+        if not seen:
+            print(f"  [rss] first item: {re.sub(chr(10), ' ', items[0])[:700]}")
     return out
 
 def main():
