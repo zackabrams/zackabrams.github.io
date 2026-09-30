@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<title>Page not found · Zack Abrams</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&display=swap">
+<style>
+:root{--ground:#f6f7f9;--paper:#fff;--ink:#15181d;--body:#41474f;--muted:#78808a;--accent:#1d4ed8;--rule:#e2e6eb;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;--sans:"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#0e1116;--paper:#141922;--ink:#e9ecf1;--body:#b4bbc5;--muted:#7f8896;--accent:#7da5ff;--rule:#242c38;}}
+:root[data-theme="dark"]{--ground:#0e1116;--paper:#141922;--ink:#e9ecf1;--body:#b4bbc5;--muted:#7f8896;--accent:#7da5ff;--rule:#242c38;}
+*{box-sizing:border-box;}
+html,body{min-height:100%;}
+body{margin:0;background:var(--ground);color:var(--body);font:15px/1.65 var(--sans);-webkit-font-smoothing:antialiased;}
+a{color:var(--accent);text-decoration:none;}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+.sheet{max-width:760px;margin:0 auto;min-height:100vh;background:var(--paper);border-inline:1px solid var(--rule);
+  padding-inline:clamp(20px,6vw,64px);padding-block:clamp(28px,5vw,48px) 56px;}
+@media (max-width:760px){.sheet{border-inline:0;}}
+.name{font-family:var(--serif);font-weight:700;font-size:1.6rem;color:var(--ink);letter-spacing:-.01em;}
+.rules{margin:14px 0 0;}
+.rules::before,.rules::after{content:"";display:block;background:var(--ink);}
+.rules::before{height:3px;} .rules::after{height:1px;margin-top:3px;opacity:.85;}
+.tag{display:inline-block;margin:clamp(40px,9vw,80px) 0 14px;padding:3px 9px;font-size:.68rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--paper);background:var(--ink);}
+h1{font-family:var(--serif);color:var(--ink);font-size:clamp(2.1rem,6vw,3.3rem);line-height:1.05;letter-spacing:-.015em;margin:0;}
+.path{margin:14px 0 0;font:.85rem/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--muted);overflow-wrap:anywhere;}
+.path:empty{display:none;}
+.body{font-family:var(--serif);font-size:1.15rem;line-height:1.55;color:var(--ink);max-width:52ch;margin:22px 0 0;}
+.links{list-style:none;margin:30px 0 0;padding:0;border-top:1px solid var(--rule);}
+.links li{border-bottom:1px solid var(--rule);}
+.links a{display:flex;justify-content:space-between;gap:16px;padding:13px 0;font-weight:700;}
+.links a span{color:var(--muted);font-weight:400;}
+.links a:hover span{color:var(--accent);}
+</style>
+</head>
+<body>
+<main class="sheet">
+  <a class="name" href="/">Zack Abrams</a>
+  <div class="rules" role="presentation"></div>
+
+  <p class="tag">Correction</p>
+  <h1>This page doesn&rsquo;t exist.</h1>
+  <p class="path" id="path"></p>
+  <p class="body">An earlier version of this link pointed to a page on this site. It no longer does, or it never did. We regret the error.</p>
+
+  <ul class="links">
+    <li><a href="/">Go to the homepage <span>&rarr;</span></a></li>
+    <li><a href="/#stories">Read my latest bylines <span>&rarr;</span></a></li>
+    <li><a href="https://spoondle.app/">Or play Spoondle, my word game <span>&rarr;</span></a></li>
+  </ul>
+</main>
+<script>
+(function(){ var p=document.getElementById('path'); try{ p.textContent=location.host+location.pathname; }catch(e){} })();
+</script>
+</body>
+</html>

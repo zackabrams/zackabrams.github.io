@@ -24,6 +24,43 @@ try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.docu
 <meta name="twitter:creator" content="@zackabrams">
 <meta name="twitter:image" content="https://zackabrams.com/og-image.jpg">
 <meta name="theme-color" content="#1d4ed8">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Person",
+ "name": "Zack Abrams",
+ "url": "https://zackabrams.com/",
+ "image": "https://zackabrams.com/og-image.jpg",
+ "jobTitle": "Weekend Editor",
+ "description": "Journalist and editor covering crypto markets, hacks, and regulation.",
+ "worksFor": {
+  "@type": "NewsMediaOrganization",
+  "name": "The Block",
+  "url": "https://www.theblock.co/"
+ },
+ "alumniOf": {
+  "@type": "CollegeOrUniversity",
+  "name": "Columbia University"
+ },
+ "homeLocation": {
+  "@type": "Place",
+  "name": "Brooklyn, New York"
+ },
+ "email": "mailto:zackdabrams@gmail.com",
+ "award": [
+  "SABEW Best in Business, 2022",
+  "SABEW Best in Business Honorable Mention, 2023"
+ ],
+ "sameAs": [
+  "https://www.theblock.co/author/zack-abrams/",
+  "https://www.linkedin.com/in/zackdabrams",
+  "https://x.com/zackabrams",
+  "https://www.instagram.com/allhailthealgo/",
+  "https://www.tiktok.com/@allhailthealgo",
+  "https://github.com/zackabrams"
+ ]
+}
+</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -723,6 +760,29 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
 /* ---------- hero parallax ---------- */
 :root[data-anim="on"] .hero img{scale:1.1;translate:0 var(--py,0px);}
 
+
+/* ---------- copy email ---------- */
+.copy{
+  display:inline-block;vertical-align:1px;margin-left:6px;padding:1px 7px;
+  border:1px solid var(--rule);border-radius:2px;background:none;cursor:pointer;
+  font:900 .6rem/1.5 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  transition:color .2s ease,border-color .2s ease,background-color .2s ease;
+}
+.copy[hidden]{display:none;}
+.copy:hover{color:var(--accent);border-color:var(--accent);}
+.copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.copy.done{color:var(--paper);background:var(--accent);border-color:var(--accent);}
+.links .who .copy{margin-left:4px;}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+
+/* ---------- impact line ---------- */
+.impact{display:flex;gap:12px;align-items:baseline;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--rule);font-size:.9rem;color:var(--ink);}
+.impact b{flex:none;font-size:.66rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--accent);padding:2px 7px;}
+:root[data-theme="dark"] .impact b{color:#0e1116;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .impact b{color:#0e1116;}}
+.impact a{font-weight:700;white-space:nowrap;}
+.aside .more{display:inline-block;margin-top:8px;}
+
 /* ---------- print ---------- */
 @media print{
   @page{size:letter;margin:.45in .5in;}
@@ -755,7 +815,7 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
   .honor b{font-size:10pt;}
   a{color:#000!important;}
   a[href^="http"]::after{content:none;}
-  .ext,.theme-toggle{display:none!important;}
+  .ext,.theme-toggle,.copy,.aside .more{display:none!important;}
 }
 </style>
 </head>
@@ -763,6 +823,7 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
 
 <div class="progress" aria-hidden="true"></div>
 
+<p class="sr-only" id="copy-status" aria-live="polite"></p>
 <main class="sheet">
 
   <section class="wire" aria-labelledby="wire-label">
@@ -789,7 +850,7 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
     </div>
     <p class="contact">
       Brooklyn, NY<br>
-      <a href="mailto:zackdabrams@gmail.com">zackdabrams@gmail.com</a><br>
+      <a href="mailto:zackdabrams@gmail.com">zackdabrams@gmail.com</a> <button class="copy" type="button" data-copy="zackdabrams@gmail.com" hidden>Copy</button><br>
       <a href="https://www.linkedin.com/in/zackdabrams">linkedin.com/in/zackdabrams</a>
       <span class="sep">·</span>
       <a href="https://x.com/zackabrams">@zackabrams</a>
@@ -802,7 +863,7 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
     <a href="#work">Selected work</a>
     <a href="#experience">Experience</a>
     <a href="#panels" class="navpanels">Panels</a>
-    <a href="#independent">AI video</a>
+    <a href="#video">AI video</a>
     <a href="#contact">Contact</a>
     <a class="pdf" href="ZackAbramsResume.pdf" target="_blank" rel="noopener">Résumé (PDF) ↓</a>
     <button class="theme-toggle" type="button" hidden>
@@ -850,6 +911,7 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
         <li>Chase said the transaction should not have earned rewards and opened a case with Visa.</li>
         <li>The New York State Attorney General&rsquo;s office said it is reviewing the payment structure.</li>
       </ul>
+      <p class="impact"><b>Impact</b><span>Visa moved to close the loophole following the investigation. <a href="https://www.theblock.co/news/regulation/2026-09-19-visa-to-close-crossmint-memecoin-rewards-loophole-following-the-block-investigation-report-415866">Read the follow-up &rarr;</a></span></p>
       <p class="featured-meta"><span>The Block</span><span class="dot">·</span><span>September 1, 2026</span><span class="dot">·</span><a href="https://www.theblock.co/news/business/2026-09-01-buying-memecoins-with-credit-cards-on-robinhood-wallet-fomo-sidestep-card-network-crypto-rules-411911">Read the full story &rarr;</a></p>
     </article>
 
@@ -1058,6 +1120,7 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
 
       <h2 class="label">Speaking</h2>
       <p>Moderated expert panels at Nasdaq's Hacken Trust Summit, Solayer's SVM Summit in New York, The Block's Emergence in Prague, and the NYC Consumer Club in Union Square.</p>
+      <a class="more" href="#panels">See photos from the panels &darr;</a>
 
       <h2 class="label">Data &amp; AI</h2>
       <p>Python, R, data analysis, data visualization, open-source AI workflows.</p>
@@ -1076,7 +1139,7 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
         <li><a href="https://www.instagram.com/allhailthealgo/">Instagram</a> <span class="who">@allhailthealgo</span></li>
         <li><a href="https://www.tiktok.com/@allhailthealgo">TikTok</a> <span class="who">@allhailthealgo</span></li>
         <li><a href="https://github.com/zackabrams">GitHub</a> <span class="who">zackabrams</span></li>
-        <li><a href="mailto:zackdabrams@gmail.com">Email</a> <span class="who">zackdabrams@gmail.com</span></li>
+        <li><a href="mailto:zackdabrams@gmail.com">Email</a> <span class="who">zackdabrams@gmail.com <button class="copy" type="button" data-copy="zackdabrams@gmail.com" hidden>Copy</button></span></li>
       </ul>
 
     </aside>
@@ -1421,6 +1484,34 @@ html.theme-fade,html.theme-fade *{transition:background-color .35s ease,color .3
     console.log('%cI’m Zack Abrams: journalist, editor, and occasional builder (see spoondle.app).\nIf you’re poking around here, we’d probably get along. Say hi: zackdabrams@gmail.com',
                 'font:13px/1.5 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#41474f');
   }catch(e){}
+})();
+
+(function(){
+  /* copy-email buttons; the mailto link beside them still works as usual */
+  var btns=[].slice.call(document.querySelectorAll('.copy')); if(!btns.length) return;
+  var status=document.getElementById('copy-status');
+  function fallback(text){
+    var t=document.createElement('textarea'); t.value=text; t.setAttribute('readonly','');
+    t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    t.remove(); return ok;
+  }
+  btns.forEach(function(b){
+    b.hidden=false;
+    b.setAttribute('aria-label','Copy email address');
+    b.addEventListener('click',function(){
+      var text=b.getAttribute('data-copy');
+      function done(ok){
+        b.textContent= ok ? 'Copied' : 'Press ⌘C';
+        b.classList.toggle('done',ok);
+        if(status) status.textContent= ok ? 'Email address copied' : '';
+        clearTimeout(b._t); b._t=setTimeout(function(){ b.textContent='Copy'; b.classList.remove('done'); if(status) status.textContent=''; },1800);
+      }
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(text).then(function(){ done(true); },function(){ done(fallback(text)); });
+      } else done(fallback(text));
+    });
+  });
 })();
 </script>
 
