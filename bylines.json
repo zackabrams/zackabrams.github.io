@@ -1,31 +1,39 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
-  "via": "seed",
-  "fetched_at": null,
+  "via": "manual (from author page)",
+  "fetched_at": "2026-09-30T12:40:00Z",
   "items": [
     {
-      "title": "Buying memecoins with credit cards on Robinhood Wallet and Fomo appears to sidestep card-network crypto rules",
-      "url": "https://www.theblock.co/news/business/2026-09-01-buying-memecoins-with-credit-cards-on-robinhood-wallet-fomo-sidestep-card-network-crypto-rules-411911"
+      "title": "Onchain analyst links $18.4 million in Robinhood Chain memecoin extractions to single rug-pull operation",
+      "url": "https://www.theblock.co/news/defi/2026-09-27-onchain-analyst-links-18-4-million-in-robinhood-chain-memecoin-extractions-to-single-rug-pull-operation-416960"
     },
     {
-      "title": "Symbiosis says it recovered 15 BTC after Bitcoin bridge exploit, offers attacker 20% bounty",
-      "url": "https://www.theblock.co/news/defi/2026-09-13-symbiosis-says-it-recovered-15-btc-after-bitcoin-bridge-exploit-offers-attacker-20-bounty-414568"
+      "title": "'It's really not just a blockchain anymore': Vitalik Buterin maps Ethereum's path to 2030",
+      "url": "https://www.theblock.co/news/ecosystems/2026-09-27-its-really-not-just-a-blockchain-anymore-vitalik-buterin-maps-ethereums-path-to-2030-416953"
     },
     {
-      "title": "Crypto billionaires Ben Delo and Christopher Harborne each donate £36 million to Farage's Reform UK",
-      "url": "https://www.theblock.co/news/regulation/2026-09-12-crypto-billionaires-ben-delo-and-christopher-harborne-each-donate-36-million-to-farages-reform-uk-414509"
+      "title": "Bitcoin ETFs turn positive for 2026 with $2.4 billion weekly inflow, their largest since October",
+      "url": "https://www.theblock.co/news/markets/2026-09-26-bitcoin-etfs-turn-positive-for-2026-with-2-4-billion-weekly-inflow-their-largest-since-october-416944"
     },
     {
-      "title": "Fogo halts mainnet after attacker receives 400 million FOGO tokens",
-      "url": "https://www.theblock.co/news/defi/2026-08-29-layer-1-blockchain-fogo-halts-mainnet-after-attacker-receives-400-million-fogo-tokens-10-of-circulating-supply-413064"
+      "title": "Kalshi loses appeal over Ohio and Tennessee sports betting laws, widening circuit split",
+      "url": "https://www.theblock.co/news/regulation/2026-09-26-kalshi-loses-appeal-over-ohio-and-tennessee-sports-betting-laws-widening-circuit-split-416937"
     },
     {
-      "title": "Drift links $280 million exploit to suspected North Korean social engineering op",
-      "url": "https://www.theblock.co/news/ecosystems/2026-04-05-drift-links-280-million-exploit-to-six-month-social-engineering-op-run-by-suspected-north-korean-actors-396361"
+      "title": "ZetaChain votes to shut down Layer 1 network and move ZETA to Solana",
+      "url": "https://www.theblock.co/news/defi/2026-09-20-zetachain-votes-to-shut-down-layer-1-network-and-move-zeta-to-solana-415878"
     },
     {
-      "title": "Hacken cites 'human error' after private key leak triggers $5 million crash in $HAI",
-      "url": "https://www.theblock.co/post/359097/hacken-cites-human-error-after-private-key-leak-triggers-5-million-crash-in-hai-value"
+      "title": "Polymarket faced $10 million fraud attempt as its CEO pushed growth over compliance concerns: WSJ",
+      "url": "https://www.theblock.co/news/regulation/2026-09-20-polymarket-faced-10-million-fraud-attempt-as-its-ceo-pushed-growth-over-compliance-concerns-wsj-415875"
+    },
+    {
+      "title": "Bitcoin ETFs eke out positive week with $433 million Friday inflow as ether funds snap four-week inflow streak",
+      "url": "https://www.theblock.co/news/markets/2026-09-19-bitcoin-etfs-eke-out-positive-week-with-433-million-friday-inflow-as-ether-funds-snap-four-week-inflow-streak-415871"
+    },
+    {
+      "title": "Visa to close Crossmint memecoin rewards loophole following The Block investigation: report",
+      "url": "https://www.theblock.co/news/regulation/2026-09-19-visa-to-close-crossmint-memecoin-rewards-loophole-following-the-block-investigation-report-415866"
     }
   ]
 }
