@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "17 */6 * * *"   # every 6 hours
   workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - scripts/fetch_bylines.py
+      - .github/workflows/bylines.yml
 
 permissions:
   contents: write
