@@ -316,9 +316,17 @@ a.stat:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
 }
 .groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px;align-items:start;}
 .gcol{min-width:0;}
+#data{grid-column:1 / -1;}
+#data .work{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:44px;border-top:1px solid var(--rule);}
+#data .work li{border-top:0;border-bottom:1px solid var(--rule);}
 .group{margin-bottom:38px;}
 
-@media (max-width:900px){.groups{grid-template-columns:1fr;gap:0;}}
+@media (max-width:900px){
+  .groups{grid-template-columns:1fr;gap:0;}
+  .gcol{display:contents;}
+  #awards{order:1;} #stories{order:2;} #data{order:3;} #video{order:4;}
+  #data .work{grid-template-columns:1fr;}
+}
 .group-note{font-size:.845rem;color:var(--muted);margin:0 0 12px;}
 
 .work{list-style:none;margin:0;padding:0;}
@@ -480,7 +488,7 @@ a.award:hover{background:var(--accent);color:var(--paper);}
 .honor b a:hover{color:var(--accent);}
 
 /* ---------- panels gallery ---------- */
-.panels{margin-top:38px;}
+.panels{margin-top:0;}
 .panels[hidden],.hero[hidden]{display:none;}
 .shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px;}
 .shot{margin:0;}
@@ -496,7 +504,21 @@ a.award:hover{background:var(--accent);color:var(--paper);}
 .shot figcaption{margin-top:7px;font-size:.755rem;line-height:1.38;}
 .shot figcaption b{display:block;color:var(--ink);font-weight:700;}
 .shot figcaption span{display:block;color:var(--muted);}
-@media (max-width:620px){.shots{grid-template-columns:1fr;gap:20px;}}
+.shots{position:relative;}
+.dots{display:none;justify-content:center;gap:8px;margin-top:14px;}
+.dots button{width:7px;height:7px;padding:0;border:0;border-radius:4px;background:var(--rule-strong);cursor:pointer;transition:width .3s ease,background-color .3s ease;}
+.dots button[aria-current="true"]{width:20px;background:var(--accent);}
+.dots button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+@media (max-width:620px){
+  .shots{
+    display:flex;gap:12px;overflow-x:auto;
+    scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;
+    margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter);scroll-padding-inline:var(--gutter);
+  }
+  .shots::-webkit-scrollbar{display:none;}
+  .shot{flex:0 0 86%;scroll-snap-align:start;}
+  .dots{display:flex;}
+}
 
 
 /* ---------- motion ---------- */
@@ -690,9 +712,9 @@ a.award{transition:background-color .2s ease,color .2s ease;}
   <div class="rules" role="presentation"></div>
 
   <nav class="nav" aria-label="Sections">
-    <a href="#panels" class="navpanels">Panels</a>
     <a href="#work">Selected work</a>
     <a href="#experience">Experience</a>
+    <a href="#panels" class="navpanels">Panels</a>
     <a href="#independent">AI video</a>
     <a href="#contact">Contact</a>
     <a class="pdf" href="ZackAbramsResume.pdf">Résumé (PDF) ↓</a>
@@ -715,24 +737,6 @@ a.award{transition:background-color .2s ease,color .2s ease;}
     <a class="stat" href="#awards"><b>2</b><span>SABEW honors</span></a>
     <a class="stat" href="#video"><b>10M+</b><span>Social media video views</span></a>
   </div>
-
-  <section class="panels">
-    <h2 class="label" id="panels">Panels &amp; stages</h2>
-    <div class="shots">
-      <figure class="shot">
-        <button class="shotimg" type="button"><img src="images/panels/panel-01.jpg" alt="Zack Abrams with fellow panelists at the Hacken Trust Summit" width="1400" height="933"></button>
-        <figcaption><b>Hacken Trust Summit</b><span>AI Security at the Frontier</span></figcaption>
-      </figure>
-      <figure class="shot">
-        <button class="shotimg" type="button"><img src="images/panels/panel-03.jpg" alt="Zack Abrams moderating the DePIN panel at Emergence in Prague" width="1280" height="853"></button>
-        <figcaption><b>Emergence, Prague</b><span>DePIN: How Crypto is Coming to the Real World</span></figcaption>
-      </figure>
-      <figure class="shot">
-        <button class="shotimg" type="button"><img src="images/panels/panel-04.jpg" alt="Zack Abrams moderating a founder panel at the Solayer SVM Summit in New York" width="1400" height="933"></button>
-        <figcaption><b>Solayer SVM Summit</b><span>Founder panel, New York</span></figcaption>
-      </figure>
-    </div>
-  </section>
 
   <section class="portfolio">
     <h2 class="label" id="work">Selected work</h2>
@@ -768,33 +772,24 @@ a.award{transition:background-color .2s ease,color .2s ease;}
         </li>
       </ul>
 </div>
-<div class="group">
-<h3 class="group-title">Data journalism</h3>
-      <p class="group-note">Reporting built on scrapers, spreadsheets and charts.</p>
-      <ul class="work">
-        <li>
-          <h4><a href="https://bwog.com/2018/11/bwog-comments-a-retrospective/">Bwog Comments: A Retrospective</a></h4>
-          <div class="meta"><span>Bwog</span><span class="dot">·</span><span>2018</span></div>
-          <p>Scraped and analyzed all 200,000+ comments ever left on the site.</p>
-        </li>
-        <li>
-          <h4><a href="https://bwog.com/2018/01/the-definitive-statistical-analysis-of-columbia-buysell-memes/">The Definitive Statistical Analysis of Columbia Buy/Sell Memes</a></h4>
-          <div class="meta"><span>Bwog</span><span class="dot">·</span><span>2018</span><span class="dot">·</span><a href="buysell.html">Interactive version</a></div>
-        </li>
-        <li>
-          <h4><a href="https://thestacker.com/article-universal-basic-income-explained">Universal basic income, explained</a></h4>
-          <div class="meta"><span>Stacker</span><span class="dot">·</span><span>2019</span></div>
-        </li>
-        <li>
-          <h4><a href="https://thestacker.com/behind-rise-amd-best-performing-stock-2019-so-far">Behind the rise of AMD, the best-performing stock of 2019 so far</a></h4>
-          <div class="meta"><span>Stacker</span><span class="dot">·</span><span>2019</span></div>
-        </li>
-        <li>
-          <h4><a href="https://arcdigital.media/can-a-simple-design-hack-save-the-comments-section-7e2f674a0f22">Can a Simple Design Hack Save the Comments Section?</a></h4>
-          <div class="meta"><span>Arc Digital</span><span class="dot">·</span><span>2016</span></div>
-          <p>Picked up by Medium's front page and daily digest.</p>
-        </li>
-      </ul>
+<div class="group" id="video">
+<h3 class="group-title">AI video &amp; open source</h3>
+<p class="group-note">Original short-form video and the tooling behind it, as @allhailthealgo.</p>
+<ul class="work">
+          <li>
+            <h4><a href="https://www.instagram.com/allhailthealgo/">@allhailthealgo on Instagram</a></h4>
+            <div class="meta"><span>Short-form AI video</span></div>
+          </li>
+          <li>
+            <h4><a href="https://www.tiktok.com/@allhailthealgo">@allhailthealgo on TikTok</a></h4>
+            <div class="meta"><span>Short-form AI video</span></div>
+          </li>
+          <li>
+            <h4><a href="https://github.com/zackabrams">Open-source ComfyUI nodes</a></h4>
+            <div class="meta"><span>GitHub</span><span class="dot">·</span><span>KeySyncWrapper, MagicWan, HunyuanLoom</span></div>
+            <p>Custom nodes and workflow tooling for open-source video models.</p>
+          </li>
+        </ul>
 </div>
 </div>
 <div class="gcol">
@@ -825,25 +820,35 @@ a.award{transition:background-color .2s ease,color .2s ease;}
       </ul>
       <a class="more" href="https://www.theblock.co/author/zack-abrams">All 850+ stories at The Block →</a>
 </div>
-<div class="group" id="video">
-<h3 class="group-title">AI video &amp; open source</h3>
-<p class="group-note">Original short-form video and the tooling behind it, as @allhailthealgo.</p>
-<ul class="work">
-          <li>
-            <h4><a href="https://www.instagram.com/allhailthealgo/">@allhailthealgo on Instagram</a></h4>
-            <div class="meta"><span>Short-form AI video</span></div>
-          </li>
-          <li>
-            <h4><a href="https://www.tiktok.com/@allhailthealgo">@allhailthealgo on TikTok</a></h4>
-            <div class="meta"><span>Short-form AI video</span></div>
-          </li>
-          <li>
-            <h4><a href="https://github.com/zackabrams">Open-source ComfyUI nodes</a></h4>
-            <div class="meta"><span>GitHub</span><span class="dot">·</span><span>KeySyncWrapper, MagicWan, HunyuanLoom</span></div>
-            <p>Custom nodes and workflow tooling for open-source video models.</p>
-          </li>
-        </ul>
+
 </div>
+    <div class="group" id="data">
+<h3 class="group-title">Data journalism</h3>
+      <p class="group-note">Reporting built on scrapers, spreadsheets and charts.</p>
+      <ul class="work">
+        <li>
+          <h4><a href="https://bwog.com/2018/11/bwog-comments-a-retrospective/">Bwog Comments: A Retrospective</a></h4>
+          <div class="meta"><span>Bwog</span><span class="dot">·</span><span>2018</span></div>
+          <p>Scraped and analyzed all 200,000+ comments ever left on the site.</p>
+        </li>
+        <li>
+          <h4><a href="https://bwog.com/2018/01/the-definitive-statistical-analysis-of-columbia-buysell-memes/">The Definitive Statistical Analysis of Columbia Buy/Sell Memes</a></h4>
+          <div class="meta"><span>Bwog</span><span class="dot">·</span><span>2018</span><span class="dot">·</span><a href="buysell.html">Interactive version</a></div>
+        </li>
+        <li>
+          <h4><a href="https://thestacker.com/article-universal-basic-income-explained">Universal basic income, explained</a></h4>
+          <div class="meta"><span>Stacker</span><span class="dot">·</span><span>2019</span></div>
+        </li>
+        <li>
+          <h4><a href="https://thestacker.com/behind-rise-amd-best-performing-stock-2019-so-far">Behind the rise of AMD, the best-performing stock of 2019 so far</a></h4>
+          <div class="meta"><span>Stacker</span><span class="dot">·</span><span>2019</span></div>
+        </li>
+        <li>
+          <h4><a href="https://arcdigital.media/can-a-simple-design-hack-save-the-comments-section-7e2f674a0f22">Can a Simple Design Hack Save the Comments Section?</a></h4>
+          <div class="meta"><span>Arc Digital</span><span class="dot">·</span><span>2016</span></div>
+          <p>Picked up by Medium's front page and daily digest.</p>
+        </li>
+      </ul>
 </div>
     </div>
   </section>
@@ -890,6 +895,24 @@ a.award{transition:background-color .2s ease,color .2s ease;}
           <li>Reported on technology and business with end-to-end ownership from ideation through analysis and data visualization; helped lead an independent student publication to 70,000+ monthly pageviews and independent profitability.</li>
         </ul>
       </div>
+
+      <section class="panels">
+        <h2 class="label" id="panels">Panels &amp; stages</h2>
+        <div class="shots">
+          <figure class="shot">
+            <button class="shotimg" type="button"><img src="images/panels/panel-01.jpg" alt="Zack Abrams with fellow panelists at the Hacken Trust Summit" width="1400" height="933"></button>
+            <figcaption><b>Hacken Trust Summit</b><span>AI Security at the Frontier</span></figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shotimg" type="button"><img src="images/panels/panel-03.jpg" alt="Zack Abrams moderating the DePIN panel at Emergence in Prague" width="1280" height="853"></button>
+            <figcaption><b>Emergence, Prague</b><span>DePIN: How Crypto is Coming to the Real World</span></figcaption>
+          </figure>
+          <figure class="shot">
+            <button class="shotimg" type="button"><img src="images/panels/panel-04.jpg" alt="Zack Abrams moderating a founder panel at the Solayer SVM Summit in New York" width="1400" height="933"></button>
+            <figcaption><b>Solayer SVM Summit</b><span>Founder panel, New York</span></figcaption>
+          </figure>
+        </div>
+      </section>
 
       <!-- ============ INDEPENDENT WORK ============ -->
       <h2 class="label" id="independent">Independent work</h2>
@@ -1046,6 +1069,51 @@ a.award{transition:background-color .2s ease,color .2s ease;}
   so.observe(document.querySelector('.stats'));
 })();
 
+
+(function(){
+  /* phone: the three panel photos become a swipeable, self-advancing carousel */
+  var row=document.querySelector('.panels .shots'); if(!row) return;
+  var slides=[].slice.call(row.children), n=slides.length; if(n<2) return;
+  var mq=window.matchMedia('(max-width: 620px)');
+  var dots=document.createElement('div'); dots.className='dots';
+  dots.setAttribute('role','group'); dots.setAttribute('aria-label','Choose a photo');
+  var btns=slides.map(function(s,i){
+    var b=document.createElement('button'); b.type='button';
+    b.setAttribute('aria-label','Photo '+(i+1)+' of '+n);
+    b.addEventListener('click',function(){ stop(); go(i); });
+    dots.appendChild(b); return b;
+  });
+  row.parentNode.insertBefore(dots,row.nextSibling);
+
+  function pad(){ return parseFloat(getComputedStyle(row).paddingLeft)||0; }
+  function pos(i){ return slides[i].offsetLeft-pad(); }
+  function cur(){ var best=0,d=1e9; slides.forEach(function(s,i){ var x=Math.abs(pos(i)-row.scrollLeft); if(x<d){d=x;best=i;} }); return best; }
+  function mark(){ var c=cur(); btns.forEach(function(b,i){ b.setAttribute('aria-current', i===c?'true':'false'); }); }
+  function go(i){ row.scrollTo({left:pos(i),behavior:'smooth'}); }
+  var raf=0; row.addEventListener('scroll',function(){ if(!raf) raf=requestAnimationFrame(function(){ raf=0; mark(); }); },{passive:true});
+  mark();
+
+  var motion=document.documentElement.getAttribute('data-anim')==='on';
+  var timer=null, stopped=!motion, seen=false;
+  function stop(){ stopped=true; clearInterval(timer); timer=null; }
+  ['touchstart','pointerdown','focusin','wheel'].forEach(function(ev){ row.addEventListener(ev,stop,{passive:true}); });
+  function tick(){
+    if(document.hidden || !seen) return;
+    var lb=document.querySelector('.lightbox'); if(lb && !lb.hidden) return;
+    go((cur()+1)%n);
+  }
+  function sync(){
+    clearInterval(timer); timer=null;
+    if(mq.matches){
+      slides.forEach(function(s){ s.classList.add('in'); });  /* no fade-in per slide inside a scroller */
+      if(!stopped) timer=setInterval(tick,4200);
+    }
+    mark();
+  }
+  new IntersectionObserver(function(es){ seen=es[0].isIntersecting; },{threshold:.5}).observe(row);
+  if(mq.addEventListener) mq.addEventListener('change',sync); else mq.addListener(sync);
+  sync();
+})();
 
 (function(){
   var thumbs = [].slice.call(document.querySelectorAll('.panels .shotimg'));
