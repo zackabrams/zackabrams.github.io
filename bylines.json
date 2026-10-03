@@ -1,8 +1,23 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
-  "via": "manual (from author page)",
-  "fetched_at": "2026-09-30T12:40:00Z",
+  "via": "rss",
+  "fetched_at": "2026-10-03T05:15:16Z",
   "items": [
+    {
+      "title": "Ethereum Foundation launches zkAPI to let users pay for AI models without revealing identity",
+      "url": "https://www.theblock.co/news/defi/2026-10-01-ethereum-foundation-launches-zkapi-417504",
+      "date": "2026-10-02"
+    },
+    {
+      "title": "Hyperliquid Policy Center, Circle press EU on perps and stablecoin reserves in MiCA review",
+      "url": "https://www.theblock.co/news/regulation/2026-10-01-hyperliquid-circle-mica-review-417452",
+      "date": "2026-10-01"
+    },
+    {
+      "title": "Ethereum staking reward burn proposal EIP-8363 pulled from Hegota upgrade",
+      "url": "https://www.theblock.co/news/ecosystems/2026-10-01-ethereum-staking-reward-burn-proposal-eip-8363-pulled-hegota-upgrade-417419",
+      "date": "2026-10-01"
+    },
     {
       "title": "Onchain analyst links $18.4 million in Robinhood Chain memecoin extractions to single rug-pull operation",
       "url": "https://www.theblock.co/news/defi/2026-09-27-onchain-analyst-links-18-4-million-in-robinhood-chain-memecoin-extractions-to-single-rug-pull-operation-416960"
@@ -22,18 +37,6 @@
     {
       "title": "ZetaChain votes to shut down Layer 1 network and move ZETA to Solana",
       "url": "https://www.theblock.co/news/defi/2026-09-20-zetachain-votes-to-shut-down-layer-1-network-and-move-zeta-to-solana-415878"
-    },
-    {
-      "title": "Polymarket faced $10 million fraud attempt as its CEO pushed growth over compliance concerns: WSJ",
-      "url": "https://www.theblock.co/news/regulation/2026-09-20-polymarket-faced-10-million-fraud-attempt-as-its-ceo-pushed-growth-over-compliance-concerns-wsj-415875"
-    },
-    {
-      "title": "Bitcoin ETFs eke out positive week with $433 million Friday inflow as ether funds snap four-week inflow streak",
-      "url": "https://www.theblock.co/news/markets/2026-09-19-bitcoin-etfs-eke-out-positive-week-with-433-million-friday-inflow-as-ether-funds-snap-four-week-inflow-streak-415871"
-    },
-    {
-      "title": "Visa to close Crossmint memecoin rewards loophole following The Block investigation: report",
-      "url": "https://www.theblock.co/news/regulation/2026-09-19-visa-to-close-crossmint-memecoin-rewards-loophole-following-the-block-investigation-report-415866"
     }
   ]
 }
