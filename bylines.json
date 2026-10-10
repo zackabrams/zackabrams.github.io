@@ -1,8 +1,13 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "rss",
-  "fetched_at": "2026-10-03T05:15:16Z",
+  "fetched_at": "2026-10-10T17:50:50Z",
   "items": [
+    {
+      "title": "Ether ETFs extend outflow streak to nine days as Solana funds snap record 14-week inflow run",
+      "url": "https://www.theblock.co/news/markets/2026-10-10-ether-etfs-extend-outflow-streak-to-nine-days-as-solana-funds-snap-record-14-week-inflow-run-418215",
+      "date": "2026-10-10"
+    },
     {
       "title": "Ethereum Foundation launches zkAPI to let users pay for AI models without revealing identity",
       "url": "https://www.theblock.co/news/defi/2026-10-01-ethereum-foundation-launches-zkapi-417504",
@@ -33,10 +38,6 @@
     {
       "title": "Kalshi loses appeal over Ohio and Tennessee sports betting laws, widening circuit split",
       "url": "https://www.theblock.co/news/regulation/2026-09-26-kalshi-loses-appeal-over-ohio-and-tennessee-sports-betting-laws-widening-circuit-split-416937"
-    },
-    {
-      "title": "ZetaChain votes to shut down Layer 1 network and move ZETA to Solana",
-      "url": "https://www.theblock.co/news/defi/2026-09-20-zetachain-votes-to-shut-down-layer-1-network-and-move-zeta-to-solana-415878"
     }
   ]
 }
