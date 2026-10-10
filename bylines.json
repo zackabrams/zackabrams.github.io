@@ -1,8 +1,13 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "rss",
-  "fetched_at": "2026-10-10T17:50:50Z",
+  "fetched_at": "2026-10-10T21:41:00Z",
   "items": [
+    {
+      "title": "Kalshi is investigating bets on Trump’s press secretary pick placed before announcement: WSJ",
+      "url": "https://www.theblock.co/news/regulation/2026-10-10-kalshi-is-investigating-bets-on-trumps-press-secretary-pick-placed-before-announcement-wsj-418222",
+      "date": "2026-10-10"
+    },
     {
       "title": "Ether ETFs extend outflow streak to nine days as Solana funds snap record 14-week inflow run",
       "url": "https://www.theblock.co/news/markets/2026-10-10-ether-etfs-extend-outflow-streak-to-nine-days-as-solana-funds-snap-record-14-week-inflow-run-418215",
@@ -34,10 +39,6 @@
     {
       "title": "Bitcoin ETFs turn positive for 2026 with $2.4 billion weekly inflow, their largest since October",
       "url": "https://www.theblock.co/news/markets/2026-09-26-bitcoin-etfs-turn-positive-for-2026-with-2-4-billion-weekly-inflow-their-largest-since-october-416944"
-    },
-    {
-      "title": "Kalshi loses appeal over Ohio and Tennessee sports betting laws, widening circuit split",
-      "url": "https://www.theblock.co/news/regulation/2026-09-26-kalshi-loses-appeal-over-ohio-and-tennessee-sports-betting-laws-widening-circuit-split-416937"
     }
   ]
 }
