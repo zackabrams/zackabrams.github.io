@@ -1,8 +1,13 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "rss",
-  "fetched_at": "2026-10-10T21:41:00Z",
+  "fetched_at": "2026-10-11T18:52:47Z",
   "items": [
+    {
+      "title": "XRP Ledger patches decade-old bug that could have minted trillions of XRP",
+      "url": "https://www.theblock.co/news/ecosystems/2026-10-11-xrp-ledger-patches-decade-old-bug-that-could-have-minted-trillions-of-xrp-418230",
+      "date": "2026-10-11"
+    },
     {
       "title": "Kalshi is investigating bets on Trump’s press secretary pick placed before announcement: WSJ",
       "url": "https://www.theblock.co/news/regulation/2026-10-10-kalshi-is-investigating-bets-on-trumps-press-secretary-pick-placed-before-announcement-wsj-418222",
@@ -35,10 +40,6 @@
     {
       "title": "'It's really not just a blockchain anymore': Vitalik Buterin maps Ethereum's path to 2030",
       "url": "https://www.theblock.co/news/ecosystems/2026-09-27-its-really-not-just-a-blockchain-anymore-vitalik-buterin-maps-ethereums-path-to-2030-416953"
-    },
-    {
-      "title": "Bitcoin ETFs turn positive for 2026 with $2.4 billion weekly inflow, their largest since October",
-      "url": "https://www.theblock.co/news/markets/2026-09-26-bitcoin-etfs-turn-positive-for-2026-with-2-4-billion-weekly-inflow-their-largest-since-october-416944"
     }
   ]
 }
