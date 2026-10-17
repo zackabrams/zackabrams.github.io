@@ -1,12 +1,27 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
-  "via": "rss",
-  "fetched_at": "2026-10-11T22:52:47Z",
+  "via": "reader",
+  "fetched_at": "2026-10-17T04:23:30Z",
   "items": [
     {
-      "title": "Trader nets $1.28 million on new 1,000x exchange Papertrade by moving Hyperliquid’s ETH prices",
-      "url": "https://www.theblock.co/news/defi/2026-10-11-trader-nets-1-28-million-on-new-1000x-exchange-papertrade-by-moving-hyperliquids-eth-prices-418239",
-      "date": "2026-10-11"
+      "title": "Trader nets $1.28 million on new 1,000x exchange Papertrade by moving Hyperliquid's ETH prices",
+      "url": "https://www.theblock.co/news/defi/2026-10-11-trader-nets-1-28-million-on-new-1000x-exchange-papertrade-by-moving-hyperliquids-eth-prices-418239"
+    },
+    {
+      "title": "Kalshi is investigating bets on Trump's press secretary pick placed before announcement: WSJ",
+      "url": "https://www.theblock.co/news/regulation/2026-10-10-kalshi-is-investigating-bets-on-trumps-press-secretary-pick-placed-before-announcement-wsj-418222"
+    },
+    {
+      "title": "Treasury withdraws crypto mixing rule, citing concerns over 'chilling effect on legitimate activity'",
+      "url": "https://www.theblock.co/news/regulation/2026-10-05-fincen-drops-crypto-mixing-rule-self-hosted-wallet-proposal-417690"
+    },
+    {
+      "title": "Ethereum Foundation launches zkAPI to let users pay for AI models without revealing identity",
+      "url": "https://www.theblock.co/news/defi/2026-10-01-ethereum-foundation-launches-zkapi-417504"
+    },
+    {
+      "title": "Ethereum staking reward burn proposal EIP-8363 pulled from Hegota upgrade",
+      "url": "https://www.theblock.co/news/ecosystems/2026-10-01-ethereum-staking-reward-burn-proposal-eip-8363-pulled-hegota-upgrade-417419"
     },
     {
       "title": "XRP Ledger patches decade-old bug that could have minted trillions of XRP",
@@ -14,33 +29,14 @@
       "date": "2026-10-11"
     },
     {
-      "title": "Kalshi is investigating bets on Trump’s press secretary pick placed before announcement: WSJ",
-      "url": "https://www.theblock.co/news/regulation/2026-10-10-kalshi-is-investigating-bets-on-trumps-press-secretary-pick-placed-before-announcement-wsj-418222",
-      "date": "2026-10-10"
-    },
-    {
       "title": "Ether ETFs extend outflow streak to nine days as Solana funds snap record 14-week inflow run",
       "url": "https://www.theblock.co/news/markets/2026-10-10-ether-etfs-extend-outflow-streak-to-nine-days-as-solana-funds-snap-record-14-week-inflow-run-418215",
       "date": "2026-10-10"
     },
     {
-      "title": "Ethereum Foundation launches zkAPI to let users pay for AI models without revealing identity",
-      "url": "https://www.theblock.co/news/defi/2026-10-01-ethereum-foundation-launches-zkapi-417504",
-      "date": "2026-10-02"
-    },
-    {
       "title": "Hyperliquid Policy Center, Circle press EU on perps and stablecoin reserves in MiCA review",
       "url": "https://www.theblock.co/news/regulation/2026-10-01-hyperliquid-circle-mica-review-417452",
       "date": "2026-10-01"
-    },
-    {
-      "title": "Ethereum staking reward burn proposal EIP-8363 pulled from Hegota upgrade",
-      "url": "https://www.theblock.co/news/ecosystems/2026-10-01-ethereum-staking-reward-burn-proposal-eip-8363-pulled-hegota-upgrade-417419",
-      "date": "2026-10-01"
-    },
-    {
-      "title": "Onchain analyst links $18.4 million in Robinhood Chain memecoin extractions to single rug-pull operation",
-      "url": "https://www.theblock.co/news/defi/2026-09-27-onchain-analyst-links-18-4-million-in-robinhood-chain-memecoin-extractions-to-single-rug-pull-operation-416960"
     }
   ]
 }
