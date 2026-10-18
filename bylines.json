@@ -1,8 +1,12 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-10-18T17:21:42Z",
+  "fetched_at": "2026-10-18T20:39:33Z",
   "items": [
+    {
+      "title": "Crypto.com, Novig sue Missouri over sports event contracts; Kalshi, Polymarket, Robinhood hold off",
+      "url": "https://www.theblock.co/news/regulation/2026-10-18-crypto-com-novig-sue-missouri-over-sports-event-contracts-kalshi-polymarket-robinhood-hold-off-418866"
+    },
     {
       "title": "Cysic suspends bridge after attacker mints tokens and moves $727,000 to Ethereum",
       "url": "https://www.theblock.co/news/defi/2026-10-18-cysic-suspends-bridge-after-attacker-mints-tokens-and-moves-727000-to-ethereum-418863"
@@ -30,10 +34,6 @@
     {
       "title": "Ethereum Foundation launches zkAPI to let users pay for AI models without revealing identity",
       "url": "https://www.theblock.co/news/defi/2026-10-01-ethereum-foundation-launches-zkapi-417504"
-    },
-    {
-      "title": "Ethereum staking reward burn proposal EIP-8363 pulled from Hegota upgrade",
-      "url": "https://www.theblock.co/news/ecosystems/2026-10-01-ethereum-staking-reward-burn-proposal-eip-8363-pulled-hegota-upgrade-417419"
     }
   ]
 }
