@@ -1,7 +1,7 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-10-18T00:05:22Z",
+  "fetched_at": "2026-10-18T04:29:11Z",
   "items": [
     {
       "title": "Turkey confirms Hex founder Richard Heart's arrest, says police seized $7.15 million and six cold wallets",
@@ -20,10 +20,6 @@
       "url": "https://www.theblock.co/news/regulation/2026-10-10-kalshi-is-investigating-bets-on-trumps-press-secretary-pick-placed-before-announcement-wsj-418222"
     },
     {
-      "title": "Ether ETFs extend outflow streak to nine days as Solana funds snap record 14-week inflow run",
-      "url": "https://www.theblock.co/news/markets/2026-10-10-ether-etfs-extend-outflow-streak-to-nine-days-as-solana-funds-snap-record-14-week-inflow-run-418215"
-    },
-    {
       "title": "Treasury withdraws crypto mixing rule, citing concerns over 'chilling effect on legitimate activity'",
       "url": "https://www.theblock.co/news/regulation/2026-10-05-fincen-drops-crypto-mixing-rule-self-hosted-wallet-proposal-417690"
     },
@@ -34,6 +30,10 @@
     {
       "title": "Ethereum staking reward burn proposal EIP-8363 pulled from Hegota upgrade",
       "url": "https://www.theblock.co/news/ecosystems/2026-10-01-ethereum-staking-reward-burn-proposal-eip-8363-pulled-hegota-upgrade-417419"
+    },
+    {
+      "title": "Ether ETFs extend outflow streak to nine days as Solana funds snap record 14-week inflow run",
+      "url": "https://www.theblock.co/news/markets/2026-10-10-ether-etfs-extend-outflow-streak-to-nine-days-as-solana-funds-snap-record-14-week-inflow-run-418215"
     }
   ]
 }
