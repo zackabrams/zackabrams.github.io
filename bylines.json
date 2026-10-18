@@ -1,7 +1,7 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-10-18T04:29:11Z",
+  "fetched_at": "2026-10-18T09:35:38Z",
   "items": [
     {
       "title": "Turkey confirms Hex founder Richard Heart's arrest, says police seized $7.15 million and six cold wallets",
@@ -24,12 +24,12 @@
       "url": "https://www.theblock.co/news/regulation/2026-10-05-fincen-drops-crypto-mixing-rule-self-hosted-wallet-proposal-417690"
     },
     {
-      "title": "Ethereum Foundation launches zkAPI to let users pay for AI models without revealing identity",
-      "url": "https://www.theblock.co/news/defi/2026-10-01-ethereum-foundation-launches-zkapi-417504"
-    },
-    {
       "title": "Ethereum staking reward burn proposal EIP-8363 pulled from Hegota upgrade",
       "url": "https://www.theblock.co/news/ecosystems/2026-10-01-ethereum-staking-reward-burn-proposal-eip-8363-pulled-hegota-upgrade-417419"
+    },
+    {
+      "title": "Ethereum Foundation launches zkAPI to let users pay for AI models without revealing identity",
+      "url": "https://www.theblock.co/news/defi/2026-10-01-ethereum-foundation-launches-zkapi-417504"
     },
     {
       "title": "Ether ETFs extend outflow streak to nine days as Solana funds snap record 14-week inflow run",
