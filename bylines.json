@@ -1,8 +1,12 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-10-24T04:33:35Z",
+  "fetched_at": "2026-10-24T17:26:39Z",
   "items": [
+    {
+      "title": "Argentine judge clears Milei and 10 others in LIBRA case, finding no 'criminally relevant deception'",
+      "url": "https://www.theblock.co/news/regulation/2026-10-24-argentine-judge-clears-milei-and-10-others-in-libra-case-finding-no-criminally-relevant-deception-431606"
+    },
     {
       "title": "World launches World ID suite for banks, makes Zoom deepfake check generally available",
       "url": "https://www.theblock.co/news/ecosystems/2026-10-18-world-launches-world-id-suite-banks-418869"
@@ -30,10 +34,6 @@
     {
       "title": "Kalshi is investigating bets on Trump's press secretary pick placed before announcement: WSJ",
       "url": "https://www.theblock.co/news/regulation/2026-10-10-kalshi-is-investigating-bets-on-trumps-press-secretary-pick-placed-before-announcement-wsj-418222"
-    },
-    {
-      "title": "Treasury withdraws crypto mixing rule, citing concerns over 'chilling effect on legitimate activity'",
-      "url": "https://www.theblock.co/news/regulation/2026-10-05-fincen-drops-crypto-mixing-rule-self-hosted-wallet-proposal-417690"
     }
   ]
 }
