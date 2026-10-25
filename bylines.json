@@ -1,8 +1,12 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-10-25T06:05:27Z",
+  "fetched_at": "2026-10-25T16:13:34Z",
   "items": [
+    {
+      "title": "Keystone customers say breach exposed data the hardware wallet maker promised to delete",
+      "url": "https://www.theblock.co/news/business/2026-10-25-keystone-customers-say-breach-exposed-data-the-hardware-wallet-maker-promised-to-delete-431613"
+    },
     {
       "title": "Crypto longs lose $404 million in four hours as bitcoin briefly slips below $80,000",
       "url": "https://www.theblock.co/news/markets/2026-10-24-crypto-longs-lose-404-million-in-four-hours-as-bitcoin-briefly-slips-below-80000-431608"
@@ -30,10 +34,6 @@
     {
       "title": "Trader nets $1.28 million on new 1,000x exchange Papertrade by moving Hyperliquid's ETH prices",
       "url": "https://www.theblock.co/news/defi/2026-10-11-trader-nets-1-28-million-on-new-1000x-exchange-papertrade-by-moving-hyperliquids-eth-prices-418239"
-    },
-    {
-      "title": "XRP Ledger patches decade-old bug that could have minted trillions of XRP",
-      "url": "https://www.theblock.co/news/ecosystems/2026-10-11-xrp-ledger-patches-decade-old-bug-that-could-have-minted-trillions-of-xrp-418230"
     }
   ]
 }
