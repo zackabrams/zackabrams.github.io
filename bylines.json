@@ -1,8 +1,12 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-10-25T16:13:34Z",
+  "fetched_at": "2026-10-25T19:02:54Z",
   "items": [
+    {
+      "title": "CoinDCX confirms $16 million loss from retired wallets days after CEO called breach reports a 'false alarm'",
+      "url": "https://www.theblock.co/news/business/2026-10-25-coindcx-confirms-16-million-loss-from-retired-wallets-days-after-ceo-called-breach-reports-a-false-alarm-431617"
+    },
     {
       "title": "Keystone customers say breach exposed data the hardware wallet maker promised to delete",
       "url": "https://www.theblock.co/news/business/2026-10-25-keystone-customers-say-breach-exposed-data-the-hardware-wallet-maker-promised-to-delete-431613"
@@ -30,10 +34,6 @@
     {
       "title": "Turkey confirms Hex founder Richard Heart's arrest, says police seized $7.15 million and six cold wallets",
       "url": "https://www.theblock.co/news/regulation/2026-10-17-turkey-confirms-hex-founder-richard-hearts-arrest-says-police-seized-7-15-million-and-six-cold-wallets-418852"
-    },
-    {
-      "title": "Trader nets $1.28 million on new 1,000x exchange Papertrade by moving Hyperliquid's ETH prices",
-      "url": "https://www.theblock.co/news/defi/2026-10-11-trader-nets-1-28-million-on-new-1000x-exchange-papertrade-by-moving-hyperliquids-eth-prices-418239"
     }
   ]
 }
