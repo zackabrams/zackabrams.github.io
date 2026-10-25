@@ -1,7 +1,7 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-10-25T01:08:37Z",
+  "fetched_at": "2026-10-25T06:05:27Z",
   "items": [
     {
       "title": "Crypto longs lose $404 million in four hours as bitcoin briefly slips below $80,000",
@@ -20,6 +20,10 @@
       "url": "https://www.theblock.co/news/regulation/2026-10-18-crypto-com-novig-sue-missouri-over-sports-event-contracts-kalshi-polymarket-robinhood-hold-off-418866"
     },
     {
+      "title": "Cysic suspends bridge after attacker mints tokens and moves $727,000 to Ethereum",
+      "url": "https://www.theblock.co/news/defi/2026-10-18-cysic-suspends-bridge-after-attacker-mints-tokens-and-moves-727000-to-ethereum-418863"
+    },
+    {
       "title": "Turkey confirms Hex founder Richard Heart's arrest, says police seized $7.15 million and six cold wallets",
       "url": "https://www.theblock.co/news/regulation/2026-10-17-turkey-confirms-hex-founder-richard-hearts-arrest-says-police-seized-7-15-million-and-six-cold-wallets-418852"
     },
@@ -30,10 +34,6 @@
     {
       "title": "XRP Ledger patches decade-old bug that could have minted trillions of XRP",
       "url": "https://www.theblock.co/news/ecosystems/2026-10-11-xrp-ledger-patches-decade-old-bug-that-could-have-minted-trillions-of-xrp-418230"
-    },
-    {
-      "title": "Kalshi is investigating bets on Trump's press secretary pick placed before announcement: WSJ",
-      "url": "https://www.theblock.co/news/regulation/2026-10-10-kalshi-is-investigating-bets-on-trumps-press-secretary-pick-placed-before-announcement-wsj-418222"
     }
   ]
 }
