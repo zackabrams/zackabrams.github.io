@@ -1,8 +1,16 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
-  "via": "rss",
-  "fetched_at": "2026-10-31T17:42:24Z",
+  "via": "reader",
+  "fetched_at": "2026-10-31T21:31:11Z",
   "items": [
+    {
+      "title": "World launches World ID suite for banks, makes Zoom deepfake check generally available",
+      "url": "https://www.theblock.co/news/ecosystems/2026-10-18-world-launches-world-id-suite-banks-418869"
+    },
+    {
+      "title": "Crypto.com, Novig sue Missouri over sports event contracts; Kalshi, Polymarket, Robinhood hold off",
+      "url": "https://www.theblock.co/news/regulation/2026-10-18-crypto-com-novig-sue-missouri-over-sports-event-contracts-kalshi-polymarket-robinhood-hold-off-418866"
+    },
     {
       "title": "Hackers hijack a dozen DeFi websites, all registered with Name.com, and steal about $138,000",
       "url": "https://www.theblock.co/news/defi/2026-10-31-hackers-hijack-a-dozen-defi-websites-all-registered-with-name-com-and-steal-about-138000-432251",
@@ -28,14 +36,6 @@
     {
       "title": "Argentine judge clears Milei and 10 others in LIBRA case, finding no 'criminally relevant deception'",
       "url": "https://www.theblock.co/news/regulation/2026-10-24-argentine-judge-clears-milei-and-10-others-in-libra-case-finding-no-criminally-relevant-deception-431606"
-    },
-    {
-      "title": "World launches World ID suite for banks, makes Zoom deepfake check generally available",
-      "url": "https://www.theblock.co/news/ecosystems/2026-10-18-world-launches-world-id-suite-banks-418869"
-    },
-    {
-      "title": "Crypto.com, Novig sue Missouri over sports event contracts; Kalshi, Polymarket, Robinhood hold off",
-      "url": "https://www.theblock.co/news/regulation/2026-10-18-crypto-com-novig-sue-missouri-over-sports-event-contracts-kalshi-polymarket-robinhood-hold-off-418866"
     }
   ]
 }
