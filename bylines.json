@@ -1,8 +1,18 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
-  "via": "reader",
-  "fetched_at": "2026-10-25T19:02:54Z",
+  "via": "rss",
+  "fetched_at": "2026-10-31T17:42:24Z",
   "items": [
+    {
+      "title": "Hackers hijack a dozen DeFi websites, all registered with Name.com, and steal about $138,000",
+      "url": "https://www.theblock.co/news/defi/2026-10-31-hackers-hijack-a-dozen-defi-websites-all-registered-with-name-com-and-steal-about-138000-432251",
+      "date": "2026-10-31"
+    },
+    {
+      "title": "Chainalysis says hacker using ‘offensive agentic techniques’ accessed its customers’ names and emails",
+      "url": "https://www.theblock.co/news/business/2026-10-31-chainalysis-says-hacker-using-offensive-agentic-techniques-accessed-its-customers-names-and-emails-432244",
+      "date": "2026-10-31"
+    },
     {
       "title": "CoinDCX confirms $16 million loss from retired wallets days after CEO called breach reports a 'false alarm'",
       "url": "https://www.theblock.co/news/business/2026-10-25-coindcx-confirms-16-million-loss-from-retired-wallets-days-after-ceo-called-breach-reports-a-false-alarm-431617"
@@ -26,14 +36,6 @@
     {
       "title": "Crypto.com, Novig sue Missouri over sports event contracts; Kalshi, Polymarket, Robinhood hold off",
       "url": "https://www.theblock.co/news/regulation/2026-10-18-crypto-com-novig-sue-missouri-over-sports-event-contracts-kalshi-polymarket-robinhood-hold-off-418866"
-    },
-    {
-      "title": "Cysic suspends bridge after attacker mints tokens and moves $727,000 to Ethereum",
-      "url": "https://www.theblock.co/news/defi/2026-10-18-cysic-suspends-bridge-after-attacker-mints-tokens-and-moves-727000-to-ethereum-418863"
-    },
-    {
-      "title": "Turkey confirms Hex founder Richard Heart's arrest, says police seized $7.15 million and six cold wallets",
-      "url": "https://www.theblock.co/news/regulation/2026-10-17-turkey-confirms-hex-founder-richard-hearts-arrest-says-police-seized-7-15-million-and-six-cold-wallets-418852"
     }
   ]
 }
