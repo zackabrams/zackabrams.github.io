@@ -1,8 +1,13 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "rss",
-  "fetched_at": "2026-11-07T18:01:30Z",
+  "fetched_at": "2026-11-07T21:47:15Z",
   "items": [
+    {
+      "title": "Ex-FBI agent pleads guilty to stealing $2.47 million in crypto from wallets tied to 35 investigations",
+      "url": "https://www.theblock.co/news/regulation/2026-11-07-ex-fbi-agent-pleads-guilty-to-stealing-2-47-million-in-crypto-from-wallets-tied-to-35-investigations-435988",
+      "date": "2026-11-07"
+    },
     {
       "title": "Bitcoin ETFs flip negative for 2026 after $1.28 billion outflow week, worst since June",
       "url": "https://www.theblock.co/news/markets/2026-11-07-bitcoin-etfs-flip-negative-for-2026-after-1-28-billion-outflow-week-worst-since-june-435984",
@@ -31,10 +36,6 @@
     {
       "title": "Argentine judge clears Milei and 10 others in LIBRA case, finding no 'criminally relevant deception'",
       "url": "https://www.theblock.co/news/regulation/2026-10-24-argentine-judge-clears-milei-and-10-others-in-libra-case-finding-no-criminally-relevant-deception-431606"
-    },
-    {
-      "title": "World launches World ID suite for banks, makes Zoom deepfake check generally available",
-      "url": "https://www.theblock.co/news/ecosystems/2026-10-18-world-launches-world-id-suite-banks-418869"
     }
   ]
 }
