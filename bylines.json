@@ -1,8 +1,13 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "rss",
-  "fetched_at": "2026-11-07T21:47:15Z",
+  "fetched_at": "2026-11-08T01:25:27Z",
   "items": [
+    {
+      "title": "Binance CFO steps down nine days after record hack; co-CEO says transition was planned six months ago",
+      "url": "https://www.theblock.co/news/business/2026-11-07-binance-cfo-steps-down-nine-days-after-record-hack-co-ceo-says-transition-was-planned-six-months-ago-435992",
+      "date": "2026-11-07"
+    },
     {
       "title": "Ex-FBI agent pleads guilty to stealing $2.47 million in crypto from wallets tied to 35 investigations",
       "url": "https://www.theblock.co/news/regulation/2026-11-07-ex-fbi-agent-pleads-guilty-to-stealing-2-47-million-in-crypto-from-wallets-tied-to-35-investigations-435988",
@@ -32,10 +37,6 @@
     {
       "title": "Crypto longs lose $404 million in four hours as bitcoin briefly slips below $80,000",
       "url": "https://www.theblock.co/news/markets/2026-10-24-crypto-longs-lose-404-million-in-four-hours-as-bitcoin-briefly-slips-below-80000-431608"
-    },
-    {
-      "title": "Argentine judge clears Milei and 10 others in LIBRA case, finding no 'criminally relevant deception'",
-      "url": "https://www.theblock.co/news/regulation/2026-10-24-argentine-judge-clears-milei-and-10-others-in-libra-case-finding-no-criminally-relevant-deception-431606"
     }
   ]
 }
