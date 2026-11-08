@@ -1,22 +1,15 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
-  "via": "rss",
-  "fetched_at": "2026-11-08T01:25:27Z",
+  "via": "reader",
+  "fetched_at": "2026-11-08T15:57:53Z",
   "items": [
     {
       "title": "Binance CFO steps down nine days after record hack; co-CEO says transition was planned six months ago",
-      "url": "https://www.theblock.co/news/business/2026-11-07-binance-cfo-steps-down-nine-days-after-record-hack-co-ceo-says-transition-was-planned-six-months-ago-435992",
-      "date": "2026-11-07"
-    },
-    {
-      "title": "Ex-FBI agent pleads guilty to stealing $2.47 million in crypto from wallets tied to 35 investigations",
-      "url": "https://www.theblock.co/news/regulation/2026-11-07-ex-fbi-agent-pleads-guilty-to-stealing-2-47-million-in-crypto-from-wallets-tied-to-35-investigations-435988",
-      "date": "2026-11-07"
+      "url": "https://www.theblock.co/news/business/2026-11-07-binance-cfo-steps-down-nine-days-after-record-hack-co-ceo-says-transition-was-planned-six-months-ago-435992"
     },
     {
       "title": "Bitcoin ETFs flip negative for 2026 after $1.28 billion outflow week, worst since June",
-      "url": "https://www.theblock.co/news/markets/2026-11-07-bitcoin-etfs-flip-negative-for-2026-after-1-28-billion-outflow-week-worst-since-june-435984",
-      "date": "2026-11-07"
+      "url": "https://www.theblock.co/news/markets/2026-11-07-bitcoin-etfs-flip-negative-for-2026-after-1-28-billion-outflow-week-worst-since-june-435984"
     },
     {
       "title": "Binance sees $3.64 billion in net outflows after reopening withdrawals following record hack",
@@ -33,6 +26,11 @@
     {
       "title": "Keystone customers say breach exposed data the hardware wallet maker promised to delete",
       "url": "https://www.theblock.co/news/business/2026-10-25-keystone-customers-say-breach-exposed-data-the-hardware-wallet-maker-promised-to-delete-431613"
+    },
+    {
+      "title": "Ex-FBI agent pleads guilty to stealing $2.47 million in crypto from wallets tied to 35 investigations",
+      "url": "https://www.theblock.co/news/regulation/2026-11-07-ex-fbi-agent-pleads-guilty-to-stealing-2-47-million-in-crypto-from-wallets-tied-to-35-investigations-435988",
+      "date": "2026-11-07"
     },
     {
       "title": "Crypto longs lose $404 million in four hours as bitcoin briefly slips below $80,000",
