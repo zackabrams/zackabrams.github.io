@@ -1,8 +1,16 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-11-15T02:38:45Z",
+  "fetched_at": "2026-11-15T10:48:31Z",
   "items": [
+    {
+      "title": "Kava Lend loses roughly $3.8 million to hack, sending KAVA token down nearly 40%",
+      "url": "https://www.theblock.co/news/defi/2026-11-14-kava-lend-loses-roughly-3-8-million-to-hack-sending-kava-token-down-nearly-40-440350"
+    },
+    {
+      "title": "Louisiana AG calls CFTC chair an 'obsequious standard bearer' for prediction markets following agency lawsuit",
+      "url": "https://www.theblock.co/news/regulation/2026-11-14-louisiana-ag-calls-cftc-chair-an-obsequious-standard-bearer-for-prediction-markets-following-agency-lawsuit-440342"
+    },
     {
       "title": "Web3Auth says it frontran hackers by moving $5.6 million out of exposed Keplr wallets",
       "url": "https://www.theblock.co/news/defi/2026-11-08-web3auth-says-it-frontran-hackers-by-moving-5-6-million-out-of-exposed-keplr-wallets-436029"
@@ -16,11 +24,6 @@
       "url": "https://www.theblock.co/news/markets/2026-11-07-bitcoin-etfs-flip-negative-for-2026-after-1-28-billion-outflow-week-worst-since-june-435984"
     },
     {
-      "title": "Louisiana AG calls CFTC chair an ‘obsequious standard bearer’ for prediction markets following agency lawsuit",
-      "url": "https://www.theblock.co/news/regulation/2026-11-14-louisiana-ag-calls-cftc-chair-an-obsequious-standard-bearer-for-prediction-markets-following-agency-lawsuit-440342",
-      "date": "2026-11-14"
-    },
-    {
       "title": "Bitcoin ETFs lose $1 billion for the second week in a row as crypto funds, except one, continue bleeding",
       "url": "https://www.theblock.co/news/markets/2026-11-14-bitcoin-etfs-lose-1-billion-for-the-second-week-in-a-row-as-crypto-funds-except-one-continue-bleeding-440337",
       "date": "2026-11-14"
@@ -32,11 +35,6 @@
     {
       "title": "Chainalysis says hacker using 'offensive agentic techniques' accessed its customers' names and emails",
       "url": "https://www.theblock.co/news/business/2026-10-31-chainalysis-says-hacker-using-offensive-agentic-techniques-accessed-its-customers-names-and-emails-432244"
-    },
-    {
-      "title": "Onchain data casts doubt on insider-trading theory in NYT’s ‘suspicious’ election betting story",
-      "url": "https://www.theblock.co/news/defi/2026-11-08-onchain-data-casts-doubt-on-insider-trading-theory-in-nyts-suspicious-election-betting-story-436034",
-      "date": "2026-11-08"
     }
   ]
 }
