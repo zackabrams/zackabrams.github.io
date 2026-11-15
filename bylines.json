@@ -1,8 +1,12 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-11-15T10:48:31Z",
+  "fetched_at": "2026-11-15T22:47:01Z",
   "items": [
+    {
+      "title": "CZ denies Binance sold crypto as Bitcoin bounces from four-month low near $62,000",
+      "url": "https://www.theblock.co/news/markets/2026-11-15-cz-denies-binance-sold-crypto-as-bitcoin-bounces-from-four-month-low-near-62000-440807"
+    },
     {
       "title": "Kava Lend loses roughly $3.8 million to hack, sending KAVA token down nearly 40%",
       "url": "https://www.theblock.co/news/defi/2026-11-14-kava-lend-loses-roughly-3-8-million-to-hack-sending-kava-token-down-nearly-40-440350"
@@ -31,10 +35,6 @@
     {
       "title": "Binance sees $3.64 billion in net outflows after reopening withdrawals following record hack",
       "url": "https://www.theblock.co/news/business/2026-11-01-binance-sees-3-64-billion-in-net-outflows-after-reopening-withdrawals-following-record-hack-432259"
-    },
-    {
-      "title": "Chainalysis says hacker using 'offensive agentic techniques' accessed its customers' names and emails",
-      "url": "https://www.theblock.co/news/business/2026-10-31-chainalysis-says-hacker-using-offensive-agentic-techniques-accessed-its-customers-names-and-emails-432244"
     }
   ]
 }
