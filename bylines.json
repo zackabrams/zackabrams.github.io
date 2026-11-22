@@ -1,15 +1,11 @@
 {
   "source": "https://www.theblock.co/author/zack-abrams/",
   "via": "reader",
-  "fetched_at": "2026-11-21T21:39:02Z",
+  "fetched_at": "2026-11-22T02:12:31Z",
   "items": [
     {
       "title": "Cyber investigating suspected $1 million bridge exploit as Upbit, Bithumb freeze transfers",
       "url": "https://www.theblock.co/news/defi/2026-11-21-cyber-investigating-suspected-1-million-bridge-exploit-as-upbit-bithumb-freeze-transfers-444810"
-    },
-    {
-      "title": "Chainflip's FLIP drops 34% after attacker drains $4.86 million from vault with suspected key compromise",
-      "url": "https://www.theblock.co/news/defi/2026-11-21-chainflips-flip-drops-34-after-attacker-drains-4-86-million-from-vault-with-suspected-key-compromise-444804"
     },
     {
       "title": "CZ denies Binance sold crypto as Bitcoin bounces from four-month low near $62,000",
@@ -26,6 +22,10 @@
     {
       "title": "Web3Auth says it frontran hackers by moving $5.6 million out of exposed Keplr wallets",
       "url": "https://www.theblock.co/news/defi/2026-11-08-web3auth-says-it-frontran-hackers-by-moving-5-6-million-out-of-exposed-keplr-wallets-436029"
+    },
+    {
+      "title": "Chainflip's FLIP drops 34% after attacker drains $4.86 million from vault with suspected key compromise",
+      "url": "https://www.theblock.co/news/defi/2026-11-21-chainflips-flip-drops-34-after-attacker-drains-4-86-million-from-vault-with-suspected-key-compromise-444804"
     },
     {
       "title": "Binance CFO steps down nine days after record hack; co-CEO says transition was planned six months ago",
